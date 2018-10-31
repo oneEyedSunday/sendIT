@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>SendIT - Parcels: You pack!, we delivery!!</title>
+    <link rel="stylesheet" href="/UI/main.css">
+    <link rel="stylesheet" href="/UI/parcels/parcels.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="header">
+            <div class="header__content">
+                <div class="logo">
+                    <a href="/UI/index.html" title="Home"></a>
+                </div>
+                <div class="nav">
+                        <ul class="menu">
+                            <li class="menu_item">
+                                    <a href="#">Sign Out</a>
+                            </li>
+                        </ul>
+                </div>
+            </div>
+        </nav>
+        <main class="page__content">
+            <div class="card flex-column full-width">
+                    <div class="row">
+                        <p>Your parcel delivery orders</p>
+                    </div>
+                    <div class="row table">
+                        <span>S/N</span>
+                        <span>Date Created</span>
+                        <span>Destination</span>
+                        <span>Delivery Status</span>
+                        <span>Options</span>
+                    </div>
+                    <div class="row table">
+                            <span>1</span>
+                            <span>October 31st</span>
+                            <span>Ojota, Lagos</span>
+                            <span>In transit</span>
+                            <div>
+                                <button class="button danger">
+                                    Cancel
+                                </button>
+                                <button class="button">
+                                    <a href="details.html?parcelId=1">Details</a>
+                                </button>
+                                <button class="button">
+                                        <a href="edit.html?parcelId=1">Edit</a>
+                                </button>
+                             </div>    
+                    </div>
+                    <div class="row table">
+                            <span>2</span>
+                            <span>October 31st</span>
+                            <span>Ikeja, Lagos</span>
+                            <span>Cancelled</span>
+                            <div>
+                                <button disabled class="button danger">
+                                    Cancel
+                                </button>
+                                <button class="button">
+                                    <a href="details.html?parcelId=2">Details</a>
+                                </button>
+                                <button class="button">
+                                    <a href="edit.html?parcelId=2">Edit</a>
+                                </button>
+                             </div>    
+                    </div>
+                    <div class="row table">
+                            <span>3</span>
+                            <span>October 31st</span>
+                            <span>Maitama, Abuja</span>
+                            <span>Delivered</span>
+                            <div>
+                                <button disabled class="button danger">
+                                    Cancel
+                                </button>
+                                <button class="button">
+                                    <a href="details.html?parcelId=3">Details</a>
+                                </button>
+                             </div>    
+                    </div>
+            </div>
+        </main>
+        <footer class="footer">
+                <div class="footer__content">
+                    <p>
+                        <a href="#">Contact</a>
+                    </p>
+                    <p>
+                        <a href="#">Privacy</a>
+                        <a href="#">Terms of Service</a>
+                    </p>
+                </div>
+        </footer>
+    </div>
+</body>
+</html>

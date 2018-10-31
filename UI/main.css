@@ -184,3 +184,30 @@ html, body {
     color: aliceblue;
 }
 
+.button {
+    --btn-danger-bg: red;
+    background-color: var(--secondary-bg-color);
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    transition: 0.3s ease all;
+    padding: 5px 10px;
+}
+
+.button:focus, .button:hover {
+    background-color: #fff;
+    color: var(--secondary-bg-color);
+    border: 1px solid var(--secondary-bg-color);
+}
+
+.button.danger {
+    background-color: var(--btn-danger-bg);
+}
+
+.button:disabled {
+    cursor: not-allowed;
+    background-color: var(--secondary-bg-color);
+    color: #fff;
+    border: none;
+    opacity: 0.3;
+}

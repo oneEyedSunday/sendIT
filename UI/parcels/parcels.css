@@ -1,7 +1,7 @@
 .card {
     height: calc(100vh - 210px);
     width: 500px;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
 }
 
@@ -44,14 +44,42 @@
     padding: 2px 5px;
 }
 
-.margin-auto {
-    margin: 10px auto;
+.flex-column {
+    display: flex;
+    flex-direction: column;
 }
 
-.three-fifths {
-    width: 60%;
+.flex {
+    direction: flex;
 }
 
-.tall-btn {
-    height: 30px;
+.table {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 3fr;
+}
+
+.row {
+    width: 100%;
+    height: 40px;
+    margin: 20px 10px;
+    font-size: 1.5em;
+    font-weight: 300;
+}
+
+.row:first-of-type {
+    margin-bottom: 0;
+}
+
+
+.full-width {
+    width: 80%;
+}
+
+.button {
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.button a {
+    text-decoration: none;
 }
