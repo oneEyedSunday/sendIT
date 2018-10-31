@@ -29,6 +29,8 @@ html, body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    min-height: calc(100vh - 210px);
+    /* padding: 20px 0; */
 }
 
 .header {

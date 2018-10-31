@@ -17,6 +17,7 @@ const signUpTab = document.getElementById("signUp");
 // })
 const intercept = evt => {
     console.log(evt.target)
+    console.log(evt.target.closest("li"))
     const currentAttr = evt.target.getAttribute('href');
     console.log(currentAttr)
     clearActive([signInTab, signUpTab], "tab");
