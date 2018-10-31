@@ -1,0 +1,48 @@
+.full-width {
+    width: 100%
+}
+
+.box {
+    border: 1px solid #92369e;
+    box-shadow: 6px 3px 0px 0px var(--secondary-bg-color);
+    padding: 10px;
+}
+
+.box__title {
+    font-size: 1.3em;
+    font-weight: 500;
+    margin: 5px auto;
+    border: 1px solid var(--secondary-bg-color);
+    padding: 5px 10px;
+}
+
+.my-5 {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.my-2 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.py-1 {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.button a {
+    color: #fff;
+}
+
+.button a:hover {
+    color: var(--secondary-bg-color)
+}
+
+.gutter {
+    margin-right: 10px;
+}
+
+.gutter:last-of-type {
+    margin-right: 0;
+}

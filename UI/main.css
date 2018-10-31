@@ -106,11 +106,11 @@ html, body {
     margin: 0 auto;
 }
 
-.banner__content .headline {
+.headline {
     font-size: calc(var(--base-font) * 4);
 }
 
-.headline .subtitle {
+.subtitle {
     font-size: calc(var(--base-font) * 1.2);
 }
 
@@ -210,4 +210,55 @@ html, body {
     color: #fff;
     border: none;
     opacity: 0.3;
+}
+
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex {
+    display: flex;
+}
+
+.card {
+    min-height: calc(100vh - 210px);
+    width: 500px;
+    /* justify-content: center; */
+    align-items: center;
+}
+
+.button {
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.button a {
+    text-decoration: none;
+}
+
+.rounded-edges {
+    border-radius: 5px;
+}
+
+.lead {
+    font-size: 1.2em;
+    font-weight: 400;
+}
+
+.justify-content__center {
+    justify-content: center;
+}
+
+.align-items__center {
+    align-items: center;
+}
+
+.bordered {
+    border: 1px solid var(--secondary-bg-color)
+}
+
+.justify-content__sb {
+    justify-content: space-between
 }
