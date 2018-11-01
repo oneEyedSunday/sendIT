@@ -204,6 +204,21 @@ html, body {
     background-color: var(--btn-danger-bg);
 }
 
+.button.primary-action {
+    background-color: lightgreen;
+}
+
+.button.primary-action, .button.primary-action a {
+    color: #fff;
+}
+
+.button.primary-action:hover, .button.primary-action:focus, .button.primary-action:focus a, .button.primary-action:hover a, .button.primary-action a:hover, .button.primary-action a:focus {
+    background-color: #fff;
+    border-color: lightgreen;
+    color: lightgreen;
+}
+
+
 .button:disabled {
     cursor: not-allowed;
     background-color: var(--secondary-bg-color);

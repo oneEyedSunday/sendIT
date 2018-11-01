@@ -23,7 +23,8 @@ const parcels = [
         "destination": "Ojota, Lagos",
         "pickUpLocation": "SendIT Pickup Station, Ojota",
         "price": "N500",
-        "status": statuses.InTransit
+        "status": statuses.InTransit,
+        "presentLocation": "Ketu, Lagos"
     },
     {
         "destination": "Ikeja, Lagos",
@@ -39,21 +40,132 @@ const parcels = [
     }
 ] 
 
+const createElement = (element, options) => {
+    const nElement = document.createElement(element);
 
+    for (const attr in options) {
+        if (options.hasOwnProperty(attr)) {
+            nElement.setAttribute(attr, options[attr])
+        }
+    }
+
+    return nElement;
+}
+
+const addAdminFields = formFields => {
+    const formFieldNodes = []; 
+    for (let i = 0; i < formFields.length; i++) {
+        const formField = formFields[i];
+        const wrappedDiv = createElement("div", {'class': 'form__field'})
+        for (let i = 0; i < formField.length; i++) {
+            const nodeData = formField[i]; 
+            const node = createElement(nodeData.element, nodeData.attributeValueMap)    
+            if (nodeData.innerText)  node.innerText = nodeData.innerText
+            if (nodeData.children) {
+                nodeData.children.forEach(childNode => {
+                    const subNode = createElement(childNode.element, childNode.attributeValueMap)
+                    if(childNode.innerText) subNode.innerText = childNode.innerText
+                    node.append(subNode);
+                });
+            }
+            wrappedDiv.appendChild(node)
+        }
+        formFieldNodes.push(wrappedDiv);
+    }
+    return formFieldNodes;
+}
+
+const adminFields = [
+    [
+        {
+            "element": "label",
+            "attributeValueMap": {
+                "for": "pickup-location",
+            },
+            "innerText": "Pick up Location"
+        },
+        {
+            "element": "input",
+            "attributeValueMap": {
+                "type": "text",
+                "name": "pickup-location",
+                "placeholder": "Pick up Location"
+            }
+        }
+    ],
+    [
+        {
+            "element": "label",
+            "attributeValueMap": {
+                "for": "present-location",
+            },
+            "innerText": "Present Location"
+        },
+        {
+            "element": "input",
+            "attributeValueMap": {
+                "type": "text",
+                "name": "present-location",
+                "placeholder": "Present Location of Parcel"
+            }
+        }
+    ],
+    [
+        {
+            "element": "label",
+            "attributeValueMap": {
+                "for": "status",
+            },
+            "innerText": "Delivery Status"
+        },
+        {
+            "element": "select",
+            "children": [
+                {
+                    "element": "option",
+                    "attributeValueMap": {
+                        "value": statuses.Cancelled.code
+                    },
+                    "innerText": statuses.Cancelled.uiText
+                },
+                {
+                    "element": "option",
+                    "attributeValueMap": {
+                        "value": statuses.Delivered.code
+                    },
+                    "innerText": statuses.Delivered.uiText
+                },
+                {
+                    "element": "option",
+                    "attributeValueMap": {
+                        "value": statuses.InTransit.code
+                    },
+                    "innerText": statuses.InTransit.uiText
+                }
+            ]
+        }
+    ]
+]
+
+const getParcel = id => parcels[id - 1];
+const hasQuery = term => window.location.search.indexOf(term) > -1;
+const getUrl = _ => window.location.pathname; 
 
 const parcelId = parseInt(window.location.search.replace("?parcelId=", ""), 10) || -1;
+const parcel = getParcel(parcelId);
 const destinationNode = document.querySelector("input[name='destination']")
 let pickUpLocationNode = undefined;
 let priceNode = undefined;
 let statusNode = undefined;
-let cancelButton = undefined;
+let actionButtonNode = undefined;
+let presentLocationNode = undefined;
 const populateField = _ => {
     if (parcelId > -1){
-        const parcel = parcels[parcelId - 1];
         if (parcel === null || parcel === undefined) {
             // TODO (oneeyedsunday)
-            // fix for serving
+            // fix for serving from all hosts
             window.history.length > 2 ? window.history.back() : window.location.href = "http://localhost:5500/UI/";
+            return;
         }
         // TODO (oneeyedsunday)
         // Refactor into a function
@@ -61,7 +173,8 @@ const populateField = _ => {
         pickUpLocationNode ? pickUpLocationNode.setAttribute('value', parcel.pickUpLocation) : undefined;
         priceNode ? priceNode.setAttribute('value', parcel.price) : undefined;
         statusNode ? statusNode.setAttribute('value', parcel.status.uiText) : undefined;
-        parcel.status.code === statuses.Delivered.code  || statuses.Cancelled.code ? cancelButton.setAttribute('disabled', true) : '';
+        if ( actionButtonNode &&   (parcel.status.code === statuses.Delivered.code)   || (parcel.status.code === statuses.Cancelled.code)) actionButtonNode.setAttribute('disabled', true);
+        presentLocationNode ? presentLocationNode.setAttribute('value',  (parcel.status.code !== statuses.InTransit.code) ? parcel.destination : parcel.presentLocation) : '';
     } else {
         window.history.back()
     } 
@@ -69,12 +182,52 @@ const populateField = _ => {
 
 // TODO (oneeyedsunday)
 // deal with this check
-if ((window.location.pathname === "/UI/parcels/edit.html") || (window.location.pathname ===  "/UI/parcels/details.html")) {
-    if(window.location.pathname === "/UI/parcels/details.html"){
+if ((getUrl() === "/UI/parcels/edit.html") || (getUrl() ===  "/UI/parcels/details.html")) {
+    if(window.location.pathname === "/UI/parcels/details.html" ||  hasQuery("&context=admin") ){
         pickUpLocationNode = document.querySelector("input[name='pickup-location']")
         priceNode = document.querySelector("input[name='price']")
         statusNode = document.querySelector("input[name='status']")
-        cancelButton = document.querySelector("button.danger")
+        actionButtonNode = document.querySelector("button#actionButton")
+        presentLocationNode = document.querySelector("input[name='present-location'")
+    }
+
+    if(getUrl() === "/UI/parcels/edit.html" && hasQuery("&context=admin")){
+        console.log("Load admin content");
+        document.querySelector(".form__title.text-center").innerHTML = "Admin: Make Changes to Parcel Order Details"
+    }
+
+    if(getUrl() === "/UI/parcels/details.html" && hasQuery("&context=admin")){
+        console.log("Load admin content");
+        actionButtonNode.setAttribute('class', 'button primary-action');
+        actionButtonNode.innerHTML = "";
+        const newLink = createElement("a", {
+            "href": `/UI/parcels/edit.html?parcelId=${parcelId}&context=admin`
+        })
+
+        newLink.innerText = "Update Parcel Delivery Order";
+        actionButtonNode.appendChild(newLink)
+        document.querySelector(".form__title.text-center").innerHTML = "Admin: Parcel Delivery Order Details"
+    }
+
+    if(getUrl() === '/UI/parcels/edit.html' && hasQuery('&context=admin')) {
+        const actionButtonsNode = document.getElementById("actionButtons");
+        const formNode = document.querySelector("form.form");
+        const nodes = addAdminFields(adminFields)
+        formNode.removeChild(actionButtonsNode);
+        for(let i = 0; i < nodes.length; i++) {
+            formNode.appendChild(nodes[i])
+        }
+        formNode.appendChild(actionButtonsNode);
+        presentLocationNode = document.querySelector("input[name='present-location'")
+        pickUpLocationNode = document.querySelector("input[name='pickup-location']")
+        statusNode = document.querySelector("select");
+        // select correct status
+        for(let i = 0; i < statusNode.children.length; i++){
+            if(statusNode.children[i].getAttribute('value') === getParcel(parcelId).status.code.toString()) {
+                statusNode.children[i].setAttribute('selected', true)
+            }
+        }
     }
     document.addEventListener('DOMContentLoaded', populateField);
 }
+
