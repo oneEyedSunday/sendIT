@@ -1,3 +1,5 @@
+const baseURL = window.location.host;
+const prefixURL = (baseURL.indexOf("oneeyedsunday.github.io") > -1) ? baseURL + "/sendIT/UI/" : "/UI/";
 const statuses = {
     "AwaitingProcessing": {
         "code": 0,
@@ -164,7 +166,7 @@ const populateField = _ => {
         if (parcel === null || parcel === undefined) {
             // TODO (oneeyedsunday)
             // fix for serving from all hosts
-            window.history.length > 2 ? window.history.back() : window.location.href = "http://localhost:5500/UI/";
+            window.history.length > 2 ? window.history.back() : window.location.href = prefixURL;
             return;
         }
         // TODO (oneeyedsunday)
@@ -182,8 +184,8 @@ const populateField = _ => {
 
 // TODO (oneeyedsunday)
 // deal with this check
-if ((getUrl() === "/UI/parcels/edit.html") || (getUrl() ===  "/UI/parcels/details.html")) {
-    if(window.location.pathname === "/UI/parcels/details.html" ||  hasQuery("&context=admin") ){
+if ((getUrl() === prefixURL + "parcels/edit.html") || (getUrl() ===  prefixURL + "parcels/details.html")) {
+    if(window.location.pathname === prefixURL + "parcels/details.html" ||  hasQuery("&context=admin") ){
         pickUpLocationNode = document.querySelector("input[name='pickup-location']")
         priceNode = document.querySelector("input[name='price']")
         statusNode = document.querySelector("input[name='status']")
@@ -191,17 +193,17 @@ if ((getUrl() === "/UI/parcels/edit.html") || (getUrl() ===  "/UI/parcels/detail
         presentLocationNode = document.querySelector("input[name='present-location'")
     }
 
-    if(getUrl() === "/UI/parcels/edit.html" && hasQuery("&context=admin")){
+    if(getUrl() === prefixURL + "parcels/edit.html" && hasQuery("&context=admin")){
         console.log("Load admin content");
         document.querySelector(".form__title.text-center").innerHTML = "Admin: Make Changes to Parcel Order Details"
     }
 
-    if(getUrl() === "/UI/parcels/details.html" && hasQuery("&context=admin")){
+    if(getUrl() === prefixURL + "parcels/details.html" && hasQuery("&context=admin")){
         console.log("Load admin content");
         actionButtonNode.setAttribute('class', 'button primary-action');
         actionButtonNode.innerHTML = "";
         const newLink = createElement("a", {
-            "href": `/UI/parcels/edit.html?parcelId=${parcelId}&context=admin`
+            "href": `${prefixURL}parcels/edit.html?parcelId=${parcelId}&context=admin`
         })
 
         newLink.innerText = "Update Parcel Delivery Order";
@@ -209,7 +211,7 @@ if ((getUrl() === "/UI/parcels/edit.html") || (getUrl() ===  "/UI/parcels/detail
         document.querySelector(".form__title.text-center").innerHTML = "Admin: Parcel Delivery Order Details"
     }
 
-    if(getUrl() === '/UI/parcels/edit.html' && hasQuery('&context=admin')) {
+    if(getUrl() === 'parcels/edit.html' && hasQuery('&context=admin')) {
         const actionButtonsNode = document.getElementById("actionButtons");
         const formNode = document.querySelector("form.form");
         const nodes = addAdminFields(adminFields)
