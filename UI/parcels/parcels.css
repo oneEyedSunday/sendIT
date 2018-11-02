@@ -47,4 +47,35 @@
     border-bottom: 1px solid black;
 }
 
+@media (max-width: 900px) {
+    .row {
+        font-size: 1.2em;
+    }
 
+    .button {
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+}
+
+@media (max-width: 700px) {
+    .row {
+        font-size: 1em;
+    }
+
+    .button {
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+}
+
+
+@media (max-width: 500px) {
+    .row {
+        font-size: 0.8em;
+    }
+    .button {
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+}

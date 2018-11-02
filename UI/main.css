@@ -315,3 +315,65 @@ button.tall-btn {
     font-weight: 400;
 }
 
+@media (max-width: 850px) {
+    .showcase {
+        flex-direction: column;
+    }
+
+    .showcase .showcase__item:first-of-type {
+        border-right: none;
+        border-bottom: 1px solid #fff;
+    }
+
+    .showcase__text {
+        padding: 10% 30px;
+        color: #fff;
+        font-size: 1.5em;
+    }
+}
+
+@media (max-width: 500px) {
+    .header {
+        height: 100%;
+    }
+
+    .header__content {
+        flex-direction: column
+    }
+
+    .nav {
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+
+    .menu {
+        flex-direction: column;
+    }
+
+    .menu_item {
+        display: block;
+        width: 100%;
+        text-align: center
+    }
+
+    .menu_item a {
+        display: inline-block;
+        width: 100%;
+    }
+
+    .card {
+        min-width: 350px;
+        min-height: calc(100vh - 300px);
+    }
+
+    .showcase__item figure {
+        padding: 5px 10px;
+        width: 220px;
+        height: 220px;
+    }
+    
+    .showcase__text {
+        padding: 10% 10px;
+        font-size: 0.8 em;
+    }
+}

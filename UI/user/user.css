@@ -38,3 +38,24 @@
 .gutter:last-of-type {
     margin-right: 0;
 }
+
+@media (max-width: 500px) {
+    .box {
+        padding: 5px;
+    }
+    
+    .box__title {
+        font-size: 0.9em;
+        font-weight: 300;
+        margin: 2px auto;
+        border: 1px solid var(--secondary-bg-color);
+        padding: 2px 5px;
+    }
+
+    .box__body {
+        font-size: 0.8em;
+    }
+    .button.no-pad a {
+        padding: 2px 5px;
+    }
+}
