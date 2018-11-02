@@ -35,7 +35,15 @@
     color: #fff;
 }
 
-.button a:hover {
+.button.no-pad {
+    padding: 0;
+}
+
+.button.no-pad a {
+    padding: 5px 10px;
+}
+
+.button a:hover,.button a:focus, .button:hover, .button:focus {
     color: var(--secondary-bg-color)
 }
 
