@@ -1,6 +1,4 @@
-.full-width {
-    width: 100%
-}
+
 
 .box {
     border: 1px solid #92369e;
@@ -16,20 +14,6 @@
     padding: 5px 10px;
 }
 
-.my-5 {
-    margin-top: 50px;
-    margin-bottom: 50px;
-}
-
-.my-2 {
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-.py-1 {
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
 
 .button a {
     color: #fff;

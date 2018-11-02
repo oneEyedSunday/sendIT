@@ -1,3 +1,4 @@
+/* CSS Variables declaration */
 
 :root {
     --bg-color: #333;
@@ -7,13 +8,81 @@
     --tertiary-bg-color: rgb(26, 20,77);
 }
 
+/* Style resets */
+
 html, body {
     padding: 0;
     margin: 0;
-    background-color: #333;
+    background-color: var(--bg-color);
     box-sizing: border-box;
     font-size: var(--base-font);
 }
+
+/* Helpers */
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex {
+    display: flex;
+}
+
+.justify-content__center {
+    justify-content: center;
+}
+
+.align-items__center {
+    align-items: center;
+}
+
+.bordered {
+    border: 1px solid var(--secondary-bg-color)
+}
+
+.justify-content__sb {
+    justify-content: space-between
+}
+
+.rounded-edges {
+    border-radius: 5px;
+}
+
+.full-width {
+    width: 100%
+}
+
+.three-fifths {
+    width: 60%;
+}
+
+.four-fifths {
+    width: 80%;
+}
+
+.text-center {
+    text-align: center;
+}
+
+
+.my-5 {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.my-2 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.py-1 {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+
+/* Styles */
 
 .container {
     max-width: 1400px;
@@ -24,29 +93,19 @@ html, body {
     flex-direction: column;
 }
 
-.page__content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
 
 .header {
     height: 70px;
     background-color: var(--secondary-bg-color);
-    /* color: #fff; */
 }
 
 .header__content {
-    display: flex;
-    justify-content: space-between;
     margin: 5px 10%;
 }
 
 .header__content .logo {
     background-color: red;
     border: 1px solid red;
-    border-radius: 5px;
     height: 50px;
     width: 50px;
     position: relative;
@@ -69,9 +128,6 @@ html, body {
     margin: 0 auto;
     height: 100%;
     padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
 }
 
 
@@ -97,10 +153,6 @@ html, body {
 }
 
 .banner__content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
     height: 100%;
     width: 75%;
     margin: 0 auto;
@@ -115,7 +167,6 @@ html, body {
 }
 
 .showcase {
-    display: flex;
     margin-bottom: 25px;
 }
 
@@ -123,14 +174,15 @@ html, body {
 .showcase__item {
     /* width: 100%; */
     background-color: var(--tertiary-bg-color);
-    display: flex;
-    flex-direction: column;
 }
 
 .showcase__item:nth-of-type(1) {
     flex-direction: column-reverse;
 }
 
+/* TODO (oneeyedsunday */
+/* remove width and height and bg-color */
+/* when you revert to image based figure */
 .showcase__item figure {
     padding: 10px 20px;
     position: relative;
@@ -155,15 +207,12 @@ html, body {
 }
 .footer {
     height: 140px;
-    display: flex;
-    align-items: center;
     background-color: var(--secondary-bg-color);
     /* clip-path: polygon(11% 16%, 100% 0, 100% 100%, 0 100%); */
 }
 
 
 .footer__content {
-    display: flex;
     position: relative;
     /* width: 100%; */
     /* max-width: 864px; */
@@ -240,46 +289,19 @@ html, body {
     opacity: 0.3;
 }
 
-
-.flex-column {
-    display: flex;
-    flex-direction: column;
-}
-
-.flex {
-    display: flex;
+button.tall-btn {
+    height: 30px;
 }
 
 .card {
     min-height: calc(100vh - 210px);
-    width: 500px;
-    /* justify-content: center; */
+    min-width: 500px;
     align-items: center;
 }
 
-
-
-.rounded-edges {
-    border-radius: 5px;
-}
 
 .lead {
     font-size: 1.2em;
     font-weight: 400;
 }
 
-.justify-content__center {
-    justify-content: center;
-}
-
-.align-items__center {
-    align-items: center;
-}
-
-.bordered {
-    border: 1px solid var(--secondary-bg-color)
-}
-
-.justify-content__sb {
-    justify-content: space-between
-}
