@@ -4,14 +4,14 @@ import bodyParser from 'body-parser';
 import express from 'express';
 import methodOverride from 'method-override';
 // import routes
-import { apis } from './api/v1';
+import ParcelsRoutes from './v1/routes/parcels';
+import UsersRoutes from './v1/routes/users';
 // import models
 
 export class Server {
   constructor() {
     this.app = express();
     this.config();
-    this.routes();
     this.api();
   }
 
@@ -20,17 +20,13 @@ export class Server {
   }
 
   api() {
-    this.app.use('/api/v1/parcels', this.routesObj.ParcelsApi.router);
+    this.app.use('/api/v1/parcels', ParcelsRoutes);
+    this.app.use('/api/v1/users', UsersRoutes);
+    this.app.use('/', (req, res) => res.json({
+      message: 'Welcome to SendIT, assess api at /api/v1',
+    }));
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  routes() {
-    const router = express.Router();
-    this.routesObj = {};
-    const ParcelsApi = new apis.ParcelsApi(router);
-    this.routesObj.ParcelsApi = ParcelsApi;
-    this.router = router;
-  }
 
   config() {
     this.app.use(bodyParser.json());
