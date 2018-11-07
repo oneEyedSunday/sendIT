@@ -4,7 +4,7 @@
   "description": "Server for SendIT app",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha build/tests",
+    "test": "./node_modules/.bin/mocha build/v1/tests",
     "lint": "eslint  src --ignore-path .eslintignore --config .eslintrc",
     "build-js": "./node_modules/.bin/babel src -d build",
     "watch-js": "./node_modules/.bin/babel --watch src -d build",

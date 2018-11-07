@@ -1,4 +1,4 @@
-const statuses = {
+export const statuses = {
   AwaitingProcessing: {
     code: 0,
     uiText: 'Awaiting Processing',
@@ -85,7 +85,7 @@ const ParcelsController = {
     parcel.id = Parcels.length + 1;
     parcel.price = defaultPrice;
     parcel.status = statuses.AwaitingProcessing;
-    parcel.status = officeLocation;
+    parcel.presentLocation = officeLocation;
     Parcels.push(parcel);
     res.json(parcel);
   },
