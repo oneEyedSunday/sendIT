@@ -3,4 +3,5 @@ import parcelsController from '../controllers/parcels';
 
 const router = Router();
 router.get('/:id', parcelsController.get);
+router.get('/:id', parcelsController.get);
 export default router;
