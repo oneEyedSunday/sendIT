@@ -43,12 +43,11 @@ const Parcels = [
 ];
 
 const ParcelsController = {
-  find(id) {
-    return Parcels.filter(parcels => parcels.id === id)[0];
+  findAll() {
+    return Parcels;
   },
-  get(req, res) {
-    const parcelId = parseInt(req.params.id, 10);
-    const parcels = ParcelsController.find(parcelId);
+  index(req, res) {
+    const parcels = ParcelsController.findAll();
     return res.json(parcels);
   },
 };
