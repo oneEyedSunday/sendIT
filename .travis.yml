@@ -7,7 +7,6 @@ before_install:
   - "cd server"
 
 install:
-  - "echo `pwd`"
   - "npm install"
 
 before_script:
@@ -16,3 +15,9 @@ before_script:
 script:
   - "npm run test"
 
+after_script:
+  - "echo $TRAVIS_BUILD_DIR"
+  
+cache:
+  directories:
+    - "node_modules"
