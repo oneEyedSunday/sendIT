@@ -6,7 +6,7 @@ SendIT is an [andela](https://www.andela.com) boot-camp project written in javas
 
 # Getting Started
 ## Installation
-* Install [NodeJs] (https://nodejs.org/en/download)
+* Install [NodeJs](https://nodejs.org/en/download)
 * Run `npm install` or `yarn install` to install all dependencies
 * Run `npm run start-server` to start the server.
 * Navigate to `localhost:8080/api/v1` to access application
