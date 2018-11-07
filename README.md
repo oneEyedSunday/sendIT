@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.com/oneEyedSunday/sendIT.svg?branch=develop)](https://travis-ci.com/oneEyedSunday/sendIT)
-[![Coverage Status](https://coveralls.io/repos/github/oneEyedSunday/sendIT/badge.svg?branch=chore/coveralls)](https://coveralls.io/github/oneEyedSunday/sendIT?branch=chore/coveralls)
+[![Coverage Status](https://coveralls.io/repos/github/oneEyedSunday/sendIT/badge.svg?branch=chore%2Fcoveralls)](https://coveralls.io/github/oneEyedSunday/sendIT?branch=chore%2Fcoveralls)
 
 # sendIT 
 SendIT is a courier service that helps users deliver parcels to different destinations. SendIT provides courier quotes based on weight categories.
