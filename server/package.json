@@ -8,7 +8,9 @@
     "lint": "eslint  src --ignore-path .eslintignore --config .eslintrc",
     "build-js": "./node_modules/.bin/babel src -d build",
     "watch-js": "./node_modules/.bin/babel --watch src -d build",
-    "start-server": "/server/bin/www"
+    "start-server": "/server/bin/www",
+    "cover": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha  build/v1/tests/",
+    "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
@@ -29,9 +31,12 @@
     "babel-preset-es2015": "^6.24.1",
     "chai": "^4.2.0",
     "chai-http": "^4.2.0",
+    "coveralls": "^3.0.2",
     "eslint": "^5.8.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
-    "mocha": "^5.2.0"
+    "istanbul": "^0.4.5",
+    "mocha": "^5.2.0",
+    "mocha-lcov-reporter": "^1.3.0"
   }
 }
