@@ -17,6 +17,9 @@ export const statuses = {
   },
 };
 
+const officeLocation = 'Maryland, Lagos';
+const defaultPrice = 'N500';
+
 const Parcels = [
   {
     id: 1,
@@ -71,6 +74,16 @@ const ParcelsController = {
     const index = Parcels.indexOf(parcel);
     Parcels[index] = newParcel;
     return res.json(newParcel);
+  },
+
+  create(req, res) {
+    const { parcel } = req.body;
+    parcel.id = Parcels.length + 1;
+    parcel.price = defaultPrice;
+    parcel.status = statuses.AwaitingProcessing;
+    parcel.presentLocation = officeLocation;
+    Parcels.push(parcel);
+    res.json(parcel);
   },
 };
 
