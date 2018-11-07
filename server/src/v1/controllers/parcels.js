@@ -61,6 +61,17 @@ const ParcelsController = {
     const parcels = ParcelsController.find(parcelId);
     return res.json(parcels);
   },
+
+  cancel(req, res) {
+    const parcelId = parseInt(req.params.id, 10);
+    const parcel = ParcelsController.find(parcelId);
+    const newParcel = {};
+    Object.assign(newParcel, parcel, { status: statuses.Cancelled });
+    delete newParcel.presentLocation;
+    const index = Parcels.indexOf(parcel);
+    Parcels[index] = newParcel;
+    return res.json(newParcel);
+  },
 };
 
 export default ParcelsController;
