@@ -1,0 +1,23 @@
+language: node_js
+
+node_js:
+  - "10"
+
+before_install:
+  - "cd server"
+
+install:
+  - "npm install"
+
+before_script:
+  - "npm run build-js"
+
+script:
+  - "npm run test"
+
+after_script:
+  - "echo $TRAVIS_BUILD_DIR"
+
+cache:
+  directories:
+    - "server/node_modules"

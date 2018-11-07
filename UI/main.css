@@ -1,0 +1,379 @@
+/* CSS Variables declaration */
+
+:root {
+    --bg-color: #333;
+    --primary-color: rgb(16, 48, 229);
+    --base-font: 16px;
+    --secondary-bg-color: rgb(77, 0, 57);
+    --tertiary-bg-color: rgb(26, 20,77);
+}
+
+/* Style resets */
+
+html, body {
+    padding: 0;
+    margin: 0;
+    background-color: var(--bg-color);
+    box-sizing: border-box;
+    font-size: var(--base-font);
+}
+
+/* Helpers */
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex {
+    display: flex;
+}
+
+.justify-content__center {
+    justify-content: center;
+}
+
+.align-items__center {
+    align-items: center;
+}
+
+.bordered {
+    border: 1px solid var(--secondary-bg-color)
+}
+
+.justify-content__sb {
+    justify-content: space-between
+}
+
+.rounded-edges {
+    border-radius: 5px;
+}
+
+.full-width {
+    width: 100%
+}
+
+.three-fifths {
+    width: 60%;
+}
+
+.four-fifths {
+    width: 80%;
+}
+
+.text-center {
+    text-align: center;
+}
+
+
+.my-5 {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.my-2 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.py-1 {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+
+/* Styles */
+
+.container {
+    max-width: 1400px;
+    background-color: #fff;
+    color: var(--primary-color);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.header {
+    height: 70px;
+    background-color: var(--secondary-bg-color);
+}
+
+.header__content {
+    margin: 5px 10%;
+}
+
+.header__content .logo {
+    background-color: red;
+    border: 1px solid red;
+    height: 50px;
+    width: 50px;
+    position: relative;
+}
+
+.logo a {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+}
+
+.nav {
+    /* justify-self: flex-end; */
+    border: 1px solid #fff;
+}
+
+.nav .menu {
+    text-decoration: none;
+    list-style: none;
+    margin: 0 auto;
+    height: 100%;
+    /* padding: 0; */
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+
+.menu_item {
+    display: inline;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.menu_item.active, .menu_item:hover, .menu_item:focus {
+    background-color: #fff;
+}
+
+.menu_item.active a, .menu_item:hover a, .menu_item:focus a {
+    color: var(--secondary-bg-color);
+}
+
+.menu_item a {
+    text-decoration: none;
+    color: aliceblue;
+}
+
+.content {
+    /* height: 90vh; */
+    padding: 0 10px;
+}
+
+.banner {
+    width: 100%;
+    height: 85vh;
+}
+
+.banner__content {
+    height: 100%;
+    width: 75%;
+    margin: 0 auto;
+}
+
+.headline {
+    font-size: calc(var(--base-font) * 4);
+}
+
+.subtitle {
+    font-size: calc(var(--base-font) * 1.2);
+}
+
+.showcase {
+    margin-bottom: 25px;
+}
+
+
+.showcase__item {
+    /* width: 100%; */
+    background-color: var(--tertiary-bg-color);
+}
+
+.showcase__item:nth-of-type(1) {
+    flex-direction: column-reverse;
+}
+
+/* TODO (oneeyedsunday */
+/* remove width and height and bg-color */
+/* when you revert to image based figure */
+.showcase__item figure {
+    padding: 10px 20px;
+    position: relative;
+    width: 300px;
+    height: 300px;
+    background-color: orchid;
+}
+
+.showcase__image {
+    height: 290px;
+    width: 280px;
+}
+
+.showcase .showcase__item:first-of-type {
+    border-right: 1px solid #fff;
+}
+
+.showcase__text {
+    padding: 20% 30px;
+    color: #fff;
+    font-size: 1.5em;
+}
+.footer {
+    height: 140px;
+    background-color: var(--secondary-bg-color);
+    /* clip-path: polygon(11% 16%, 100% 0, 100% 100%, 0 100%); */
+}
+
+
+.footer__content {
+    position: relative;
+    /* width: 100%; */
+    /* max-width: 864px; */
+    margin: 0 auto;
+    padding: 0 8px;
+    /* font-size: 12px; */
+    /* line-height: 48px; */
+}
+
+.footer__content p {
+    margin: 0 16px 0 0;
+}
+  
+.footer__content p:last-of-type {
+    margin-right: 0;
+}
+
+.footer__content p a {
+    cursor: pointer;
+    text-decoration: none;
+    color: aliceblue;
+}
+
+.button {
+    --btn-danger-bg: red;
+    background-color: var(--secondary-bg-color);
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    transition: 0.3s ease all;
+    padding: 5px 10px;
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+
+.button a {
+    /* padding: 5px 10px; */
+    text-decoration: none;
+    display: block;
+}
+
+
+.button:focus, .button:hover {
+    background-color: #fff;
+    color: var(--secondary-bg-color);
+    border: 1px solid var(--secondary-bg-color);
+}
+
+.button.danger {
+    background-color: var(--btn-danger-bg);
+}
+
+.button.primary-action {
+    background-color: lightgreen;
+}
+
+.button.primary-action, .button.primary-action a {
+    color: #fff;
+}
+
+.button.primary-action:hover, .button.primary-action:focus, .button.primary-action:focus a, .button.primary-action:hover a, .button.primary-action a:hover, .button.primary-action a:focus {
+    background-color: #fff;
+    border-color: lightgreen;
+    color: lightgreen;
+}
+
+
+.button:disabled {
+    cursor: not-allowed;
+    background-color: var(--secondary-bg-color);
+    color: #fff;
+    border: none;
+    opacity: 0.3;
+}
+
+button.tall-btn {
+    height: 30px;
+}
+
+.card {
+    min-height: calc(100vh - 210px);
+    min-width: 500px;
+    align-items: center;
+}
+
+
+.lead {
+    font-size: 1.2em;
+    font-weight: 400;
+}
+
+@media (max-width: 850px) {
+    .showcase {
+        flex-direction: column;
+    }
+
+    .showcase .showcase__item:first-of-type {
+        border-right: none;
+        border-bottom: 1px solid #fff;
+    }
+
+    .showcase__text {
+        padding: 10% 30px;
+        color: #fff;
+        font-size: 1.5em;
+    }
+}
+
+@media (max-width: 500px) {
+    .header {
+        height: 100%;
+    }
+
+    .header__content {
+        flex-direction: column
+    }
+
+    .nav {
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+
+    .menu {
+        flex-direction: column;
+    }
+
+    .menu_item {
+        display: block;
+        width: 100%;
+        text-align: center
+    }
+
+    .menu_item a {
+        display: inline-block;
+        width: 100%;
+    }
+
+    .card {
+        min-width: 350px;
+        min-height: calc(100vh - 300px);
+    }
+
+    .showcase__item figure {
+        padding: 5px 10px;
+        width: 220px;
+        height: 220px;
+    }
+    
+    .showcase__text {
+        padding: 10% 10px;
+        font-size: 0.8 em;
+    }
+}

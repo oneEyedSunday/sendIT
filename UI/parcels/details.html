@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>SendIT - Parcels: You pack!, we delivery!!</title>
+    <link rel="stylesheet" href="../main.css">
+    <link rel="stylesheet" href="../forms.css">
+    <link rel="stylesheet" href="parcels.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="header">
+            <div class="header__content flex justify-content__sb">
+                <div class="logo rounded-edges">
+                    <a href="../index.html" title="Home"></a>
+                </div>
+                <div class="nav">
+                        <ul class="menu flex align-items__center justify-content__sb">
+                            <li class="menu_item">
+                                    <a href="../user/index.html">Profile</a>
+                            </li>
+                            <li class="menu_item active">
+                                    <a href="index.html">Parcels</a>
+                            </li>
+                            <li class="menu_item">
+                                    <a href="#">Sign Out</a>
+                            </li>
+                        </ul>
+                </div>
+            </div>
+        </nav>
+        <main class="flex-column justify-content__center align-items__center">
+            <div class="card">
+                <h2 class="form__title text-center">Parcel Delivery Order Details</h2>
+                <form action="#" method="POST" class="form">
+                    <div class="form__field">
+                        <label for="destination">Destination</label>
+                        <input type="text"  name="destination" placeholder="Parcel Destination"  disabled readonly/>
+                    </div>
+                    <div class="form__field">
+                            <label for="pickup-location">Pick up Location</label>
+                            <input type="text"  name="pickup-location" placeholder="Pick up Location" disabled readonly/>
+                    </div>
+                    <div class="form__field">
+                        <label for="price">Price</label>
+                        <input type="text"  name="price" placeholder="Price" disabled readonly/>
+                    </div>
+                    <div class="form__field">
+                        <label for="status">Delivery Status</label>
+                        <input type="text"  name="status" placeholder="Delivery Status" disabled readonly/>
+                    </div>
+                    <div class="form__field">
+                            <label for="present-location">Present Location</label>
+                            <input type="text"  name="present-location" placeholder="Present Location" disabled readonly/>
+                        </div>
+                    <button type="submit" class="button margin-auto danger" id="actionButton">Cancel Delivery Order</button>
+                </form>
+            </div>
+        </main>
+        <footer class="footer flex align-items__center">
+                <div class="footer__content flex">
+                    <p>
+                        <a href="#">Contact</a>
+                    </p>
+                    <p>
+                        <a href="#">Privacy</a>
+                        <a href="#">Terms of Service</a>
+                    </p>
+                </div>
+        </footer>
+    </div>
+    <script src="parcels.js"></script>
+</body>
+</html>
