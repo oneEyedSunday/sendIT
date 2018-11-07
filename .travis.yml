@@ -17,7 +17,7 @@ script:
 
 after_script:
   - "echo $TRAVIS_BUILD_DIR"
-  
+
 cache:
   directories:
-    - "node_modules"
+    - "server/node_modules"
