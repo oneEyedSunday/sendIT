@@ -1,5 +1,4 @@
-/* eslint-disable import/prefer-default-export */
-const statuses = {
+export const statuses = {
   AwaitingProcessing: {
     code: 0,
     uiText: 'Awaiting Processing',
@@ -17,7 +16,6 @@ const statuses = {
     uiText: 'Parcel Delivery Cancelled',
   },
 };
-
 
 const Parcels = [
   {
@@ -44,10 +42,15 @@ const Parcels = [
   },
 ];
 
-const findAll = () => Parcels;
-const find = id => Parcels.filter(parcels => parcels.id === id)[0];
-
-module.exports = {
-  findAll,
-  find,
+const ParcelsController = {
+  find(id) {
+    return Parcels.filter(parcels => parcels.id === id)[0];
+  },
+  get(req, res) {
+    const parcelId = parseInt(req.params.id, 10);
+    const parcels = ParcelsController.find(parcelId);
+    return res.json(parcels);
+  },
 };
+
+export default ParcelsController;
