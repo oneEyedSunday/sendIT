@@ -5,6 +5,8 @@ import express from 'express';
 import methodOverride from 'method-override';
 // import routes
 import ParcelsRoutes from './v1/routes/parcels';
+import UsersRoutes from './v1/routes/users';
+
 // import models
 
 export class Server {
@@ -20,6 +22,7 @@ export class Server {
 
   api() {
     this.app.use('/api/v1/parcels', ParcelsRoutes);
+    this.app.use('/api/v1/users', UsersRoutes);
     this.app.use('/', (req, res) => res.json({
       message: 'Welcome to SendIT, assess api at /api/v1',
     }));
