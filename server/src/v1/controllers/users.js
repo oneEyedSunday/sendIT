@@ -6,11 +6,16 @@ const users = [
     parcels: [1, 2, 3],
     fullName: 'User One',
   },
+  {
+    id: 2,
+    parcels: [],
+    fullName: 'User Two',
+  },
 ];
 
 const UsersController = {
   findAll() {
-    return users;
+    return users || [];
   },
 
   getUser(userId) {
@@ -19,6 +24,9 @@ const UsersController = {
 
   parcelsForUser(userId) {
     const user = UsersController.getUser(userId);
+    if (user === undefined || user === null) {
+      throw new Error('User not found');
+    }
     return user.parcels;
   },
 
@@ -28,9 +36,13 @@ const UsersController = {
   },
 
   parcels(req, res) {
-    const userParcels = UsersController.parcelsForUser(parseInt(req.params.id, 10));
-    const populatedUserParcels = parcelsController.retrieveParcels(userParcels);
-    return res.json(populatedUserParcels);
+    try {
+      const userParcels = UsersController.parcelsForUser(parseInt(req.params.id, 10));
+      const populatedUserParcels = parcelsController.retrieveParcels(userParcels);
+      return res.json(populatedUserParcels);
+    } catch (error) {
+      return res.status(400).send({ error: error.message });
+    }
   },
 };
 
