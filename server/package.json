@@ -4,11 +4,11 @@
   "description": "Server for SendIT app",
   "main": "index.js",
   "scripts": {
+    "start": "bin/www",
     "test": "./node_modules/.bin/mocha build/v1/tests",
     "lint": "eslint  src --ignore-path .eslintignore --config .eslintrc",
     "build-js": "./node_modules/.bin/babel src -d build",
     "watch-js": "./node_modules/.bin/babel --watch src -d build",
-    "start-server": "/server/bin/www",
     "cover": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha  build/v1/tests/",
     "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
   },
