@@ -6,6 +6,11 @@ const users = [
     parcels: [1, 2, 3],
     fullName: 'User One',
   },
+  {
+    id: 2,
+    parcels: [],
+    fullName: 'User Two',
+  },
 ];
 
 const UsersController = {
