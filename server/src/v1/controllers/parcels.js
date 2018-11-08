@@ -1,3 +1,5 @@
+import Validator from '../helpers/validator';
+
 export const statuses = {
   AwaitingProcessing: {
     code: 0,
@@ -47,7 +49,7 @@ const Parcels = [
 
 const ParcelsController = {
   findAll() {
-    return Parcels;
+    return Parcels || [];
   },
 
   find(id) {
@@ -65,13 +67,23 @@ const ParcelsController = {
 
   get(req, res) {
     const parcelId = parseInt(req.params.id, 10);
-    const parcels = ParcelsController.find(parcelId);
-    return res.json(parcels);
+    const parcel = ParcelsController.find(parcelId);
+    if (parcel === undefined || parcel === null) {
+      return res.status(400).send({ error: 'Parcel delivery order not found.' });
+    }
+    return res.json(parcel);
   },
 
   cancel(req, res) {
     const parcelId = parseInt(req.params.id, 10);
     const parcel = ParcelsController.find(parcelId);
+    if (parcel === undefined || parcel === null) {
+      return res.status(400).send({ error: 'Parcel delivery order not found.' });
+    }
+
+    if (parcel.status === statuses.Cancelled) {
+      return res.status(409).send({ error: 'Parcel Delivery order already cancelled' });
+    }
     const newParcel = {};
     Object.assign(newParcel, parcel, { status: statuses.Cancelled });
     delete newParcel.presentLocation;
@@ -82,12 +94,20 @@ const ParcelsController = {
 
   create(req, res) {
     const { parcel } = req.body;
+    Validator.check(parcel, ['destination', 'pickUpLocation']);
+    const errors = Validator.errors();
+    if (errors.length > 0) {
+      return res.status(422).send({
+        message: 'Validation errors',
+        errors,
+      });
+    }
     parcel.id = Parcels.length + 1;
     parcel.price = defaultPrice;
     parcel.status = statuses.AwaitingProcessing;
     parcel.presentLocation = officeLocation;
     Parcels.push(parcel);
-    res.json(parcel);
+    return res.json(parcel);
   },
 };
 
