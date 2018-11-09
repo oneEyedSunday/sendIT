@@ -12,9 +12,7 @@
     "watch-js": "./node_modules/.bin/babel --watch src -d build",
     "cover": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha  build/v1/tests/",
     "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls",
-    "postinstall": "npm run build-js",
-    "heroku-prebuild": "echo This runs before Heroku installs your dependencies.",
-    "heroku-postbuild": "echo This runs afterwards."
+    "postinstall": "npm run build-js"
   },
   "repository": {
     "type": "git",
