@@ -32,6 +32,7 @@ export class Server {
 
 
   config() {
+    this.app.set('json spaces', 2);
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({
       extended: true,
