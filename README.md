@@ -7,6 +7,11 @@ SendIT is a courier service that helps users deliver parcels to different destin
 # Description
 SendIT is an [andela](https://www.andela.com) boot-camp project written in javascript \(ECMA 6\), the app helps users deliver parcels to different destinations. SendIT provides courier quotes based on weight categories. Destination can be changed whilst parcel is still enroute.
 
+# Useful Links
+* Pivotal Tracker Board [here](https://www.pivotaltracker.com/n/projects/2215838)
+* Api Hosted [here](https://ispoa-sendit.herokuapp.com/api)
+* UI teplates hosted [here](https://oneeyedsunday.github.io/sendIT/UI/index.html)
+
 # Getting Started
 ## Installation
 * Install [NodeJs](https://nodejs.org/en/download)
@@ -14,7 +19,18 @@ SendIT is an [andela](https://www.andela.com) boot-camp project written in javas
 * Run `npm install` or `yarn install` to install all dependencies
 * Build with `npm run build-js`
 * Run `npm run start` to start the server.
-* Navigate to `localhost:8080/api/v1` to access application
+* Via POSTMAN or CURL send a `POST` request to `localhost:8080/api/v1/auth/login`
+* The payload should contain `firstname`, `lastname`, `email` and `password` to get a token.
+* Use token from above to access application via request headers
 
 ## Testing 
-* Use `npm run test` to run tests on apis  
+* While in the server directory, 
+* Use `npm run test` to run tests
+
+
+# Technologies Used
+* Express
+* Mocha
+* Istanbul
+* Babel
+* EsLint
