@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 // import routes
 import ParcelsRoutes from './v1/routes/parcels';
 import UsersRoutes from './v1/routes/users';
+import AuthRoutes from './v1/routes/auth';
 import Middleware from './v1/middlewares';
 // import models
 
@@ -30,6 +31,7 @@ export class Server {
     }));
     this.app.use('/api/v1/parcels', ParcelsRoutes);
     this.app.use('/api/v1/users', UsersRoutes);
+    this.app.use('/api/v1/auth', AuthRoutes);
   }
 
 
