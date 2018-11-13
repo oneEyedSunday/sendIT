@@ -3,6 +3,7 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import methodOverride from 'method-override';
+import dotenv from 'dotenv';
 // import routes
 import ParcelsRoutes from './v1/routes/parcels';
 import UsersRoutes from './v1/routes/users';
@@ -32,6 +33,7 @@ export class Server {
 
 
   config() {
+    dotenv.config();
     this.app.set('json spaces', 2);
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({
