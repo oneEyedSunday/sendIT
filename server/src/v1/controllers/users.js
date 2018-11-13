@@ -1,4 +1,7 @@
+import bcrypt from 'bcrypt-nodejs';
+import jwt from 'jsonwebtoken';
 import parcelsController from './parcels';
+import Validator from '../helpers/validator';
 
 const users = [
   {
@@ -43,6 +46,31 @@ const UsersController = {
     } catch (error) {
       return res.status(400).send({ error: error.message });
     }
+  },
+
+  create(req, res) {
+    const { user } = req.body;
+    // validate data
+    Validator.check(user, ['email', 'password', 'firstname', 'lastname']);
+    const errors = Validator.errors();
+    if (errors.length > 0) {
+      return res.status(422).send({
+        message: 'Validation errors',
+        errors,
+      });
+    }
+    user.id = UsersController.findAll().length + 1;
+    user.email = user.email;
+    return bcrypt.hash(user.password, null, null, (err, hash) => {
+      if (err) return res.status(500).json({ error: 'An error occured while processing your request.' });
+      user.password = hash;
+      users.push(user);
+      const uiUser = {};
+      Object.assign(uiUser, user);
+      delete uiUser.password;
+      const token = jwt.sign(uiUser, process.env.secret);
+      return res.json({ user: uiUser, token });
+    });
   },
 };
 

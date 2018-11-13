@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 
 export default class Middleware {
   static isAuth(req, res, next) {
+    if (req.url.endsWith('/users/signup') && req.method === 'POST') return next();
     let token = req.headers['x-access-token'] || req.headers.authorization;
     if (token && token.startsWith('Bearer ')) {
       token = token.slice(7, token.length);

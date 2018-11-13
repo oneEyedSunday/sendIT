@@ -22,7 +22,7 @@ export class Server {
   }
 
   api() {
-    this.app.get('/api', Middleware.isAuth, (req, res) => res.json({
+    this.app.get('/api', (req, res) => res.json({
       message: 'Welcome to SendIT, assess api at /api/vx x being the version of the API you wish to access',
     }));
     this.app.get('/api/v1/', (req, res) => res.json({
@@ -41,6 +41,7 @@ export class Server {
       extended: true,
     }));
     this.app.use(methodOverride());
+    this.app.use(Middleware.isAuth);
     this.app.use((err, req, res, next) => {
       next(err);
     });
