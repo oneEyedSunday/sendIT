@@ -72,6 +72,27 @@ const UsersController = {
       return res.json({ user: uiUser, token });
     });
   },
+
+  login(req, res) {
+    Validator.check(req.body, ['email', 'password']);
+    const errors = Validator.errors();
+    if (errors.length > 0) {
+      return res.status(422).send({
+        message: 'Validation errors',
+        errors,
+      });
+    }
+
+    // actually do auth,
+    // find email
+    const foundUser = users.filter(user => user.email === req.body.email)[0];
+    if (foundUser === undefined) return res.status(401).send({ auth: false, message: 'Invalid credentials' });
+    return bcrypt.compare(req.body.password, foundUser.password, (err, result) =>  {
+      if (err) return res.status(500).json({ error: 'An error occured while processing your request' });
+      return res.json({ auth: true, result });
+    });
+    // move to helper
+  }
 };
 
 export default UsersController;
