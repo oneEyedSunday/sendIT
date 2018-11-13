@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 // import routes
 import ParcelsRoutes from './v1/routes/parcels';
 import UsersRoutes from './v1/routes/users';
+import Middleware from './v1/middlewares';
 // import models
 
 export class Server {
@@ -21,7 +22,7 @@ export class Server {
   }
 
   api() {
-    this.app.get('/api', (req, res) => res.json({
+    this.app.get('/api', Middleware.isAuth, (req, res) => res.json({
       message: 'Welcome to SendIT, assess api at /api/vx x being the version of the API you wish to access',
     }));
     this.app.get('/api/v1/', (req, res) => res.json({
