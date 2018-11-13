@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 
 export default class Middleware {
   static isAuth(req, res, next) {
+    console.log(req.headers.authorization);
     let interest = req.url.split('/api/v')[1];
     interest = interest.substr(2, 4);
     if ((interest === 'auth') && req.method === 'POST') return next();

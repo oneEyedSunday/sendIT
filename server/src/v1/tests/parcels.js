@@ -2,9 +2,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import http from 'http';
-import { Server } from '../../server';
-import { statuses } from '../controllers/parcels';
+import { statuses } from '../helpers/mockdb';
+import BaseApiTestClass from './base';
 
 chai.should();
 chai.use(chaiHttp);
@@ -29,31 +28,20 @@ export const parcelDeliveryOrderTest = (parcelObj, options = null) => {
   parcelObj.status.should.have.property('uiText');
 };
 
-export default class ParcelsApiTests {
+export default class ParcelsApiTests extends BaseApiTestClass {
   before() {
-    process.env.NODE_ENV = 'test';
-    const port = 8080;
-    const { app } = Server.bootstrap();
-    app.set('port', port);
-    this.server = http.createServer(app);
-    this.server.listen(port).on('error', (err) => {
-      // eslint-disable-next-line no-console
-      console.error(`An error occured with errcode ${err.code}, couldn't start server.\nPlease close instances of server on port elsewhere.`);
-      process.exit(-1);
-    });
     this.parcel = createParcel();
     this.parcelWithoutDestination = createParcel(['destination']);
     this.parcelWithoutPickUpLocation = createParcel(['pickUpLocation']);
     this.bareParcel = createParcel(['destination', 'pickUpLocation']);
   }
 
-  after() {
-    this.server.close();
-  }
-
-  constructor() {
+  constructor(token = null) {
+    super();
+    console.log('parcel test created');
     this.before();
     this.baseURI = '/api/v1/parcels';
+    this.token = token;
   }
 
   runTests() {
@@ -62,6 +50,7 @@ export default class ParcelsApiTests {
       this.listOrders();
       this.getOrder();
       this.cancelOrder();
+      this.after();
     });
   }
 
@@ -188,7 +177,3 @@ export default class ParcelsApiTests {
     });
   }
 }
-
-const testSuite = new ParcelsApiTests();
-testSuite.runTests();
-testSuite.after();

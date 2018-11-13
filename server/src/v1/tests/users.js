@@ -2,41 +2,26 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import http from 'http';
-import { Server } from '../../server';
+import BaseApiTestClass from './base';
 // import { parcelDeliveryOrderTest } from './parcels';
 
 
 chai.should();
 chai.use(chaiHttp);
 
-export default class UsersApiTests {
-  before() {
-    process.env.NODE_ENV = 'test';
-    const port = 8080;
-    const { app } = Server.bootstrap();
-    app.set('port', port);
-    this.server = http.createServer(app);
-    this.server.listen(port).on('error', (err) => {
-      // eslint-disable-next-line no-console
-      console.error(`An error occured with errcode ${err.code}, couldn't start server.\nPlease close instances of server on port elsewhere.`);
-      process.exit(-1);
-    });
-  }
-
-  after() {
-    this.server.close();
-  }
-
-  constructor() {
-    this.before();
+export default class UsersApiTests extends BaseApiTestClass {
+  constructor(server = null, token = null) {
+    super(server);
+    console.log('user test created');
     this.baseURI = '/api/v1/users';
+    this.token = token;
   }
 
   runTests() {
     describe('Users API Tests', () => {
       this.list();
       this.getUserParcels();
+      this.after();
     });
   }
 
@@ -44,7 +29,9 @@ export default class UsersApiTests {
     describe(`GET ${this.baseURI}`, () => {
       it('it should list all users', () => chai.request(this.server)
         .get(this.baseURI)
+        .set('Authorization', `Bearer ${this.token}`)
         .then((response) => {
+          console.log(response.body);
           response.should.have.status(200);
           response.body.should.be.a('array');
           response.body.length.should.eql(2);
@@ -86,9 +73,3 @@ export default class UsersApiTests {
     });
   }
 }
-
-// TODO (oneeyedsunday)
-// separate test environment from prod or dev environment
-const testSuite = new UsersApiTests();
-testSuite.runTests();
-testSuite.after();
