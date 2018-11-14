@@ -3,7 +3,8 @@ import parcelsController from '../controllers/parcels';
 
 const router = Router();
 router.get('/', parcelsController.index);
-router.get('/:id', parcelsController.get);
-router.put('/:id/cancel', parcelsController.cancel);
-router.post('/', parcelsController.create);
+router.get('/:id', parcelsController.getOrder);
+router.put('/:id/cancel', parcelsController.cancelOrder);
+router.put('/:id/destination', parcelsController.changeDestinationOfOrder);
+router.post('/', parcelsController.createOrder);
 export default router;

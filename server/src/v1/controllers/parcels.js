@@ -1,5 +1,5 @@
 import Validator from '../helpers/validator';
-import { parcelHelpers, statuses } from '../helpers/mockdb';
+import { parcelHelpers, statuses, userHelpers } from '../helpers/mockdb';
 
 const officeLocation = 'Maryland, Lagos';
 const defaultPrice = 'N500';
@@ -11,7 +11,7 @@ const ParcelsController = {
     return res.json(parcels);
   },
 
-  get(req, res) {
+  getOrder(req, res) {
     const parcelId = parseInt(req.params.id, 10);
     const parcel = parcelHelpers.find(parcelId);
     if (parcel === undefined || parcel === null) {
@@ -20,7 +20,7 @@ const ParcelsController = {
     return res.json(parcel);
   },
 
-  cancel(req, res) {
+  cancelOrder(req, res) {
     const parcelId = parseInt(req.params.id, 10);
     const parcel = parcelHelpers.find(parcelId);
     if (parcel === undefined || parcel === null) {
@@ -37,7 +37,7 @@ const ParcelsController = {
     return res.json(newParcel);
   },
 
-  create(req, res) {
+  createOrder(req, res) {
     const { parcel } = req.body;
     Validator.check(parcel, ['destination', 'pickUpLocation']);
     const errors = Validator.errors();
@@ -53,6 +53,30 @@ const ParcelsController = {
     parcel.presentLocation = officeLocation;
     parcelHelpers.addParcel(parcel);
     return res.json(parcel);
+  },
+
+  changeDestinationOfOrder(req, res) {
+    const parcelId = parseInt(req.params.id, 10);
+    const parcel = parcelHelpers.find(parcelId);
+    if (parcel === undefined || parcel === null) {
+      return res.status(400).send({ error: 'Parcel delivery order not found.' });
+    }
+    const userParcels = userHelpers.parcelsForUser(req.user.id);
+    if (userParcels === undefined || userParcels === null || (userParcels.indexOf(parcelId) < 0)) {
+      return res.status(403).send({ error: 'You do not have access to this resource' });
+    }
+    Validator.check(req.body, ['destination']);
+    const errors = Validator.errors();
+    if (errors.length > 0) {
+      return res.status(422).send({
+        message: 'Validation errors',
+        errors,
+      });
+    }
+    const newParcel = {};
+    Object.assign(newParcel, parcel, { destination: req.body.destination, status: statuses.AwaitingProcessing });
+    parcelHelpers.update(newParcel);
+    return res.json(newParcel);
   },
 };
 
