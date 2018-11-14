@@ -52,11 +52,9 @@ export default class SendItTests {
       })
       .then((response) => {
         this.token = response.body.token;
-        console.log(response.body.token);
         this.user = response.body.user;
         const userTest = new UsersApiTests(this.server, this.token);
         userTest.runTests();
-        userTest.after();
         this.after();
       })
       .catch(err => console.error(err));
@@ -71,5 +69,5 @@ export default class SendItTests {
 
 // use token to access API
 
-const tests = new SendItTests();
-tests.runTests();
+// const tests = new SendItTests();
+// tests.runTests();

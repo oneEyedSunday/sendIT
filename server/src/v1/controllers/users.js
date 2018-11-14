@@ -1,5 +1,4 @@
-import parcelsController from './parcels';
-import { userHelpers } from '../helpers/mockdb';
+import { userHelpers, parcelHelpers } from '../helpers/mockdb';
 
 
 const UsersController = {
@@ -11,7 +10,7 @@ const UsersController = {
   parcels(req, res) {
     try {
       const userParcels = userHelpers.parcelsForUser(parseInt(req.params.id, 10));
-      const populatedUserParcels = parcelsController.retrieveParcels(userParcels);
+      const populatedUserParcels = parcelHelpers.retrieveParcels(userParcels);
       return res.json(populatedUserParcels);
     } catch (error) {
       return res.status(400).send({ error: error.message });

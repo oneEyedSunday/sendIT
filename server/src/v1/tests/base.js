@@ -3,6 +3,7 @@ import { Server } from '../../server';
 
 export default class TestClass {
   constructor(server = null) {
+    console.log('Base constructor');
     if (server === null) {
       this.before();
     } else {
@@ -11,6 +12,7 @@ export default class TestClass {
   }
 
   before() {
+    console.log('Running Before');
     process.env.NODE_ENV = 'test';
     const port = 8080;
     const { app } = Server.bootstrap();
