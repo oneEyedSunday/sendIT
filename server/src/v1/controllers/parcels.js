@@ -1,5 +1,5 @@
 import Validator from '../helpers/validator';
-import { parcelHelpers, statuses, userHelpers } from '../helpers/mockdb';
+import { parcelHelpers, statuses } from '../helpers/mockdb';
 
 const officeLocation = 'Maryland, Lagos';
 const defaultPrice = 'N500';
@@ -60,8 +60,12 @@ const ParcelsController = {
   },
 
   changeOrderStatus(req, res) {
-    return res.end();
-  }
+    const newParcel = {};
+    Object.assign(newParcel, req.parcel, { status: req.body.status });
+    if (newParcel.status === statuses.Cancelled) delete newParcel.presentLocation;
+    parcelHelpers.update(newParcel);
+    return res.json(newParcel);
+  },
 };
 
 export default ParcelsController;
