@@ -16,7 +16,7 @@ const authController = {
     }
     user.id = userHelpers.findAll().length + 1;
     user.email = user.email;
-    user.parcels = [4];
+    if (user.email === 'test@test.com') user.parcels = [4];
     AuthHelpers.hash(user.password)
       .then((hash) => {
         user.password = hash;

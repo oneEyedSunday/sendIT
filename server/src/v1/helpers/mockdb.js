@@ -73,7 +73,6 @@ export const userHelpers = {
   },
 
   getUser(userId) {
-    console.log(userId);
     return users.filter(items => items.id === userId)[0];
   },
 
