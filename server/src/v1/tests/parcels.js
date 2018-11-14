@@ -67,6 +67,21 @@ export default class ParcelsApiTests {
           })
           .catch(err => console.error(err));
 
+          chai.request(this.server)
+          .post('/api/v1/auth/signup')
+          .send({
+            user: {
+              email: 'test@test.com',
+              password: 'finito',
+              firstname: 'Test',
+              lastname: 'Test',
+            },
+          })
+          .then((response) => {
+            this.allowedUserToken = response.body.token;
+          })
+          .catch(err => console.error(err));
+
         this.parcel = createParcel();
         this.parcelWithoutDestination = createParcel(['destination']);
         this.parcelWithoutPickUpLocation = createParcel(['pickUpLocation']);
@@ -213,7 +228,7 @@ export default class ParcelsApiTests {
   }
 
   cancelOrder() {
-    const url = `${this.baseURI}/1/cancel`;
+    const url = `${this.baseURI}/4/cancel`;
     describe(`PUT ${url}`, () => {
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
         .put(`${url}`)
@@ -224,9 +239,18 @@ export default class ParcelsApiTests {
           response.body.should.have.property('message').eql('Authorization token is not provided.');
         }));
 
-      it('it should cancel a parcel delivery order', () => chai.request(this.server)
+      it('it should not allow you cancel a parcel delivery order you do not own', () => chai.request(this.server)
         .put(`${url}`)
         .set('Authorization', `Bearer ${this.token}`)
+        .then((response) => {
+          response.should.have.status(403);
+          response.should.be.a('object');
+          response.body.should.have.property('error').eql('You do not have access to this resource');
+        }));
+
+      it('it should cancel a parcel delivery order', () => chai.request(this.server)
+        .put(`${url}`)
+        .set('Authorization', `Bearer ${this.allowedUserToken}`)
         .then((response) => {
           response.should.have.status(200);
           response.should.be.a('object');
@@ -247,27 +271,7 @@ export default class ParcelsApiTests {
 
   changeOrderDestination() {
     const url = `${this.baseURI}/4/destination`;
-    let allowedUserToken;
     describe(`PUT ${url}`, () => {
-      before((done) => {
-        // login
-        chai.request(this.server)
-          .post('/api/v1/auth/signup')
-          .send({
-            user: {
-              email: 'test@test.com',
-              password: 'finito',
-              firstname: 'Test',
-              lastname: 'Test',
-            },
-          })
-          .then((response) => {
-            allowedUserToken = response.body.token;
-          })
-          .catch(err => console.error(err));
-        done();
-      });
-
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
         .put(`${url}`)
         .then((response) => {
@@ -288,7 +292,7 @@ export default class ParcelsApiTests {
 
       it('it should not allow you change destination without providing new destination', () => chai.request(this.server)
         .put(`${url}`)
-        .set('Authorization', `Bearer ${allowedUserToken}`)
+        .set('Authorization', `Bearer ${this.allowedUserToken}`)
         .then((response) => {
           response.should.have.status(422);
           response.body.should.be.a('object');
@@ -305,7 +309,7 @@ export default class ParcelsApiTests {
       it('it should allow you change the destination of a parcel delivery order you own', () => chai.request(this.server)
         .put(`${url}`)
         .send({ destination: newDestination })
-        .set('Authorization', `Bearer ${allowedUserToken}`)
+        .set('Authorization', `Bearer ${this.allowedUserToken}`)
         .then((response) => {
           response.should.have.status(200);
           response.should.be.a('object');
