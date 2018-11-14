@@ -1,5 +1,5 @@
 import Validator from '../helpers/validator';
-import { parcelHelpers, statuses, userHelpers } from '../helpers/mockdb';
+import { parcelHelpers, statuses } from '../helpers/mockdb';
 
 const officeLocation = 'Maryland, Lagos';
 const defaultPrice = 'N500';
@@ -12,26 +12,15 @@ const ParcelsController = {
   },
 
   getOrder(req, res) {
-    const parcelId = parseInt(req.params.id, 10);
-    const parcel = parcelHelpers.find(parcelId);
-    if (parcel === undefined || parcel === null) {
-      return res.status(400).send({ error: 'Parcel delivery order not found.' });
-    }
-    return res.json(parcel);
+    return res.json(req.parcel);
   },
 
   cancelOrder(req, res) {
-    const parcelId = parseInt(req.params.id, 10);
-    const parcel = parcelHelpers.find(parcelId);
-    if (parcel === undefined || parcel === null) {
-      return res.status(400).send({ error: 'Parcel delivery order not found.' });
-    }
-
-    if (parcel.status === statuses.Cancelled) {
+    if (req.parcel.status === statuses.Cancelled) {
       return res.status(409).send({ error: 'Parcel Delivery order already cancelled' });
     }
     const newParcel = {};
-    Object.assign(newParcel, parcel, { status: statuses.Cancelled });
+    Object.assign(newParcel, req.parcel, { status: statuses.Cancelled });
     delete newParcel.presentLocation;
     parcelHelpers.update(newParcel);
     return res.json(newParcel);
@@ -55,16 +44,7 @@ const ParcelsController = {
     return res.json(parcel);
   },
 
-  changeDestinationOfOrder(req, res) {
-    const parcelId = parseInt(req.params.id, 10);
-    const parcel = parcelHelpers.find(parcelId);
-    if (parcel === undefined || parcel === null) {
-      return res.status(400).send({ error: 'Parcel delivery order not found.' });
-    }
-    const userParcels = userHelpers.parcelsForUser(req.user.id);
-    if (userParcels === undefined || userParcels === null || (userParcels.indexOf(parcelId) < 0)) {
-      return res.status(403).send({ error: 'You do not have access to this resource' });
-    }
+  changeOrderDestination(req, res) {
     Validator.check(req.body, ['destination']);
     const errors = Validator.errors();
     if (errors.length > 0) {
@@ -74,7 +54,15 @@ const ParcelsController = {
       });
     }
     const newParcel = {};
-    Object.assign(newParcel, parcel, { destination: req.body.destination, status: statuses.AwaitingProcessing });
+    Object.assign(newParcel, req.parcel, { destination: req.body.destination, status: statuses.AwaitingProcessing });
+    parcelHelpers.update(newParcel);
+    return res.json(newParcel);
+  },
+
+  changeOrderStatus(req, res) {
+    const newParcel = {};
+    Object.assign(newParcel, req.parcel, { status: req.body.status });
+    if (newParcel.status === statuses.Cancelled) delete newParcel.presentLocation;
     parcelHelpers.update(newParcel);
     return res.json(newParcel);
   },
