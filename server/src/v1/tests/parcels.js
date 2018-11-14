@@ -100,6 +100,7 @@ export default class ParcelsApiTests {
       this.cancelOrder();
       this.changeOrderDestination();
       this.changeOrderStatus();
+      this.changeOrderLocation();
 
       after(() => {
         server.close();
@@ -371,6 +372,55 @@ export default class ParcelsApiTests {
           response.should.be.a('object');
           parcelDeliveryOrderTest(response.body);
           response.body.should.have.property('status').eql(statuses.Delivered);
+        }));
+    });
+  }
+
+  changeOrderLocation() {
+    const url = `${this.baseURI}/4/presentLocation`;
+    describe(`PUT ${url}`, () => {
+      it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
+        .put(`${url}`)
+        .then((response) => {
+          response.should.have.status(401);
+          response.body.should.be.an('object');
+          response.body.should.have.property('auth').eql(false);
+          response.body.should.have.property('message').eql('Authorization token is not provided.');
+        }));
+
+      it('it should not allow access to non-admins', () => chai.request(this.server)
+        .put(`${url}`)
+        .set('Authorization', `Bearer ${this.token}`)
+        .then((response) => {
+          response.should.have.status(401);
+          response.should.be.a('object');
+          response.body.should.have.property('error').eql('Not authorized for admin access');
+        }));
+
+      it('it should not allow you admin to change status without providing new location', () => chai.request(this.server)
+        .put(`${url}`)
+        .set('Authorization', `Bearer ${this.mockAdminToken}`)
+        .then((response) => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.should.have.property('message').eql('Validation errors');
+          response.body.should.have.property('errors');
+          chai.assert(Array.isArray(response.body.errors), true);
+          response.body.errors.length.should.be.eql(1);
+          response.body.errors[0].should.have.property('field').eql('presentLocation');
+          response.body.errors[0].should.have.property('message').eql('presentLocation cannot be missing');
+        }));
+
+      const newLocation = 'Mile 12, Lagos';
+      it('it should allow an admin to change status of a parcel delivery order', () => chai.request(this.server)
+        .put(`${url}`)
+        .send({ presentLocation: newLocation })
+        .set('Authorization', `Bearer ${this.mockAdminToken}`)
+        .then((response) => {
+          response.should.have.status(200);
+          response.should.be.a('object');
+          parcelDeliveryOrderTest(response.body);
+          response.body.should.have.property('presentLocation').eql(newLocation);
         }));
     });
   }
