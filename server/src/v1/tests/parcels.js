@@ -2,11 +2,27 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import http from 'http';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import { Server } from '../../server';
 import { statuses } from '../helpers/mockdb';
-import BaseApiTestClass from './base';
 
+dotenv.config();
 chai.should();
 chai.use(chaiHttp);
+
+process.env.NODE_ENV = 'test';
+const port = 8082;
+const { app } = Server.bootstrap();
+app.set('port', port);
+const server = http.createServer(app);
+server.listen(port).on('error', (err) => {
+  // eslint-disable-next-line no-console
+  console.error(`An error occured with errcode ${err.code}, couldn't start server.\nPlease close instances of server on port ${port} elsewhere.`);
+  process.exit(-1);
+});
+
 
 let noOfParcels = 3;
 const createParcel = (exclude = []) => {
@@ -28,27 +44,36 @@ export const parcelDeliveryOrderTest = (parcelObj, options = null) => {
   parcelObj.status.should.have.property('uiText');
 };
 
-export default class ParcelsApiTests extends BaseApiTestClass {
-  prep() {
-    this.parcel = createParcel();
-    this.parcelWithoutDestination = createParcel(['destination']);
-    this.parcelWithoutPickUpLocation = createParcel(['pickUpLocation']);
-    this.bareParcel = createParcel(['destination', 'pickUpLocation']);
-  }
+export default class ParcelsApiTests {
 
-  constructor(server = null, token = null) {
-    super(server);
+  constructor(host = null) {
+    this.server = host;
     this.baseURI = '/api/v1/parcels';
-    if (token) this.token = token;
   }
 
   runTests() {
     describe('Parcels API Tests', () => {
-      // this.createOrder();
+      before((done) => {
+        this.token = jwt.sign({
+          email: 'test@test.com',
+          firstname: 'test',
+          lastname: 'test',
+          password: 'test123',
+        }, process.env.secret);
+        this.parcel = createParcel();
+        this.parcelWithoutDestination = createParcel(['destination']);
+        this.parcelWithoutPickUpLocation = createParcel(['pickUpLocation']);
+        this.bareParcel = createParcel(['destination', 'pickUpLocation']);
+        done();
+      });
+      this.createOrder();
       this.listOrders();
       this.getOrder();
       this.cancelOrder();
-      // this.after();
+
+      after(() => {
+        server.close();
+      });
     });
   }
 
@@ -108,7 +133,6 @@ export default class ParcelsApiTests extends BaseApiTestClass {
 
   createOrder() {
     describe(`POST ${this.baseURI}`, () => {
-      before(() => { this.prep(); });
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
         .post(this.baseURI)
         .then((response) => {
@@ -119,9 +143,9 @@ export default class ParcelsApiTests extends BaseApiTestClass {
         }));
 
       it('it should create a parcel delivery order', () => {
-        console.log(this.parcel);
         chai.request(this.server).post(this.baseURI)
           .send({ parcel: this.parcel })
+          .set('Authorization', `Bearer ${this.token}`)
           .then((response) => {
             response.should.have.status(200);
             response.body.should.be.a('object');
@@ -134,6 +158,7 @@ export default class ParcelsApiTests extends BaseApiTestClass {
       it('it should not create a parcel delivery order without destination speciified', () => chai.request(this.server)
         .post(this.baseURI)
         .send({ parcel: this.parcelWithoutDestination })
+        .set('Authorization', `Bearer ${this.token}`)
         .then((response) => {
           response.should.have.status(422);
           response.body.should.be.a('object');
@@ -148,6 +173,7 @@ export default class ParcelsApiTests extends BaseApiTestClass {
       it('it should not create a parcel delivery order without the pick up location speciified', () => chai.request(this.server)
         .post(this.baseURI)
         .send({ parcel: this.parcelWithoutPickUpLocation })
+        .set('Authorization', `Bearer ${this.token}`)
         .then((response) => {
           response.should.have.status(422);
           response.body.should.be.a('object');
@@ -162,6 +188,7 @@ export default class ParcelsApiTests extends BaseApiTestClass {
       it('it should not create a parcel delivery order without the pick up location and destination speciified', () => chai.request(this.server)
         .post(this.baseURI)
         .send({ parcel: this.bareParcel })
+        .set('Authorization', `Bearer ${this.token}`)
         .then((response) => {
           response.should.have.status(422);
           response.body.should.be.a('object');
@@ -211,5 +238,6 @@ export default class ParcelsApiTests extends BaseApiTestClass {
   }
 }
 
-const test = new ParcelsApiTests();
-test.runTests();
+new ParcelsApiTests(`http://localhost:${port}`).runTests();
+// server.close();
+

@@ -2,44 +2,49 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import BaseApiTestClass from './base';
-import { parcelDeliveryOrderTest } from './parcels';
+import http from 'http';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import { Server } from '../../server';
 
-
+dotenv.config();
 chai.should();
 chai.use(chaiHttp);
 
-export default class UsersApiTests extends BaseApiTestClass {
-  constructor(server = null, token = null) {
-    super(server);
+process.env.NODE_ENV = 'test';
+const port = 8081;
+const { app } = Server.bootstrap();
+app.set('port', port);
+const server = http.createServer(app);
+server.listen(port).on('error', (err) => {
+  // eslint-disable-next-line no-console
+  console.error(`An error occured with errcode ${err.code}, couldn't start server.\nPlease close instances of server on port ${port} elsewhere.`);
+  process.exit(-1);
+});
+export default class UsersApiTests {
+  constructor(host = null) {
+    this.server = host;
     this.baseURI = '/api/v1/users';
-    if (token) this.token = token;
-    // this.prep();
-    // this.runTests();
   }
 
-  prep() {
-    chai.request(this.server)
-      .post('/api/v1/auth/signup')
-      .send({
-        user: {
+
+  runTests() {
+    describe('Users API Tests', () => {
+      before((done) => {
+        this.token = jwt.sign({
           email: 'test@test.com',
           firstname: 'test',
           lastname: 'test',
           password: 'test123',
-        },
-      })
-      .then((response) => {
-        this.token = response.body.token;
-        this.user = response.body.user;
-      })
-      .catch(err => console.error(err));
-  }
-
-  runTests() {
-    describe('Users API Tests', () => {
+        }, process.env.secret);
+        done();
+      });
       this.list();
       this.getUserParcels();
+
+      after(() => {
+        server.close();
+      });
     });
   }
 
@@ -60,7 +65,7 @@ export default class UsersApiTests extends BaseApiTestClass {
         .then((response) => {
           response.should.have.status(200);
           response.body.should.be.a('array');
-          response.body.length.should.eql(3);
+          response.body.length.should.eql(2);
         }));
     });
   }
@@ -83,13 +88,12 @@ export default class UsersApiTests extends BaseApiTestClass {
           response.should.have.status(200);
           response.body.should.be.a('array');
           response.body.length.should.eql(3);
-          parcelDeliveryOrderTest(response.body[0]);
-          // response.body[0].should.have.property('id');
-          // response.body[0].should.have.property('destination');
-          // response.body[0].should.have.property('price');
-          // response.body[0].should.have.property('status');
-          // response.body[0].status.should.have.property('code');
-          // response.body[0].status.should.have.property('uiText');
+          response.body[0].should.have.property('id');
+          response.body[0].should.have.property('destination');
+          response.body[0].should.have.property('price');
+          response.body[0].should.have.property('status');
+          response.body[0].status.should.have.property('code');
+          response.body[0].status.should.have.property('uiText');
         }));
 
       it('it should return an error if user is not found', () => chai.request(this.server)
@@ -112,6 +116,4 @@ export default class UsersApiTests extends BaseApiTestClass {
     });
   }
 }
-
-const test = new UsersApiTests();
-test.runTests();
+new UsersApiTests(`http://localhost:${port}`).runTests();
