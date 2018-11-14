@@ -3,6 +3,7 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import http from 'http';
+import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { Server } from '../../server';
 import { statuses } from '../helpers/mockdb';
@@ -67,7 +68,7 @@ export default class ParcelsApiTests {
           })
           .catch(err => console.error(err));
 
-          chai.request(this.server)
+        chai.request(this.server)
           .post('/api/v1/auth/signup')
           .send({
             user: {
@@ -82,6 +83,11 @@ export default class ParcelsApiTests {
           })
           .catch(err => console.error(err));
 
+        this.mockAdminToken = jwt.sign({
+          id: 5,
+          admin: true,
+        }, process.env.secret);
+
         this.parcel = createParcel();
         this.parcelWithoutDestination = createParcel(['destination']);
         this.parcelWithoutPickUpLocation = createParcel(['pickUpLocation']);
@@ -93,6 +99,7 @@ export default class ParcelsApiTests {
       this.getOrder();
       this.cancelOrder();
       this.changeOrderDestination();
+      this.changeOrderStatus();
 
       after(() => {
         server.close();
@@ -316,6 +323,54 @@ export default class ParcelsApiTests {
           parcelDeliveryOrderTest(response.body);
           response.body.should.have.property('destination').eql(newDestination);
           response.body.should.have.property('status').eql(statuses.AwaitingProcessing);
+        }));
+    });
+  }
+
+  changeOrderStatus() {
+    const url = `${this.baseURI}/4/status`;
+    describe(`PUT ${url}`, () => {
+      it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
+        .put(`${url}`)
+        .then((response) => {
+          response.should.have.status(401);
+          response.body.should.be.an('object');
+          response.body.should.have.property('auth').eql(false);
+          response.body.should.have.property('message').eql('Authorization token is not provided.');
+        }));
+
+      it('it should not allow access to non-admins', () => chai.request(this.server)
+        .put(`${url}`)
+        .set('Authorization', `Bearer ${this.token}`)
+        .then((response) => {
+          response.should.have.status(401);
+          response.should.be.a('object');
+          response.body.should.have.property('error').eql('Not authorized for admin access');
+        }));
+
+      it('it should not allow you admin to change status without providing new status', () => chai.request(this.server)
+        .put(`${url}`)
+        .set('Authorization', `Bearer ${this.mockAdminToken}`)
+        .then((response) => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.should.have.property('message').eql('Validation errors');
+          response.body.should.have.property('errors');
+          chai.assert(Array.isArray(response.body.errors), true);
+          response.body.errors.length.should.be.eql(1);
+          response.body.errors[0].should.have.property('field').eql('status');
+          response.body.errors[0].should.have.property('message').eql('status cannot be missing');
+        }));
+
+      it('it should allow an admin to change status of a parcel delivery order', () => chai.request(this.server)
+        .put(`${url}`)
+        .send({ status: statuses.Delivered })
+        .set('Authorization', `Bearer ${this.mockAdminToken}`)
+        .then((response) => {
+          response.should.have.status(200);
+          response.should.be.a('object');
+          parcelDeliveryOrderTest(response.body);
+          response.body.should.have.property('status').eql(statuses.Delivered);
         }));
     });
   }
