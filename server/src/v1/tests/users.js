@@ -6,7 +6,6 @@ import http from 'http';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { Server } from '../../server';
-import { parcelDeliveryOrderTest } from './parcels';
 
 dotenv.config();
 chai.should();
@@ -32,11 +31,39 @@ export default class UsersApiTests {
   runTests() {
     describe('Users API Tests', () => {
       before((done) => {
-        this.token = jwt.sign({
-          email: 'test@test.com',
-          firstname: 'test',
-          lastname: 'test',
-          password: 'test123',
+        chai.request(this.server)
+          .post('/api/v1/auth/signup')
+          .send({
+            user: {
+              email: 'pierDragowki@yahoo.com',
+              password: 'finito',
+              firstname: 'Pier',
+              lastname: 'Dragowski',
+            },
+          })
+          .then((response) => {
+            this.token = response.body.token;
+          })
+          .catch(err => console.error(err));
+
+        chai.request(this.server)
+          .post('/api/v1/auth/signup')
+          .send({
+            user: {
+              email: 'test@test.com',
+              password: 'finito',
+              firstname: 'Test',
+              lastname: 'Test',
+            },
+          })
+          .then((response) => {
+            this.allowedUserToken = response.body.token;
+          })
+          .catch(err => console.error(err));
+
+        this.mockAdminToken = jwt.sign({
+          id: 5,
+          admin: true,
         }, process.env.secret);
         done();
       });
@@ -81,9 +108,19 @@ export default class UsersApiTests {
           response.body.should.have.property('message').eql('Authorization token is not provided.');
         }));
 
-      it('it should return all parcel delivery orders belonging to a user', () => chai.request(this.server)
+      it('it should not return all parcel delivery orders belonging to a user if accessed by a different user', () => chai.request(this.server)
         .get(`${this.baseURI}/1/parcels`)
         .set('Authorization', `Bearer ${this.token}`)
+        .then((response) => {
+          response.should.have.status(403);
+          response.should.be.an('object');
+          response.body.should.have.property('error');
+          response.body.should.have.property('error').eql('You do not have access to this resource');
+        }));
+
+      it('it should return all parcel delivery orders belonging to a user if accessed by an admin', () => chai.request(this.server)
+        .get(`${this.baseURI}/1/parcels`)
+        .set('Authorization', `Bearer ${this.mockAdminToken}`)
         .then((response) => {
           response.should.have.status(200);
           response.body.should.be.a('array');
@@ -96,9 +133,24 @@ export default class UsersApiTests {
           response.body[0].status.should.have.property('uiText');
         }));
 
+      it('it should return all parcel delivery orders belonging to a user if accessed by user', () => chai.request(this.server)
+        .get(`${this.baseURI}/4/parcels`)
+        .set('Authorization', `Bearer ${this.allowedUserToken}`)
+        .then((response) => {
+          response.should.have.status(200);
+          response.body.should.be.a('array');
+          response.body.length.should.eql(1);
+          response.body[0].should.have.property('id');
+          response.body[0].should.have.property('destination');
+          response.body[0].should.have.property('price');
+          response.body[0].should.have.property('status');
+          response.body[0].status.should.have.property('code');
+          response.body[0].status.should.have.property('uiText');
+        }));
+
       it('it should return an error if user is not found', () => chai.request(this.server)
         .get(`${this.baseURI}/999999/parcels`)
-        .set('Authorization', `Bearer ${this.token}`)
+        .set('Authorization', `Bearer ${this.mockAdminToken}`)
         .then((response) => {
           response.should.have.status(400);
           response.body.should.be.a('object');
@@ -107,7 +159,7 @@ export default class UsersApiTests {
 
       it('it should return an empty array if User has no parcel delivery orders.', () => chai.request(this.server)
         .get(`${this.baseURI}/2/parcels`)
-        .set('Authorization', `Bearer ${this.token}`)
+        .set('Authorization', `Bearer ${this.mockAdminToken}`)
         .then((response) => {
           response.should.have.status(200);
           response.body.should.be.a('array');
