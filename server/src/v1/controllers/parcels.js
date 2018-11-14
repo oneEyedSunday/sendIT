@@ -54,6 +54,26 @@ const ParcelsController = {
     parcelHelpers.addParcel(parcel);
     return res.json(parcel);
   },
+
+  changeDestinationOfOrder(req, res) {
+    const parcelId = parseInt(req.params.id, 10);
+    const parcel = parcelHelpers.find(parcelId);
+    if (parcel === undefined || parcel === null) {
+      return res.status(400).send({ error: 'Parcel delivery order not found.' });
+    }
+    Validator.check(req.body, ['destination']);
+    const errors = Validator.errors();
+    if (errors.length > 0) {
+      return res.status(422).send({
+        message: 'Validation errors',
+        errors,
+      });
+    }
+    const newParcel = {};
+    Object.assign(newParcel, parcel, { destination: req.body.destination, status: statuses.AwaitingProcessing });
+    parcelHelpers.update(newParcel);
+    return res.json(newParcel);
+  },
 };
 
 export default ParcelsController;
