@@ -119,9 +119,19 @@ export default class ParcelsApiTests {
           response.body.should.have.property('message').eql('Authorization token is not provided.');
         }));
 
+        it('it should not allow access to a user', () => chai.request(this.server)
+        .get(this.baseURI)
+        .set('Authorization', this.allowedUserToken)
+        .then((response) => {
+          response.should.have.status(401);
+          response.body.should.be.an('object');
+          response.body.should.have.property('error');
+          response.body.should.have.property('error').eql('Not authorized for admin access');
+        }));
+
       it('it should list all parcel delivery orders', () => chai.request(this.server)
         .get(this.baseURI)
-        .set('Authorization', `Bearer ${this.token}`)
+        .set('Authorization', `Bearer ${this.mockAdminToken}`)
         .then((response) => {
           response.should.have.status(200);
           response.body.should.be.a('array');
