@@ -3,6 +3,7 @@ import Validator from '../helpers/validator';
 import { userHelpers } from '../helpers/mockdb';
 import AuthHelpers from '../helpers/auth';
 
+
 const authController = {
   signup(req, res) {
     const { user } = req.body;
