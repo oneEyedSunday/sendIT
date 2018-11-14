@@ -6,6 +6,7 @@ import http from 'http';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { Server } from '../../server';
+import { parcelDeliveryOrderTest } from './parcels';
 
 dotenv.config();
 chai.should();
@@ -65,7 +66,6 @@ export default class UsersApiTests {
         .then((response) => {
           response.should.have.status(200);
           response.body.should.be.a('array');
-          response.body.length.should.eql(2);
         }));
     });
   }

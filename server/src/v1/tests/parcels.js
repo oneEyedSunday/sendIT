@@ -3,7 +3,6 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import http from 'http';
-import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { Server } from '../../server';
 import { statuses } from '../helpers/mockdb';
@@ -45,7 +44,6 @@ export const parcelDeliveryOrderTest = (parcelObj, options = null) => {
 };
 
 export default class ParcelsApiTests {
-
   constructor(host = null) {
     this.server = host;
     this.baseURI = '/api/v1/parcels';
@@ -54,12 +52,21 @@ export default class ParcelsApiTests {
   runTests() {
     describe('Parcels API Tests', () => {
       before((done) => {
-        this.token = jwt.sign({
-          email: 'test@test.com',
-          firstname: 'test',
-          lastname: 'test',
-          password: 'test123',
-        }, process.env.secret);
+        chai.request(this.server)
+          .post('/api/v1/auth/signup')
+          .send({
+            user: {
+              email: 'pierDragowki@yahoo.com',
+              password: 'finito',
+              firstname: 'Pier',
+              lastname: 'Dragowski',
+            },
+          })
+          .then((response) => {
+            this.token = response.body.token;
+          })
+          .catch(err => console.error(err));
+
         this.parcel = createParcel();
         this.parcelWithoutDestination = createParcel(['destination']);
         this.parcelWithoutPickUpLocation = createParcel(['pickUpLocation']);
@@ -70,6 +77,7 @@ export default class ParcelsApiTests {
       this.listOrders();
       this.getOrder();
       this.cancelOrder();
+      this.changeOrderDestination();
 
       after(() => {
         server.close();
@@ -109,7 +117,7 @@ export default class ParcelsApiTests {
           response.body.should.have.property('auth').eql(false);
           response.body.should.have.property('message').eql('Authorization token is not provided.');
         }));
-      
+
       it('it should get a particular parcel delivery order by a given id', () => chai.request(this.server)
         .get(`${this.baseURI}/1`)
         .set('Authorization', `Bearer ${this.token}`)
@@ -236,8 +244,78 @@ export default class ParcelsApiTests {
         }));
     });
   }
+
+  changeOrderDestination() {
+    const url = `${this.baseURI}/4/destination`;
+    let allowedUserToken;
+    describe(`PUT ${url}`, () => {
+      before((done) => {
+        // login
+        chai.request(this.server)
+          .post('/api/v1/auth/signup')
+          .send({
+            user: {
+              email: 'test@test.com',
+              password: 'finito',
+              firstname: 'Test',
+              lastname: 'Test',
+            },
+          })
+          .then((response) => {
+            allowedUserToken = response.body.token;
+          })
+          .catch(err => console.error(err));
+        done();
+      });
+
+      it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
+        .put(`${url}`)
+        .then((response) => {
+          response.should.have.status(401);
+          response.body.should.be.an('object');
+          response.body.should.have.property('auth').eql(false);
+          response.body.should.have.property('message').eql('Authorization token is not provided.');
+        }));
+
+      it('it should not allow you change destination of a parcel delivery order you do not own', () => chai.request(this.server)
+        .put(`${url}`)
+        .set('Authorization', `Bearer ${this.token}`)
+        .then((response) => {
+          response.should.have.status(403);
+          response.should.be.a('object');
+          response.body.should.have.property('error').eql('You do not have access to this resource');
+        }));
+
+      it('it should not allow you change destination without providing new destination', () => chai.request(this.server)
+        .put(`${url}`)
+        .set('Authorization', `Bearer ${allowedUserToken}`)
+        .then((response) => {
+          response.should.have.status(422);
+          response.body.should.be.a('object');
+          response.body.should.have.property('message').eql('Validation errors');
+          response.body.should.have.property('errors');
+          chai.assert(Array.isArray(response.body.errors), true);
+          response.body.errors.length.should.be.eql(1);
+          response.body.errors[0].should.have.property('field').eql('destination');
+          response.body.errors[0].should.have.property('message').eql('destination cannot be missing');
+        }));
+
+      const newDestination = 'TOS Benson, Ikorodu';
+
+      it('it should allow you change the destination of a parcel delivery order you own', () => chai.request(this.server)
+        .put(`${url}`)
+        .send({ destination: newDestination })
+        .set('Authorization', `Bearer ${allowedUserToken}`)
+        .then((response) => {
+          response.should.have.status(200);
+          response.should.be.a('object');
+          parcelDeliveryOrderTest(response.body);
+          response.body.should.have.property('destination').eql(newDestination);
+          response.body.should.have.property('status').eql(statuses.AwaitingProcessing);
+        }));
+    });
+  }
 }
 
 new ParcelsApiTests(`http://localhost:${port}`).runTests();
 // server.close();
-
