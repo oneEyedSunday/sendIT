@@ -3,11 +3,26 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import http from 'http';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 import { Server } from '../../server';
-import { statuses } from '../controllers/parcels';
+import { statuses } from '../helpers/mockdb';
 
+dotenv.config();
 chai.should();
 chai.use(chaiHttp);
+
+process.env.NODE_ENV = 'test';
+const port = 8082;
+const { app } = Server.bootstrap();
+app.set('port', port);
+const server = http.createServer(app);
+server.listen(port).on('error', (err) => {
+  // eslint-disable-next-line no-console
+  console.error(`An error occured with errcode ${err.code}, couldn't start server.\nPlease close instances of server on port ${port} elsewhere.`);
+  process.exit(-1);
+});
+
 
 let noOfParcels = 3;
 const createParcel = (exclude = []) => {
@@ -30,45 +45,52 @@ export const parcelDeliveryOrderTest = (parcelObj, options = null) => {
 };
 
 export default class ParcelsApiTests {
-  before() {
-    process.env.NODE_ENV = 'test';
-    const port = 8080;
-    const { app } = Server.bootstrap();
-    app.set('port', port);
-    this.server = http.createServer(app);
-    this.server.listen(port).on('error', (err) => {
-      // eslint-disable-next-line no-console
-      console.error(`An error occured with errcode ${err.code}, couldn't start server.\nPlease close instances of server on port elsewhere.`);
-      process.exit(-1);
-    });
-    this.parcel = createParcel();
-    this.parcelWithoutDestination = createParcel(['destination']);
-    this.parcelWithoutPickUpLocation = createParcel(['pickUpLocation']);
-    this.bareParcel = createParcel(['destination', 'pickUpLocation']);
-  }
 
-  after() {
-    this.server.close();
-  }
-
-  constructor() {
-    this.before();
+  constructor(host = null) {
+    this.server = host;
     this.baseURI = '/api/v1/parcels';
   }
 
   runTests() {
     describe('Parcels API Tests', () => {
+      before((done) => {
+        this.token = jwt.sign({
+          email: 'test@test.com',
+          firstname: 'test',
+          lastname: 'test',
+          password: 'test123',
+        }, process.env.secret);
+        this.parcel = createParcel();
+        this.parcelWithoutDestination = createParcel(['destination']);
+        this.parcelWithoutPickUpLocation = createParcel(['pickUpLocation']);
+        this.bareParcel = createParcel(['destination', 'pickUpLocation']);
+        done();
+      });
       this.createOrder();
       this.listOrders();
       this.getOrder();
       this.cancelOrder();
+
+      after(() => {
+        server.close();
+      });
     });
   }
 
   listOrders() {
     describe(`GET ${this.baseURI}`, () => {
+      it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
+        .get(this.baseURI)
+        .then((response) => {
+          response.should.have.status(401);
+          response.body.should.be.an('object');
+          response.body.should.have.property('auth').eql(false);
+          response.body.should.have.property('message').eql('Authorization token is not provided.');
+        }));
+
       it('it should list all parcel delivery orders', () => chai.request(this.server)
         .get(this.baseURI)
+        .set('Authorization', `Bearer ${this.token}`)
         .then((response) => {
           response.should.have.status(200);
           response.body.should.be.a('array');
@@ -79,8 +101,18 @@ export default class ParcelsApiTests {
 
   getOrder() {
     describe(`GET ${this.baseURI}/id`, () => {
+      it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
+        .get(`${this.baseURI}/id`)
+        .then((response) => {
+          response.should.have.status(401);
+          response.body.should.be.an('object');
+          response.body.should.have.property('auth').eql(false);
+          response.body.should.have.property('message').eql('Authorization token is not provided.');
+        }));
+      
       it('it should get a particular parcel delivery order by a given id', () => chai.request(this.server)
         .get(`${this.baseURI}/1`)
+        .set('Authorization', `Bearer ${this.token}`)
         .then((response) => {
           response.should.have.status(200);
           response.body.should.be.a('object');
@@ -90,6 +122,7 @@ export default class ParcelsApiTests {
 
       it('it should return an error with appropriate status if parcel is not found', () => chai.request(this.server)
         .get(`${this.baseURI}/999999`)
+        .set('Authorization', `Bearer ${this.token}`)
         .then((response) => {
           response.should.have.status(400);
           response.should.should.be.an('object');
@@ -100,9 +133,19 @@ export default class ParcelsApiTests {
 
   createOrder() {
     describe(`POST ${this.baseURI}`, () => {
+      it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
+        .post(this.baseURI)
+        .then((response) => {
+          response.should.have.status(401);
+          response.body.should.be.an('object');
+          response.body.should.have.property('auth').eql(false);
+          response.body.should.have.property('message').eql('Authorization token is not provided.');
+        }));
+
       it('it should create a parcel delivery order', () => {
         chai.request(this.server).post(this.baseURI)
           .send({ parcel: this.parcel })
+          .set('Authorization', `Bearer ${this.token}`)
           .then((response) => {
             response.should.have.status(200);
             response.body.should.be.a('object');
@@ -115,6 +158,7 @@ export default class ParcelsApiTests {
       it('it should not create a parcel delivery order without destination speciified', () => chai.request(this.server)
         .post(this.baseURI)
         .send({ parcel: this.parcelWithoutDestination })
+        .set('Authorization', `Bearer ${this.token}`)
         .then((response) => {
           response.should.have.status(422);
           response.body.should.be.a('object');
@@ -129,6 +173,7 @@ export default class ParcelsApiTests {
       it('it should not create a parcel delivery order without the pick up location speciified', () => chai.request(this.server)
         .post(this.baseURI)
         .send({ parcel: this.parcelWithoutPickUpLocation })
+        .set('Authorization', `Bearer ${this.token}`)
         .then((response) => {
           response.should.have.status(422);
           response.body.should.be.a('object');
@@ -143,6 +188,7 @@ export default class ParcelsApiTests {
       it('it should not create a parcel delivery order without the pick up location and destination speciified', () => chai.request(this.server)
         .post(this.baseURI)
         .send({ parcel: this.bareParcel })
+        .set('Authorization', `Bearer ${this.token}`)
         .then((response) => {
           response.should.have.status(422);
           response.body.should.be.a('object');
@@ -161,8 +207,18 @@ export default class ParcelsApiTests {
   cancelOrder() {
     const url = `${this.baseURI}/1/cancel`;
     describe(`PUT ${url}`, () => {
+      it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
+        .put(`${url}`)
+        .then((response) => {
+          response.should.have.status(401);
+          response.body.should.be.an('object');
+          response.body.should.have.property('auth').eql(false);
+          response.body.should.have.property('message').eql('Authorization token is not provided.');
+        }));
+
       it('it should cancel a parcel delivery order', () => chai.request(this.server)
         .put(`${url}`)
+        .set('Authorization', `Bearer ${this.token}`)
         .then((response) => {
           response.should.have.status(200);
           response.should.be.a('object');
@@ -170,16 +226,9 @@ export default class ParcelsApiTests {
           response.body.status.should.eql(statuses.Cancelled);
         }));
 
-      it('it should not cancel a parcel delivery order if its already cancelled', () => chai.request(this.server)
-        .put(`${url}`)
-        .then((response) => {
-          response.should.have.status(409);
-          response.should.be.a('object');
-          response.body.should.have.property('error').eql('Parcel Delivery order already cancelled');
-        }));
-
       it('it should return an error with appropriate error code if the parcel delivery order is not found', () => chai.request(this.server)
         .put(`${this.baseURI}/999999/cancel`)
+        .set('Authorization', `Bearer ${this.token}`)
         .then((response) => {
           response.should.have.status(400);
           response.should.be.a('object');
@@ -189,6 +238,6 @@ export default class ParcelsApiTests {
   }
 }
 
-const testSuite = new ParcelsApiTests();
-testSuite.runTests();
-testSuite.after();
+new ParcelsApiTests(`http://localhost:${port}`).runTests();
+// server.close();
+
