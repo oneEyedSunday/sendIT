@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { parcelHelpers, userHelpers } from '../helpers/mockdb';
 
 export default class Middleware {
   static isAuth(req, res, next) {
@@ -27,5 +28,23 @@ export default class Middleware {
 
   static isAdmin(req, res, next) {
     return next(req);
+  }
+
+  static parcelExists(req, res, next) {
+    const parcelId = parseInt(req.params.id, 10);
+    const parcel = parcelHelpers.find(parcelId);
+    if (parcel === undefined || parcel === null) {
+      return res.status(400).send({ error: 'Parcel delivery order not found.' });
+    }
+    req.parcel = parcel;
+    return next();
+  }
+
+  static isOwner(req, res, next) {
+    const userParcels = userHelpers.parcelsForUser(req.user.id);
+    if (userParcels === undefined || userParcels === null || (userParcels.indexOf(parseInt(req.params.id, 10)) < 0)) {
+      return res.status(403).send({ error: 'You do not have access to this resource' });
+    }
+    return next();
   }
 }
