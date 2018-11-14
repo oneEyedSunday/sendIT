@@ -74,6 +74,21 @@ const ParcelsController = {
     parcelHelpers.update(newParcel);
     return res.json(newParcel);
   },
+
+  updateOrderLocation(req, res) {
+    Validator.check(req.body, ['presentLocation']);
+    const errors = Validator.errors();
+    if (errors.length > 0) {
+      return res.status(422).send({
+        message: 'Validation errors',
+        errors,
+      });
+    }
+    const newParcel = {};
+    Object.assign(newParcel, req.parcel, { presentLocation: req.body.presentLocation });
+    parcelHelpers.update(newParcel);
+    return res.json(newParcel);
+  },
 };
 
 export default ParcelsController;
