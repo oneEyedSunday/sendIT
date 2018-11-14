@@ -24,7 +24,7 @@ server.listen(port).on('error', (err) => {
 });
 
 
-let noOfParcels = 3;
+let noOfParcels = 4;
 const createParcel = (exclude = []) => {
   const parcel = {};
   if (exclude.indexOf('destination') < 0) parcel.destination = 'Lekki, Lagos';

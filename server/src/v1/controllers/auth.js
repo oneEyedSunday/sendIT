@@ -16,6 +16,7 @@ const authController = {
     }
     user.id = userHelpers.findAll().length + 1;
     user.email = user.email;
+    user.parcels = [4];
     AuthHelpers.hash(user.password)
       .then((hash) => {
         user.password = hash;
@@ -23,6 +24,7 @@ const authController = {
         const uiUser = {};
         Object.assign(uiUser, user);
         delete uiUser.password;
+        delete uiUser.parcels;
         const token = jwt.sign(uiUser, process.env.secret);
         return res.json({ user: uiUser, token });
       })
