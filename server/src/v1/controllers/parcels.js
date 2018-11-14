@@ -59,7 +59,7 @@ const ParcelsController = {
     return res.json(newParcel);
   },
 
-  changeOrderStatus(req, res) {
+  updateOrderStatus(req, res) {
     Validator.check(req.body, ['status']);
     const errors = Validator.errors();
     if (errors.length > 0) {
