@@ -53,6 +53,14 @@ export const Parcels = [
     price: 'N5000',
     status: statuses.Cancelled,
   },
+  {
+    id: 4,
+    destination: 'Ojota, Lagos',
+    pickUpLocation: 'SendIT Pickup Station, Ojota',
+    price: 'N500',
+    status: statuses.InTransit,
+    presentLocation: 'Ketu, Lagos',
+  },
 ];
 
 export const userHelpers = {
@@ -65,6 +73,7 @@ export const userHelpers = {
   },
 
   getUser(userId) {
+    console.log(userId);
     return users.filter(items => items.id === userId)[0];
   },
 

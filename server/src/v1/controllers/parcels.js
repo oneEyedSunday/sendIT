@@ -1,5 +1,5 @@
 import Validator from '../helpers/validator';
-import { parcelHelpers, statuses } from '../helpers/mockdb';
+import { parcelHelpers, statuses, userHelpers } from '../helpers/mockdb';
 
 const officeLocation = 'Maryland, Lagos';
 const defaultPrice = 'N500';
@@ -60,6 +60,10 @@ const ParcelsController = {
     const parcel = parcelHelpers.find(parcelId);
     if (parcel === undefined || parcel === null) {
       return res.status(400).send({ error: 'Parcel delivery order not found.' });
+    }
+    const userParcels = userHelpers.parcelsForUser(req.user.id);
+    if (userParcels === undefined || userParcels === null || (userParcels.indexOf(parcelId) < 0)) {
+      return res.status(403).send({ error: 'You do not have access to this resource' });
     }
     Validator.check(req.body, ['destination']);
     const errors = Validator.errors();
