@@ -29,35 +29,43 @@ export const parcelDeliveryOrderTest = (parcelObj, options = null) => {
 };
 
 export default class ParcelsApiTests extends BaseApiTestClass {
-  before() {
+  prep() {
     this.parcel = createParcel();
     this.parcelWithoutDestination = createParcel(['destination']);
     this.parcelWithoutPickUpLocation = createParcel(['pickUpLocation']);
     this.bareParcel = createParcel(['destination', 'pickUpLocation']);
   }
 
-  constructor(token = null) {
-    super();
-    console.log('parcel test created');
-    this.before();
+  constructor(server = null, token = null) {
+    super(server);
     this.baseURI = '/api/v1/parcels';
-    this.token = token;
+    if (token) this.token = token;
   }
 
   runTests() {
     describe('Parcels API Tests', () => {
-      this.createOrder();
+      // this.createOrder();
       this.listOrders();
       this.getOrder();
       this.cancelOrder();
-      this.after();
+      // this.after();
     });
   }
 
   listOrders() {
     describe(`GET ${this.baseURI}`, () => {
+      it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
+        .get(this.baseURI)
+        .then((response) => {
+          response.should.have.status(401);
+          response.body.should.be.an('object');
+          response.body.should.have.property('auth').eql(false);
+          response.body.should.have.property('message').eql('Authorization token is not provided.');
+        }));
+
       it('it should list all parcel delivery orders', () => chai.request(this.server)
         .get(this.baseURI)
+        .set('Authorization', `Bearer ${this.token}`)
         .then((response) => {
           response.should.have.status(200);
           response.body.should.be.a('array');
@@ -68,8 +76,18 @@ export default class ParcelsApiTests extends BaseApiTestClass {
 
   getOrder() {
     describe(`GET ${this.baseURI}/id`, () => {
+      it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
+        .get(`${this.baseURI}/id`)
+        .then((response) => {
+          response.should.have.status(401);
+          response.body.should.be.an('object');
+          response.body.should.have.property('auth').eql(false);
+          response.body.should.have.property('message').eql('Authorization token is not provided.');
+        }));
+      
       it('it should get a particular parcel delivery order by a given id', () => chai.request(this.server)
         .get(`${this.baseURI}/1`)
+        .set('Authorization', `Bearer ${this.token}`)
         .then((response) => {
           response.should.have.status(200);
           response.body.should.be.a('object');
@@ -79,6 +97,7 @@ export default class ParcelsApiTests extends BaseApiTestClass {
 
       it('it should return an error with appropriate status if parcel is not found', () => chai.request(this.server)
         .get(`${this.baseURI}/999999`)
+        .set('Authorization', `Bearer ${this.token}`)
         .then((response) => {
           response.should.have.status(400);
           response.should.should.be.an('object');
@@ -89,7 +108,18 @@ export default class ParcelsApiTests extends BaseApiTestClass {
 
   createOrder() {
     describe(`POST ${this.baseURI}`, () => {
+      before(() => { this.prep(); });
+      it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
+        .post(this.baseURI)
+        .then((response) => {
+          response.should.have.status(401);
+          response.body.should.be.an('object');
+          response.body.should.have.property('auth').eql(false);
+          response.body.should.have.property('message').eql('Authorization token is not provided.');
+        }));
+
       it('it should create a parcel delivery order', () => {
+        console.log(this.parcel);
         chai.request(this.server).post(this.baseURI)
           .send({ parcel: this.parcel })
           .then((response) => {
@@ -150,8 +180,18 @@ export default class ParcelsApiTests extends BaseApiTestClass {
   cancelOrder() {
     const url = `${this.baseURI}/1/cancel`;
     describe(`PUT ${url}`, () => {
+      it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
+        .put(`${url}`)
+        .then((response) => {
+          response.should.have.status(401);
+          response.body.should.be.an('object');
+          response.body.should.have.property('auth').eql(false);
+          response.body.should.have.property('message').eql('Authorization token is not provided.');
+        }));
+
       it('it should cancel a parcel delivery order', () => chai.request(this.server)
         .put(`${url}`)
+        .set('Authorization', `Bearer ${this.token}`)
         .then((response) => {
           response.should.have.status(200);
           response.should.be.a('object');
@@ -159,16 +199,9 @@ export default class ParcelsApiTests extends BaseApiTestClass {
           response.body.status.should.eql(statuses.Cancelled);
         }));
 
-      it('it should not cancel a parcel delivery order if its already cancelled', () => chai.request(this.server)
-        .put(`${url}`)
-        .then((response) => {
-          response.should.have.status(409);
-          response.should.be.a('object');
-          response.body.should.have.property('error').eql('Parcel Delivery order already cancelled');
-        }));
-
       it('it should return an error with appropriate error code if the parcel delivery order is not found', () => chai.request(this.server)
         .put(`${this.baseURI}/999999/cancel`)
+        .set('Authorization', `Bearer ${this.token}`)
         .then((response) => {
           response.should.have.status(400);
           response.should.be.a('object');
@@ -177,3 +210,6 @@ export default class ParcelsApiTests extends BaseApiTestClass {
     });
   }
 }
+
+const test = new ParcelsApiTests();
+test.runTests();

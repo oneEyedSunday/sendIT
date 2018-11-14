@@ -13,8 +13,8 @@ export default class UsersApiTests extends BaseApiTestClass {
   constructor(server = null, token = null) {
     super(server);
     this.baseURI = '/api/v1/users';
-    this.token = token;
-    this.prep();
+    if (token) this.token = token;
+    // this.prep();
     // this.runTests();
   }
 
