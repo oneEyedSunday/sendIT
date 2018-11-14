@@ -7,7 +7,7 @@ const UsersController = {
     return res.json(allUsers);
   },
 
-  parcels(req, res) {
+  getParcels(req, res) {
     try {
       const userParcels = userHelpers.parcelsForUser(parseInt(req.params.id, 10));
       const populatedUserParcels = parcelHelpers.retrieveParcels(userParcels);

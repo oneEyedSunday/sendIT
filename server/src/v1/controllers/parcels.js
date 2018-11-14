@@ -11,7 +11,7 @@ const ParcelsController = {
     return res.json(parcels);
   },
 
-  get(req, res) {
+  getOrder(req, res) {
     const parcelId = parseInt(req.params.id, 10);
     const parcel = parcelHelpers.find(parcelId);
     if (parcel === undefined || parcel === null) {
@@ -20,7 +20,7 @@ const ParcelsController = {
     return res.json(parcel);
   },
 
-  cancel(req, res) {
+  cancelOrder(req, res) {
     const parcelId = parseInt(req.params.id, 10);
     const parcel = parcelHelpers.find(parcelId);
     if (parcel === undefined || parcel === null) {
@@ -37,7 +37,7 @@ const ParcelsController = {
     return res.json(newParcel);
   },
 
-  create(req, res) {
+  createOrder(req, res) {
     const { parcel } = req.body;
     Validator.check(parcel, ['destination', 'pickUpLocation']);
     const errors = Validator.errors();
