@@ -27,7 +27,11 @@ export default class Middleware {
   }
 
   static isAdmin(req, res, next) {
-    return next(req);
+    if (req.user.isAdmin) {
+      next();
+    } else {
+      res.status(401).send({ message: 'Not authorized for admin access' });
+    }
   }
 
   static parcelExists(req, res, next) {
