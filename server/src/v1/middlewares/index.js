@@ -51,4 +51,16 @@ export default class Middleware {
     }
     return next();
   }
+
+  static isOwnerOrAdmin(req, res, next) {
+    if (!req.user.admin) {
+      // not admin, check if its owner
+      const userParcels = userHelpers.parcelsForUser(req.user.id);
+      if (userParcels === undefined || userParcels === null || (userParcels.indexOf(parseInt(req.params.id, 10)) < 0)) {
+        // not owner
+        return res.status(403).send({ error: 'You do not have access to this resource' });
+      }
+    }
+    return next();
+  }
 }
