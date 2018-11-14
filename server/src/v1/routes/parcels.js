@@ -7,6 +7,6 @@ router.get('/', parcelsController.index);
 router.get('/:id', Middleware.parcelExists, parcelsController.getOrder);
 router.put('/:id/cancel', Middleware.parcelExists, Middleware.isOwner, parcelsController.cancelOrder);
 router.put('/:id/destination', Middleware.parcelExists, Middleware.isOwner, parcelsController.changeOrderDestination);
-router.put('/:id/status', Middleware.isAdmin, Middleware.parcelExists, Middleware.isOwner, parcelsController.changeOrderStatus);
+router.put('/:id/status', Middleware.isAdmin, Middleware.parcelExists, parcelsController.changeOrderStatus);
 router.post('/', parcelsController.createOrder);
 export default router;

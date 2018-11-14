@@ -60,6 +60,14 @@ const ParcelsController = {
   },
 
   changeOrderStatus(req, res) {
+    Validator.check(req.body, ['status']);
+    const errors = Validator.errors();
+    if (errors.length > 0) {
+      return res.status(422).send({
+        message: 'Validation errors',
+        errors,
+      });
+    }
     const newParcel = {};
     Object.assign(newParcel, req.parcel, { status: req.body.status });
     if (newParcel.status === statuses.Cancelled) delete newParcel.presentLocation;
