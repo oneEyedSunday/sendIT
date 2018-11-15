@@ -1,13 +1,11 @@
 import jwt from 'jsonwebtoken';
-import { parcelHelpers, userHelpers } from '../helpers/mockdb';
+import DBHelpers from '../helpers/db/helpers';
 
 export default class Middleware {
-  static isAuth(req, res, next) {
-    if (req.url === '/api') return next();
-    let interest = req.url.split('/api/v')[1];
-    interest = interest.substr(2, 4);
-    if ((interest === 'auth') && req.method === 'POST') return next();
-    let token = req.headers.authorization;
+  static async isAuth(req, res, next) {
+    // return next();
+    if (req.url === '/api' || req.url === '/api/' || req.url === '/api/v1/auth/signup' || req.url === '/api/v1/auth/login') return next();
+    let token = req.headers.authorization || req.query.token;
     if (token && token.startsWith('Bearer ')) {
       token = token.slice(7, token.length);
     }
@@ -16,7 +14,7 @@ export default class Middleware {
       jwt.verify(token, process.env.secret, (err, payload) => {
         if (err) return res.json({ auth: false, message: 'Invalid token' });
         req.user = payload;
-        return next();
+        next();
       });
     } else {
       return res.status(401).json({
@@ -24,44 +22,48 @@ export default class Middleware {
         message: 'Authorization token is not provided.',
       });
     }
-    return next(req);
   }
 
-  static isAdmin(req, res, next) {
+  static async isAdmin(req, res, next) {
     if (req.user.admin) {
       next();
     } else {
-      res.status(401).send({ error: 'Not authorized for admin access' });
+      return res.status(401).send({ error: 'Not authorized for admin access' });
     }
   }
 
-  static parcelExists(req, res, next) {
-    const parcelId = parseInt(req.params.id, 10);
-    const parcel = parcelHelpers.find(parcelId);
-    if (parcel === undefined || parcel === null) {
-      return res.status(400).send({ error: 'Parcel delivery order not found.' });
+  static async parcelExists(req, res, next) {
+    try {
+      const parcel = await DBHelpers.find('parcels', req.params.id);
+      req.parcel = parcel;
+      return next();
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
     }
-    req.parcel = parcel;
-    return next();
   }
 
-  static isOwner(req, res, next) {
-    const userParcels = userHelpers.parcelsForUser(req.user.id);
-    if (userParcels === undefined || userParcels === null || (userParcels.indexOf(parseInt(req.params.id, 10)) < 0)) {
-      return res.status(403).send({ error: 'You do not have access to this resource' });
-    }
-    return next();
-  }
-
-  static isOwnerOrAdmin(req, res, next) {
-    if (!req.user.admin) {
-      // not admin, check if its owner
-      const userParcels = userHelpers.parcelsForUser(req.user.id);
+  static async isOwner(req, res, next) {
+    try {
+      // review
+      const userParcels = await DBHelpers.getParcelsByUserId(req.params.id);
       if (userParcels === undefined || userParcels === null || (userParcels.indexOf(parseInt(req.params.id, 10)) < 0)) {
-        // not owner
         return res.status(403).send({ error: 'You do not have access to this resource' });
       }
+    } catch (error) {
+      return res.status(400).send({ error: error.message });
     }
     return next();
+  }
+
+  static async isOwnerOrAdmin(req, res, next) {
+    // return next();
+    if (!req.user.admin) {
+      // not admin, check if its
+      if (req.user.id !== req.params.id) {
+        return res.status(403).json({ error: 'You do not have access to this resource' });
+      }
+      next();
+    }
+    next();
   }
 }

@@ -124,7 +124,6 @@ export default class UsersApiTests {
         .then((response) => {
           response.should.have.status(200);
           response.body.should.be.a('array');
-          response.body.length.should.eql(3);
           response.body[0].should.have.property('id');
           response.body[0].should.have.property('destination');
           response.body[0].should.have.property('price');
@@ -139,7 +138,6 @@ export default class UsersApiTests {
         .then((response) => {
           response.should.have.status(200);
           response.body.should.be.a('array');
-          response.body.length.should.eql(1);
           response.body[0].should.have.property('id');
           response.body[0].should.have.property('destination');
           response.body[0].should.have.property('price');

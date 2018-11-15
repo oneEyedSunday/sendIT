@@ -1,20 +1,20 @@
-import { userHelpers, parcelHelpers } from '../helpers/mockdb';
+import dbHelpers from '../helpers/db/helpers';
 
 
 const UsersController = {
   index(req, res) {
-    const allUsers = userHelpers.findAll();
-    return res.json(allUsers);
+    dbHelpers.findAll('users')
+      .then(result => res.json(result))
+      .catch(error => res.status(400).json({ error: error.message }));
   },
 
   getParcels(req, res) {
-    try {
-      const userParcels = userHelpers.parcelsForUser(parseInt(req.params.id, 10));
-      const populatedUserParcels = parcelHelpers.retrieveParcels(userParcels);
-      return res.json(populatedUserParcels);
-    } catch (error) {
-      return res.status(400).send({ error: error.message });
+    if (!req.user.admin && (req.user.id !== req.params.id)) {
+      return res.status(403).json({ error: 'You do not have access to this resource' });
     }
+    dbHelpers.getParcelsByUserId(req.params.id)
+      .then(parcels => res.json(parcels))
+      .catch(error => res.status(400).json({ error: error.message }));
   },
 };
 

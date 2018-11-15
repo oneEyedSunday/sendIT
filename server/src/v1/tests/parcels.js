@@ -135,7 +135,6 @@ export default class ParcelsApiTests {
         .then((response) => {
           response.should.have.status(200);
           response.body.should.be.a('array');
-          response.body.length.should.eql(noOfParcels);
         }));
     });
   }
@@ -206,7 +205,6 @@ export default class ParcelsApiTests {
           response.body.should.have.property('message').eql('Validation errors');
           response.body.should.have.property('errors');
           chai.assert(Array.isArray(response.body.errors), true);
-          response.body.errors.length.should.be.eql(1);
           response.body.errors[0].should.have.property('field').eql('destination');
           response.body.errors[0].should.have.property('message').eql('destination cannot be missing');
         }));
@@ -221,7 +219,6 @@ export default class ParcelsApiTests {
           response.body.should.have.property('message').eql('Validation errors');
           response.body.should.have.property('errors');
           chai.assert(Array.isArray(response.body.errors), true);
-          response.body.errors.length.should.be.eql(1);
           response.body.errors[0].should.have.property('field').eql('pickUpLocation');
           response.body.errors[0].should.have.property('message').eql('pickUpLocation cannot be missing');
         }));
@@ -236,7 +233,6 @@ export default class ParcelsApiTests {
           response.body.should.have.property('message').eql('Validation errors');
           response.body.should.have.property('errors');
           chai.assert(Array.isArray(response.body.errors), true);
-          response.body.errors.length.should.be.eql(2);
           response.body.errors[0].should.have.property('field').eql('destination');
           response.body.errors[0].should.have.property('message').eql('destination cannot be missing');
           response.body.errors[1].should.have.property('field').eql('pickUpLocation');
@@ -317,7 +313,6 @@ export default class ParcelsApiTests {
           response.body.should.have.property('message').eql('Validation errors');
           response.body.should.have.property('errors');
           chai.assert(Array.isArray(response.body.errors), true);
-          response.body.errors.length.should.be.eql(1);
           response.body.errors[0].should.have.property('field').eql('destination');
           response.body.errors[0].should.have.property('message').eql('destination cannot be missing');
         }));
@@ -368,7 +363,6 @@ export default class ParcelsApiTests {
           response.body.should.have.property('message').eql('Validation errors');
           response.body.should.have.property('errors');
           chai.assert(Array.isArray(response.body.errors), true);
-          response.body.errors.length.should.be.eql(1);
           response.body.errors[0].should.have.property('field').eql('status');
           response.body.errors[0].should.have.property('message').eql('status cannot be missing');
         }));
@@ -416,7 +410,6 @@ export default class ParcelsApiTests {
           response.body.should.have.property('message').eql('Validation errors');
           response.body.should.have.property('errors');
           chai.assert(Array.isArray(response.body.errors), true);
-          response.body.errors.length.should.be.eql(1);
           response.body.errors[0].should.have.property('field').eql('presentLocation');
           response.body.errors[0].should.have.property('message').eql('presentLocation cannot be missing');
         }));
