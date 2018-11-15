@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable class-methods-use-this */
 /* eslint-disable import/prefer-default-export */
 
 import bodyParser from 'body-parser';
@@ -9,12 +11,15 @@ import ParcelsRoutes from './v1/routes/parcels';
 import UsersRoutes from './v1/routes/users';
 import AuthRoutes from './v1/routes/auth';
 import Middleware from './v1/middlewares';
+
+import db from './v1/helpers/db';
 // import models
 
 export class Server {
   constructor() {
     this.app = express();
     this.config();
+    this.db();
     this.api();
   }
 
@@ -46,6 +51,14 @@ export class Server {
     this.app.use(Middleware.isAuth);
     this.app.use((err, req, res, next) => {
       next(err);
+    });
+  }
+
+  db() {
+    this.pool = db.createPool();
+
+    this.pool.on('connect', () => {
+      console.log('connected to the db');
     });
   }
 
