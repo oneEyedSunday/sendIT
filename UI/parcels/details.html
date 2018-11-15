@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../main.css">
     <link rel="stylesheet" href="../forms.css">
     <link rel="stylesheet" href="parcels.css">
+    <link rel="stylesheet" href="map.css">
 </head>
 <body>
     <div class="container">
@@ -58,6 +59,11 @@
                     <button type="submit" class="button margin-auto danger" id="actionButton">Cancel Delivery Order</button>
                 </form>
             </div>
+            <div class="card">
+                <div id="map"></div>
+                <div id="time"></div>
+            </div>
+            
         </main>
         <footer class="footer flex align-items__center">
                 <div class="footer__content flex">
@@ -72,5 +78,8 @@
         </footer>
     </div>
     <script src="parcels.js"></script>
+    <script src="map.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClZqFiclDWHCP-qNtiZug5qoUMw_U3G3g&callback=initMap">
+    </script>
 </body>
 </html>
