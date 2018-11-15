@@ -3,6 +3,7 @@ import { parcelHelpers, userHelpers } from '../helpers/mockdb';
 
 export default class Middleware {
   static isAuth(req, res, next) {
+    if (req.url === '/api') return next();
     let interest = req.url.split('/api/v')[1];
     interest = interest.substr(2, 4);
     if ((interest === 'auth') && req.method === 'POST') return next();
