@@ -25,7 +25,8 @@ const authController = {
           email: user.email,
           firstname: user.firstname,
           lastname: user.lastname,
-          password: hash,
+          password: hash, 
+          admin: user.admin,
         }).then((newUser) => {
           const uiUser = {};
           Object.assign(uiUser, newUser);
