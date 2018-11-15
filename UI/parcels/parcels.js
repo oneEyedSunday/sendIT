@@ -161,7 +161,9 @@ let priceNode = undefined;
 let statusNode = undefined;
 let actionButtonNode = undefined;
 let presentLocationNode = undefined;
-const populateField = _ => {
+const populateField = _ => {    
+    const submitButtons = document.getElementsByTagName('button');
+    [].forEach.call(submitButtons,function(e){e.addEventListener('click',(evt) => { evt.preventDefault(); },false)})
     if (parcelId > -1){
         if (parcel === null || parcel === undefined) {
             // TODO (oneeyedsunday)
