@@ -5,6 +5,7 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import methodOverride from 'method-override';
+// import http from 'http';
 import dotenv from 'dotenv';
 // import routes
 import ParcelsRoutes from './v1/routes/parcels';
@@ -49,9 +50,9 @@ export class Server {
     }));
     this.app.use(methodOverride());
     this.app.use(Middleware.isAuth);
-    this.app.use((err, req, res, next) => {
-      next(err);
-    });
+    // this.app.use((err, req, res, next) => {
+    //   next(err);
+    // });
   }
 
   db() {
@@ -66,3 +67,14 @@ export class Server {
     this.app.close();
   }
 }
+/*
+const port = 8080;
+const { app } = Server.bootstrap();
+app.set('port', port);
+const server = http.createServer(app);
+server.listen(port).on('error', (err) => {
+  // eslint-disable-next-line no-console
+  console.error(`An error occured with errcode ${err.code}, couldn't start server.\nPlease close instances of server on port ${port} elsewhere.`);
+  process.exit(-1);
+});
+*/

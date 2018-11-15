@@ -38,15 +38,16 @@ const DBHelpers = {
 
   async createParcel(parcelObject) {
     const text = `INSERT INTO
-          parcels(id, userId, destination, parcelLocation, presentLocation, status, created_date, modified_date)
-          VALUES($1, $2, $3, $4, $5, $6, NOW(), NOW())
+          parcels(id, userId, destination, pickUpLocation, presentLocation, price,  status, created_date, modified_date)
+          VALUES($1, $2, $3, $4, $5, $6, $7,  NOW(), NOW())
           returning *`;
     const values = [
       uuidv4(),
       parcelObject.userId,
       parcelObject.destination,
-      parcelObject.parcelLocation,
+      parcelObject.pickUpLocation,
       parcelObject.presentLocation,
+      parcelObject.price,
       parcelObject.status,
     ];
 
@@ -73,20 +74,49 @@ const DBHelpers = {
     }
   },
   async find(tablename, id) {
-    const text = 'SELECT * FROM $1 WHERE id = $2';
+    const text = `SELECT * FROM ${tablename} WHERE id = $1`;
     try {
-      const { rows } = await db.query(text, [tablename, id]);
+      const { rows } = await db.query(text, [id]);
+      // console.log(rows);
       if (!rows[0]) {
         // return res.status(404).send({'message': 'reflection not found'});
         throw new Error(`${singularTableName(tablename)} not found`);
       }
       // return res.status(200).send(rows[0]);
-      return (rows[0]);
+      return rows[0];
     } catch (error) {
       // return res.status(400).send(error)
       throw new Error(error);
     }
   },
+
+  async findByEmail(tablename, email) {
+    const text = `SELECT * FROM ${tablename} WHERE email = $1`;
+    try {
+      const { rows } = await db.query(text, [email]);
+      // console.log(rows);
+      if (!rows[0]) {
+        // return res.status(404).send({'message': 'reflection not found'});
+        throw new Error(`${singularTableName(tablename)} not found`);
+      }
+      // return res.status(200).send(rows[0]);
+      return rows[0];
+    } catch (error) {
+      // return res.status(400).send(error)
+      throw new Error(error);
+    }
+  },
+
+  async getParcelsByUserId(userId) {
+    try {
+      const query = 'SELECT * from parcels WHERE userId=$1';
+      const { rows } = await db.query(query, [userId]);
+      return rows;
+    } catch (error) {
+      throw new Error(error.message || 'An error occured');
+    }
+  },
+
   async updateSingleField(tablename, id, fieldObject) {
     const keys = Object.keys(fieldObject);
     if (!keys || keys.length !== 1) throw new Error('You supplied wrong field object');
@@ -102,8 +132,8 @@ const DBHelpers = {
         throw new Error(`${singularTableName(tablename)} not found`);
       }
       const values = [
-        fieldObject.firstname || rows[0].firstname,
-        id,
+        fieldObject[field],
+        id || rows[0].id,
       ];
       const response = await db.query(updateOneQuery, values);
       // return res.status(200).send(response.rows[0]);

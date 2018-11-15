@@ -14,7 +14,7 @@ const createPool = () => {
 
   if (process.env.DATABASE_URL) poolObj = { connectionString: process.env.DATABASE_URL };
   // console.log(process.env.NODE_ENV);
-  
+
   if (process.env.NODE_ENV === 'test') poolObj.database = process.env.DB_NAME_TEST;
   // console.log(poolObj);
   return new Pool(poolObj);
@@ -33,6 +33,17 @@ const DB = {
           reject(err);
         });
     });
+  },
+
+  queryCb(text, params, cb) {
+    pool.query(text, params, (err, res) => {
+      if (err) cb(err, null);
+      cb(null, res);
+    });
+  },
+
+  pool() {
+    return pool;
   },
 
   createPool() {
