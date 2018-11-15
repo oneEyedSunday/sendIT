@@ -5,8 +5,9 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import methodOverride from 'method-override';
-// import http from 'http';
 import dotenv from 'dotenv';
+import swagger from 'swagger-ui-express';
+import swaggerDoc from '../swagger.json';
 // import routes
 import ParcelsRoutes from './v1/routes/parcels';
 import UsersRoutes from './v1/routes/users';
@@ -49,6 +50,7 @@ export class Server {
       extended: true,
     }));
     this.app.use(methodOverride());
+    this.app.use('/api-docs', swagger.serve, swagger.setup(swaggerDoc));
     this.app.use(Middleware.isAuth);
     // this.app.use((err, req, res, next) => {
     //   next(err);
