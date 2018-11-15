@@ -27,6 +27,10 @@ SendIT is an [andela](https://www.andela.com) boot-camp project written in javas
 * While in the server directory, 
 * Use `npm run test` to run tests
 
+## Documentation
+* The API endpoints are documented at 
+* `localhost:8080/api-docs` if you're running server locally
+* [Online docs here](https://ispoa-sendit.herokuapp.com/api-docs)
 
 # Technologies Used
 * Express
