@@ -19,9 +19,8 @@ export class Server {
   constructor() {
     this.app = express();
     this.config();
-    this.api();
-    // console.log(pool);
     this.db();
+    this.api();
   }
 
   static bootstrap() {
