@@ -30,7 +30,6 @@ export class Server {
   api() {
     this.app.get('/api', (req, res) => res.json({
       message: 'Welcome to SendIT, assess api at /api/vx x being the version of the API you wish to access',
-      dbSTatus: this.dbTest,
     }));
     this.app.get('/api/v1/', (req, res) => res.json({
       message: 'API v1 works',
@@ -60,12 +59,6 @@ export class Server {
 
     this.pool.on('connect', () => {
       console.log('connected to the db');
-    });
-
-    this.pool.query('SELECT NOW()', (err, res) => {
-      console.log(err, res);
-      this.dbTest = res.rows;
-      this.pool.end();
     });
   }
 
