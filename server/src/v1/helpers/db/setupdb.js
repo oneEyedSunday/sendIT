@@ -1,8 +1,11 @@
 import dontenv from 'dotenv';
 import { pool } from '.';
-import dbHelpers from './helpers';
+
+// process.env.NODE_ENV = 'heroku';
 dontenv.config();
 
+// console.log(process.env.NODE_ENV);
+// console.log(pool);
 // process.env.NODE_ENV = 'test';
 
 // pool.connect();
@@ -59,57 +62,52 @@ const dropParcelsTable = () => {
 
 
 const createAllTables = () => createUsersTable().then((resultOne) => {
-    // console.log(resultOne);
-    console.log('successfully created users table');
-    return createParcelsTable().then((resultTwo) => {
-      // console.log(resultTwo);
-      console.log('successfully created Parcels table');
-    }).catch((errorTwo) => {
-      console.error('error creating parcels table', errorTwo);
-    });
-  }).catch((errOne) => {
-    console.error('error creating users table', errOne);
+  // console.log(resultOne);
+  console.log('successfully created users table');
+  return createParcelsTable().then((resultTwo) => {
+    // console.log(resultTwo);
+    console.log('successfully created Parcels table');
+  }).catch((errorTwo) => {
+    console.error('error creating parcels table', errorTwo);
   });
+}).catch((errOne) => {
+  console.error('error creating users table', errOne);
+});
 /**
  * Drop All Tables
  */
 const dropAllTables = () => dropParcelsTable().then((resultOne) => {
-    // console.log(resultOne);
-    console.log('successfully dropped parcels table');
-    return dropUsersTable().then((resultTwo) => {
-      // console.log(resultTwo);
-      console.log('successfully dropped users table');
-    }).catch((errTwo) => {
-      console.error('error dropping users table', errTwo);
-    });
-  }).catch((errOne) => {
-    console.error('error dropping parcels table', errOne);
+  // console.log(resultOne);
+  console.log('successfully dropped parcels table');
+  return dropUsersTable().then((resultTwo) => {
+    // console.log(resultTwo);
+    console.log('successfully dropped users table');
+  }).catch((errTwo) => {
+    console.error('error dropping users table', errTwo);
+  });
+}).catch((errOne) => {
+  console.error('error dropping parcels table', errOne);
+});
+
+// select count(*) from pg_catalog.pg_database where datname = 'test' ;
+// create db if not exists
+
+dropAllTables().then((res) => {
+  console.log(res);
+  console.log('Attempting to create tables');
+  createAllTables().then((result) => {
+    console.log(result);
+    pool.end();
+  }).catch((error) => {
+    console.error(error);
+    pool.end();
+  });
+})
+  .catch((err) => {
+    console.log(err);
+    pool.end();
   });
 
-
-// create db if not exists
-pool.query(`create database ${process.env.DB_NAME} IF NOT EXISTS ${process.env.DB_NAME}`).then((resCreateDB) => {
-  console.log('result of creating DB', resCreateDB);
-  dropAllTables().then((res) => {
-    console.log(res);
-    console.log('Attempting to create tables');
-    createAllTables().then((result) => {
-      console.log(result);
-      pool.end();
-    }).catch((error) => {
-      console.error(error);
-      pool.end();
-    });
-    // pool.end();
-  })
-    .catch((err) => {
-      console.log(err);
-      pool.end();
-    });
-}).catch((errorCreateDB) => {
-  console.error('error creating DB', errorCreateDB);
-  pool.end();
-});
 
 // createAllTables();
 

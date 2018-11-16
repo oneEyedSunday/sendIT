@@ -3,6 +3,7 @@ language: node_js
 node_js:
   - "10"
 
+
 before_install:
   - "cd server"
 
@@ -10,7 +11,7 @@ install:
   - "npm install"
 
 before_script:
-  - "npm run build-js"
+  - "npm run postinstall"
 
 script:
   - "npm run test"
