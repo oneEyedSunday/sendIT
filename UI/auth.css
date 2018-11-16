@@ -1,3 +1,22 @@
 .center-spacey {
     margin: 10px auto;
 }
+
+input, input::placeholder {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.2em;
+    padding-left: 10px;
+}
+
+.button {
+    font-size: 1.3em;
+    border-radius: 20px;
+    height: 60%;
+}
+
+@media (max-width: 600px) {
+    .button {
+        border-radius: 10px;
+        width: 100%;
+    }
+}

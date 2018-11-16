@@ -12,13 +12,16 @@
     <div class="container">
         <nav class="header">
             <div class="header__content flex justify-content__sb">
-                <div class="logo rounded-edges">
-                    <a href="../index.html" title="Home"></a>
-                </div>
-                <div class="nav">
+                    <div class="flex justify-content__sb">
+                        <div class="logo rounded-edges">
+                            <a href="#" title="Home"></a>
+                        </div>
+                        <a href="index.html" class="logo__text">SendIT</a>
+                    </div>
+                <div class="nav" id="nav">
                         <ul class="menu flex align-items__center justify-content__sb">
                             <li class="menu_item">
-                                    <a href="#">Sign Out</a>
+                                    <a href="../index.html">Sign Out</a>
                             </li>
                         </ul>
                 </div>
@@ -29,7 +32,7 @@
                 <div class="row">
                     <p>All parcel delivery orders</p>
                 </div>
-                <div class="row table">
+                <div class="row table table__head">
                     <span>S/N</span>
                     <span>Date Created</span>
                     <span>Destination</span>
@@ -88,5 +91,6 @@
                 </div>
         </footer>
     </div>
+    <script src="../main.js"></script>
 </body>
 </html>

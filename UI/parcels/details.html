@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../main.css">
     <link rel="stylesheet" href="../forms.css">
     <link rel="stylesheet" href="parcels.css">
+    <link rel="stylesheet" href="map.css">
 </head>
 <body>
     <div class="container">
@@ -25,13 +26,13 @@
                                     <a href="index.html">Parcels</a>
                             </li>
                             <li class="menu_item">
-                                    <a href="#">Sign Out</a>
+                                    <a href="../index.html">Sign Out</a>
                             </li>
                         </ul>
                 </div>
             </div>
         </nav>
-        <main class="flex-column justify-content__center align-items__center">
+        <main class="flex justify-content__sa align-items__center my-5" id="detailsWithMap">
             <div class="card">
                 <h2 class="form__title text-center">Parcel Delivery Order Details</h2>
                 <form action="#" method="POST" class="form">
@@ -58,6 +59,10 @@
                     <button type="submit" class="button margin-auto danger" id="actionButton">Cancel Delivery Order</button>
                 </form>
             </div>
+            <div class="card">
+                <div id="map"></div>
+            </div>
+            
         </main>
         <footer class="footer flex align-items__center">
                 <div class="footer__content flex">
@@ -72,5 +77,8 @@
         </footer>
     </div>
     <script src="parcels.js"></script>
+    <script src="map.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClZqFiclDWHCP-qNtiZug5qoUMw_U3G3g&callback=initMap">
+    </script>
 </body>
 </html>
