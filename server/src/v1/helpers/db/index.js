@@ -15,8 +15,7 @@ const createPool = () => {
   if (process.env.DATABASE_URL) poolObj = { connectionString: process.env.DATABASE_URL };
   // console.log(process.env.NODE_ENV);
 
-  if (process.env.NODE_ENV === 'test') poolObj.database = process.env.DB_HEROKU;
-  // if (process.env.NODE_ENV === 'heroku') poolObj.database = process.env.DB_HEROKU;
+  if (process.env.NODE_ENV === 'test') poolObj.database = process.env.DB_NAME_TEST;
 
   // console.log(poolObj);
   return new Pool(poolObj);
