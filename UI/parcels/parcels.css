@@ -1,3 +1,6 @@
+html {
+    background-color: #fff;
+}
 
 .table {
     display: grid;
@@ -5,6 +8,13 @@
     border-top: 1px solid black;
     border-right: 1px solid black;
     border-left: 1px solid black;
+    min-width: 600px;
+    white-space: nowrap;
+}
+
+.table__head {
+    background-color: var(--secondary-bg-color);
+    color: #fff;
 }
 
 .table > span, .table > div {
@@ -19,6 +29,13 @@
     border-right: none;
 }
 
+button.button a {
+    color: #fff;
+}
+
+button.button:hover > a, button.button:focus > a {
+    color: var(--secondary-bg-color);
+}
 
 .table > span, .table > div {
     /* padding-bottom: 0; */
@@ -74,6 +91,10 @@
     .button {
         padding-left: 2px;
         padding-right: 2px;
+    }
+
+    .table {
+        overflow-x: visible;
     }
 }
 
