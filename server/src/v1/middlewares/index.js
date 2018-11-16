@@ -44,15 +44,12 @@ export default class Middleware {
 
   static async isOwner(req, res, next) {
     try {
-      // review
-      const userParcels = await DBHelpers.getParcelsByUserId(req.params.id);
-      if (userParcels === undefined || userParcels === null || (userParcels.indexOf(parseInt(req.params.id, 10)) < 0)) {
-        return res.status(403).send({ error: 'You do not have access to this resource' });
-      }
+      const test = (req.parcel.userid === req.user.id);
+      if (test) return next();
+      return res.status(403).send({ error: 'You do not have access to this resource' });
     } catch (error) {
       return res.status(400).send({ error: error.message });
     }
-    return next();
   }
 
   static async isOwnerOrAdmin(req, res, next) {

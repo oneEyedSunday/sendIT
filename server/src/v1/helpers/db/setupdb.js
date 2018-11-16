@@ -90,22 +90,30 @@ const dropAllTables = () => {
 };
 
 
-dropAllTables().then((res) => {
-  console.log(res);
-  console.log('Attempting to create tables');
-  createAllTables().then((result) => {
-    console.log(result);
-    pool.end();
-  }).catch((error) => {
-    console.error(error);
+// create db if not exists
+pool.query('create database ${process.env.DB_NAME} IF NOT EXISTS ${process.env.DB_NAME}').then((resCreateDB) => {
+  console.log('result of creating DB', resCreateDB);
+  dropAllTables().then((res) => {
+    console.log(res);
+    console.log('Attempting to create tables');
+    createAllTables().then((result) => {
+      console.log(result);
+      pool.end();
+    }).catch((error) => {
+      console.error(error);
+      pool.end();
+    });
+    // pool.end();
+  })
+  .catch((err) => {
+    console.log(err);
     pool.end();
   });
-  // pool.end();
-})
-.catch((err) => {
-  console.log(err);
+}).catch((errorCreateDB) => {
+  console.error('error creating DB', errorCreateDB)
   pool.end();
-});
+})
+
 // createAllTables();
 
 /*
