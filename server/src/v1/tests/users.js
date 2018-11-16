@@ -32,12 +32,12 @@ export default class UsersApiTests {
   runTests() {
     describe('Users API Tests', () => {
       before((done) => {
-        
+
         chai.request(this.server)
           .post('/api/v1/auth/signup')
           .send({
             user: {
-              email: 'testingUser@yahoo.com',
+              email: `${Date.now()}@yahoo.com`,
               password: 'finito',
               firstname: 'Pier',
               lastname: 'Dragowski',
@@ -46,14 +46,14 @@ export default class UsersApiTests {
           .then((response) => {
             this.token = response.body.token;
             this.tokenUser = jwt.verify(this.token, process.env.secret);
+            this.adminUUID = uuid();
+            this.mockAdminToken = jwt.sign({
+              id: this.adminUUID,
+              admin: true,
+            }, process.env.secret);
+            done();
           })
           .catch(err => console.error(err));
-        this.adminUUID = uuid();
-        this.mockAdminToken = jwt.sign({
-          id: this.adminUUID,
-          admin: true,
-        }, process.env.secret);
-        done();
       });
       this.list();
       this.getUserParcels();
@@ -92,7 +92,7 @@ export default class UsersApiTests {
           .post('/api/v1/auth/signup')
           .send({
             user: {
-              email: 'userWithParcels@test.com',
+              email: `${Date.now()}@test.com`,
               password: 'finito',
               firstname: 'Test',
               lastname: 'Test',
@@ -102,7 +102,6 @@ export default class UsersApiTests {
             this.allowedUserToken = response.body.token;
             jwt.verify(this.allowedUserToken, process.env.secret, (err, decoded) => {
               this.userOwningParcel = decoded;
-              // console.log(decoded);
               server.close();
               server.listen(port);
               chai.request(this.server)
@@ -116,15 +115,13 @@ export default class UsersApiTests {
                 })
                 .set('Authorization', this.allowedUserToken)
                 .then((createParcelResponse) => {
-                  // parcel
                   this.parcel = createParcelResponse.body;
-                  // extract parcelId
+                  done();
                 })
-                .catch(err => console.error('createParcelError', err));
+                .catch(createParcelError => console.error('createParcelError', createParcelError));
             });
           })
           .catch(err => console.error('User Sign up error ', err));
-        done();
       });
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
         .get(this.baseURI)
@@ -177,7 +174,7 @@ export default class UsersApiTests {
           response.body.should.be.a('object');
           response.body.should.have.property('error').eql('invalid input syntax for type uuid: "99999999"');
         }));
-        
+
       it('it should return an empty array if User has no parcel delivery orders.', () => chai.request(this.server)
         .get(`${this.baseURI}/${this.tokenUser.id}/parcels`)
         .set('Authorization', `Bearer ${this.mockAdminToken}`)

@@ -110,7 +110,7 @@ export default class ParcelsApiTests {
           .post('/api/v1/auth/signup')
           .send({
             user: {
-              email: 'user-Pahahagta@test.com',
+              email: `${Date.now()}@test.com`,
               password: 'finito',
               firstname: 'Test',
               lastname: 'Test',
@@ -181,7 +181,7 @@ export default class ParcelsApiTests {
           .post('/api/v1/auth/signup')
           .send({
             user: {
-              email: 'user-Pahahagta@test.com',
+              email: `user-Pa${Date.now()}@test.com`,
               password: 'finito',
               firstname: 'Test',
               lastname: 'Test',
@@ -278,7 +278,7 @@ export default class ParcelsApiTests {
           .post('/api/v1/auth/signup')
           .send({
             user: {
-              email: 'user-Pahahagta@test.com',
+              email: `user-${Date.now()}Pahahagta@test.com`,
               password: 'finito',
               firstname: 'Test',
               lastname: 'Test',
@@ -365,7 +365,7 @@ export default class ParcelsApiTests {
           .post('/api/v1/auth/signup')
           .send({
             user: {
-              email: 'user-Pahahagta@test.com',
+              email: `user-${Date.now()}Pahahagta@test.com`,
               password: 'finito',
               firstname: 'Test',
               lastname: 'Test',
@@ -460,7 +460,7 @@ export default class ParcelsApiTests {
         .post('/api/v1/auth/signup')
         .send({
           user: {
-            email: 'user-Pahahagta@test.com',
+            email: `user-${Date.now()}Pahahagta@test.com`,
             password: 'finito',
             firstname: 'Test',
             lastname: 'Test',
@@ -553,7 +553,7 @@ export default class ParcelsApiTests {
           .post('/api/v1/auth/signup')
           .send({
             user: {
-              email: 'user-Pahahagta@test.com',
+              email: `user-${Date.now()}Pahahagta@test.com`,
               password: 'finito',
               firstname: 'Test',
               lastname: 'Test',
