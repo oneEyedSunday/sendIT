@@ -1,7 +1,17 @@
 import jwt from 'jsonwebtoken';
 import DBHelpers from '../helpers/db/helpers';
 
+/** Class representing Middleware functions. */
 export default class Middleware {
+  /**
+ * Middleware to ensure request is from an authenticated user.
+ * @module Middlewares
+ * @function
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @return {undefined}
+ */
   static async isAuth(req, res, next) {
     // return next();
     if (req.url === '/api' || req.url === '/api/' || req.url === '/api/v1/auth/signup' || req.url === '/api/v1/auth/login') return next();
@@ -24,6 +34,15 @@ export default class Middleware {
     }
   }
 
+  /**
+ * Middleware to ensure request is from an admin.
+ * @module Middlewares
+ * @function
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @return {undefined}
+ */
   static async isAdmin(req, res, next) {
     if (req.user.admin) {
       next();
@@ -32,6 +51,15 @@ export default class Middleware {
     }
   }
 
+  /**
+ * Middleware to ensure parcel requested exists.
+ * @module Middlewares
+ * @function
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @return {undefined}
+ */
   static async parcelExists(req, res, next) {
     try {
       const parcel = await DBHelpers.find('parcels', req.params.id);
@@ -42,6 +70,15 @@ export default class Middleware {
     }
   }
 
+  /**
+ * Middleware to ensure request for parcel is from owner of parcel.
+ * @module Middlewares
+ * @function
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @return {undefined}
+ */
   static async isOwner(req, res, next) {
     try {
       const test = (req.parcel.userid === req.user.id);
@@ -52,6 +89,15 @@ export default class Middleware {
     }
   }
 
+  /**
+ * Middleware to ensure request for parcel is from owner or admin.
+ * @module Middlewares
+ * @function
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @return {undefined}
+ */
   static async isOwnerOrAdmin(req, res, next) {
     // return next();
     if (!req.user.admin) {
