@@ -5,6 +5,7 @@ import chaiHttp from 'chai-http';
 import http from 'http';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import uuid from 'uuid/v4';
 import { Server } from '../../server';
 import { statuses } from '../helpers/mockdb';
 
@@ -23,25 +24,14 @@ server.listen(port).on('error', (err) => {
   process.exit(-1);
 });
 
-
-let noOfParcels = 4;
-const createParcel = (exclude = []) => {
-  const parcel = {};
-  if (exclude.indexOf('destination') < 0) parcel.destination = 'Lekki, Lagos';
-  if (exclude.indexOf('pickUpLocation') < 0) parcel.pickUpLocation = 'Muson Centre, Lekki';
-  return parcel;
-};
-
 export const parcelDeliveryOrderTest = (parcelObj, options = null) => {
   parcelObj.should.have.property('id');
   parcelObj.should.have.property('destination');
   parcelObj.should.have.property('price');
   parcelObj.should.have.property('status');
-  if (!(options && options.excludes && options.excludes.indexOf('presentLocation') > -1)) {
-    parcelObj.should.have.property('presentLocation');
+  if (!(options && options.excludes && options.excludes.indexOf('presentlocation') > -1)) {
+    parcelObj.should.have.property('presentlocation');
   }
-  parcelObj.status.should.have.property('code');
-  parcelObj.status.should.have.property('uiText');
 };
 
 export default class ParcelsApiTests {
@@ -52,48 +42,6 @@ export default class ParcelsApiTests {
 
   runTests() {
     describe('Parcels API Tests', () => {
-      before((done) => {
-        chai.request(this.server)
-          .post('/api/v1/auth/signup')
-          .send({
-            user: {
-              email: 'pierDragowki@yahoo.com',
-              password: 'finito',
-              firstname: 'Pier',
-              lastname: 'Dragowski',
-            },
-          })
-          .then((response) => {
-            this.token = response.body.token;
-          })
-          .catch(err => console.error(err));
-
-        chai.request(this.server)
-          .post('/api/v1/auth/signup')
-          .send({
-            user: {
-              email: 'test@test.com',
-              password: 'finito',
-              firstname: 'Test',
-              lastname: 'Test',
-            },
-          })
-          .then((response) => {
-            this.allowedUserToken = response.body.token;
-          })
-          .catch(err => console.error(err));
-
-        this.mockAdminToken = jwt.sign({
-          id: 5,
-          admin: true,
-        }, process.env.secret);
-
-        this.parcel = createParcel();
-        this.parcelWithoutDestination = createParcel(['destination']);
-        this.parcelWithoutPickUpLocation = createParcel(['pickUpLocation']);
-        this.bareParcel = createParcel(['destination', 'pickUpLocation']);
-        done();
-      });
       this.createOrder();
       this.listOrders();
       this.getOrder();
@@ -109,6 +57,16 @@ export default class ParcelsApiTests {
   }
 
   listOrders() {
+    let mockAdmin;
+    let mockUser;
+    before((done) => {
+      mockAdmin = jwt.sign({
+        id: uuid(),
+        admin: true,
+      }, process.env.secret);
+      mockUser = jwt.sign({ id: uuid() }, process.env.secret);
+      done();
+    });
     describe(`GET ${this.baseURI}`, () => {
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
         .get(this.baseURI)
@@ -118,10 +76,9 @@ export default class ParcelsApiTests {
           response.body.should.have.property('auth').eql(false);
           response.body.should.have.property('message').eql('Authorization token is not provided.');
         }));
-
-        it('it should not allow access to a user', () => chai.request(this.server)
+      it('it should not allow access to a user', () => chai.request(this.server)
         .get(this.baseURI)
-        .set('Authorization', this.allowedUserToken)
+        .set('Authorization', mockUser)
         .then((response) => {
           response.should.have.status(401);
           response.body.should.be.an('object');
@@ -131,7 +88,7 @@ export default class ParcelsApiTests {
 
       it('it should list all parcel delivery orders', () => chai.request(this.server)
         .get(this.baseURI)
-        .set('Authorization', `Bearer ${this.mockAdminToken}`)
+        .set('Authorization', `Bearer ${mockAdmin}`)
         .then((response) => {
           response.should.have.status(200);
           response.body.should.be.a('array');
@@ -141,8 +98,52 @@ export default class ParcelsApiTests {
 
   getOrder() {
     describe(`GET ${this.baseURI}/id`, () => {
+      let mockAdminToken;
+      let userCreatingParcelToken;
+      let parcel;
+      before((done) => {
+        mockAdminToken = jwt.sign({
+          id: uuid(),
+          admin: true,
+        }, process.env.secret);
+        chai.request(this.server)
+          .post('/api/v1/auth/signup')
+          .send({
+            user: {
+              email: 'user-Pahahagta@test.com',
+              password: 'finito',
+              firstname: 'Test',
+              lastname: 'Test',
+            },
+          })
+          .then((response) => {
+            userCreatingParcelToken = response.body.token;
+            jwt.verify(userCreatingParcelToken, process.env.secret, (_err, decoded) => {
+              server.close();
+              server.listen(port);
+              if (decoded) {
+                chai.request(this.server)
+                  .post('/api/v1/parcels')
+                  .send({
+                    parcel: {
+                      userId: decoded.id,
+                      destination: 'Some Place',
+                      pickUpLocation: 'Some pickup',
+                    },
+                  })
+                  .set('Authorization', userCreatingParcelToken)
+                  .then((createParcelResponse) => {
+                    parcel = createParcelResponse.body;
+                    done();
+                  })
+                  .catch(err => console.error('createParcelError', err));
+              }
+            });
+          })
+          .catch(err => console.error('User Sign up error ', err));
+      });
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
-        .get(`${this.baseURI}/id`)
+        .get(`${this.baseURI}/${parcel.id}`)
         .then((response) => {
           response.should.have.status(401);
           response.body.should.be.an('object');
@@ -151,28 +152,51 @@ export default class ParcelsApiTests {
         }));
 
       it('it should get a particular parcel delivery order by a given id', () => chai.request(this.server)
-        .get(`${this.baseURI}/1`)
-        .set('Authorization', `Bearer ${this.token}`)
+        .get(`${this.baseURI}/${parcel.id}`)
+        .set('Authorization', `Bearer ${mockAdminToken}`)
         .then((response) => {
           response.should.have.status(200);
           response.body.should.be.a('object');
           parcelDeliveryOrderTest(response.body);
-          response.body.should.have.property('id').eql(1);
+          response.body.should.have.property('id').eql(parcel.id);
         }));
 
       it('it should return an error with appropriate status if parcel is not found', () => chai.request(this.server)
         .get(`${this.baseURI}/999999`)
-        .set('Authorization', `Bearer ${this.token}`)
+        .set('Authorization', `Bearer ${mockAdminToken}`)
         .then((response) => {
           response.should.have.status(400);
           response.should.should.be.an('object');
-          response.body.should.have.property('error').eql('Parcel delivery order not found.');
+          response.body.should.have.property('error').eql('error: invalid input syntax for type uuid: "999999"');
         }));
     });
   }
 
   createOrder() {
+    let userCreatingParcelToken;
+    let parcel;
     describe(`POST ${this.baseURI}`, () => {
+      before((done) => {
+        chai.request(this.server)
+          .post('/api/v1/auth/signup')
+          .send({
+            user: {
+              email: 'user-Pahahagta@test.com',
+              password: 'finito',
+              firstname: 'Test',
+              lastname: 'Test',
+            },
+          })
+          .then((response) => {
+            userCreatingParcelToken = response.body.token;
+            parcel = {
+              destination: 'Some Destination',
+              pickUpLocation: 'Some Pickup',
+            };
+            done();
+          })
+          .catch(err => console.error('User Sign up error ', err));
+      });
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
         .post(this.baseURI)
         .then((response) => {
@@ -184,21 +208,19 @@ export default class ParcelsApiTests {
 
       it('it should create a parcel delivery order', () => {
         chai.request(this.server).post(this.baseURI)
-          .send({ parcel: this.parcel })
-          .set('Authorization', `Bearer ${this.token}`)
+          .send({ parcel })
+          .set('Authorization', `Bearer ${userCreatingParcelToken}`)
           .then((response) => {
             response.should.have.status(200);
             response.body.should.be.a('object');
             parcelDeliveryOrderTest(response.body);
-            this.parcel.id = response.body.id;
-            noOfParcels += 1;
           });
       });
 
       it('it should not create a parcel delivery order without destination speciified', () => chai.request(this.server)
         .post(this.baseURI)
-        .send({ parcel: this.parcelWithoutDestination })
-        .set('Authorization', `Bearer ${this.token}`)
+        .send({ parcel: { pickUpLocation: 'Some Pickup' } })
+        .set('Authorization', `Bearer ${userCreatingParcelToken}`)
         .then((response) => {
           response.should.have.status(422);
           response.body.should.be.a('object');
@@ -211,8 +233,8 @@ export default class ParcelsApiTests {
 
       it('it should not create a parcel delivery order without the pick up location speciified', () => chai.request(this.server)
         .post(this.baseURI)
-        .send({ parcel: this.parcelWithoutPickUpLocation })
-        .set('Authorization', `Bearer ${this.token}`)
+        .send({ parcel: { destination: 'SOme Destination' } })
+        .set('Authorization', `Bearer ${userCreatingParcelToken}`)
         .then((response) => {
           response.should.have.status(422);
           response.body.should.be.a('object');
@@ -225,8 +247,8 @@ export default class ParcelsApiTests {
 
       it('it should not create a parcel delivery order without the pick up location and destination speciified', () => chai.request(this.server)
         .post(this.baseURI)
-        .send({ parcel: this.bareParcel })
-        .set('Authorization', `Bearer ${this.token}`)
+        .send({ parcel: {} })
+        .set('Authorization', `Bearer ${userCreatingParcelToken}`)
         .then((response) => {
           response.should.have.status(422);
           response.body.should.be.a('object');
@@ -242,10 +264,56 @@ export default class ParcelsApiTests {
   }
 
   cancelOrder() {
-    const url = `${this.baseURI}/4/cancel`;
-    describe(`PUT ${url}`, () => {
+    let mockUser;
+    let mockAdminToken;
+    let userCreatingParcelToken;
+    let parcel;
+    describe(`PUT ${this.baseURI}/id`, () => {
+      before((done) => {
+        mockAdminToken = jwt.sign({
+          id: uuid(),
+          admin: true,
+        }, process.env.secret);
+        chai.request(this.server)
+          .post('/api/v1/auth/signup')
+          .send({
+            user: {
+              email: 'user-Pahahagta@test.com',
+              password: 'finito',
+              firstname: 'Test',
+              lastname: 'Test',
+            },
+          })
+          .then((response) => {
+            userCreatingParcelToken = response.body.token;
+            jwt.verify(userCreatingParcelToken, process.env.secret, (_err, decoded) => {
+              server.close();
+              server.listen(port);
+              if (decoded) {
+                chai.request(this.server)
+                  .post('/api/v1/parcels')
+                  .send({
+                    parcel: {
+                      userId: decoded.id,
+                      destination: 'Some Place',
+                      pickUpLocation: 'Some pickup',
+                    },
+                  })
+                  .set('Authorization', userCreatingParcelToken)
+                  .then((createParcelResponse) => {
+                  // parcel
+                    parcel = createParcelResponse.body;
+                    done();
+                  // extract parcelId
+                  })
+                  .catch(err => console.error('createParcelError', err));
+              }
+            });
+          })
+          .catch(err => console.error('User Sign up error ', err));
+      });
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
-        .put(`${url}`)
+        .put(`${this.baseURI}/${parcel.id}/cancel`)
         .then((response) => {
           response.should.have.status(401);
           response.body.should.be.an('object');
@@ -254,8 +322,8 @@ export default class ParcelsApiTests {
         }));
 
       it('it should not allow you cancel a parcel delivery order you do not own', () => chai.request(this.server)
-        .put(`${url}`)
-        .set('Authorization', `Bearer ${this.token}`)
+        .put(`${this.baseURI}/${parcel.id}/cancel`)
+        .set('Authorization', `Bearer ${mockAdminToken}`)
         .then((response) => {
           response.should.have.status(403);
           response.should.be.a('object');
@@ -263,31 +331,76 @@ export default class ParcelsApiTests {
         }));
 
       it('it should cancel a parcel delivery order', () => chai.request(this.server)
-        .put(`${url}`)
-        .set('Authorization', `Bearer ${this.allowedUserToken}`)
+        .put(`${this.baseURI}/${parcel.id}/cancel`)
+        .set('Authorization', `Bearer ${userCreatingParcelToken}`)
         .then((response) => {
           response.should.have.status(200);
           response.should.be.a('object');
           parcelDeliveryOrderTest(response.body, { excludes: ['presentLocation'] });
-          response.body.status.should.eql(statuses.Cancelled);
+          response.body.status.should.eql(statuses.Cancelled.code);
         }));
 
       it('it should return an error with appropriate error code if the parcel delivery order is not found', () => chai.request(this.server)
         .put(`${this.baseURI}/999999/cancel`)
-        .set('Authorization', `Bearer ${this.token}`)
+        .set('Authorization', `Bearer ${mockAdminToken}`)
         .then((response) => {
           response.should.have.status(400);
-          response.should.be.a('object');
-          response.body.should.have.property('error').eql('Parcel delivery order not found.');
+          response.should.should.be.an('object');
+          response.body.should.have.property('error').eql('error: invalid input syntax for type uuid: "999999"');
         }));
     });
   }
 
   changeOrderDestination() {
-    const url = `${this.baseURI}/4/destination`;
-    describe(`PUT ${url}`, () => {
+    let mockAdminToken;
+    let userCreatingParcelToken;
+    let parcel;
+    describe(`PUT ${this.baseURI}/id/destination`, () => {
+      before((done) => {
+        mockAdminToken = jwt.sign({
+          id: uuid(),
+          admin: true,
+        }, process.env.secret);
+        chai.request(this.server)
+          .post('/api/v1/auth/signup')
+          .send({
+            user: {
+              email: 'user-Pahahagta@test.com',
+              password: 'finito',
+              firstname: 'Test',
+              lastname: 'Test',
+            },
+          })
+          .then((response) => {
+            userCreatingParcelToken = response.body.token;
+            jwt.verify(userCreatingParcelToken, process.env.secret, (_err, decoded) => {
+              server.close();
+              server.listen(port);
+              if (decoded) {
+                chai.request(this.server)
+                  .post('/api/v1/parcels')
+                  .send({
+                    parcel: {
+                      userId: decoded.id,
+                      destination: 'Some Place',
+                      pickUpLocation: 'Some pickup',
+                    },
+                  })
+                  .set('Authorization', userCreatingParcelToken)
+                  .then((createParcelResponse) => {
+                  // parcel
+                    parcel = createParcelResponse.body;
+                    done();
+                  // extract parcelId
+                  })
+                  .catch(err => console.error('createParcelError', err));
+              }
+            });
+          })
+          .catch(err => console.error('User Sign up error ', err));
+      });
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
-        .put(`${url}`)
+        .put(`${this.baseURI}/id/destination`)
         .then((response) => {
           response.should.have.status(401);
           response.body.should.be.an('object');
@@ -296,17 +409,18 @@ export default class ParcelsApiTests {
         }));
 
       it('it should not allow you change destination of a parcel delivery order you do not own', () => chai.request(this.server)
-        .put(`${url}`)
-        .set('Authorization', `Bearer ${this.token}`)
+        .put(`${this.baseURI}/${parcel.id}/destination`)
+        .set('Authorization', `Bearer ${mockAdminToken}`)
         .then((response) => {
           response.should.have.status(403);
           response.should.be.a('object');
           response.body.should.have.property('error').eql('You do not have access to this resource');
         }));
 
+
       it('it should not allow you change destination without providing new destination', () => chai.request(this.server)
-        .put(`${url}`)
-        .set('Authorization', `Bearer ${this.allowedUserToken}`)
+        .put(`${this.baseURI}/${parcel.id}/destination`)
+        .set('Authorization', `Bearer ${userCreatingParcelToken}`)
         .then((response) => {
           response.should.have.status(422);
           response.body.should.be.a('object');
@@ -320,24 +434,69 @@ export default class ParcelsApiTests {
       const newDestination = 'TOS Benson, Ikorodu';
 
       it('it should allow you change the destination of a parcel delivery order you own', () => chai.request(this.server)
-        .put(`${url}`)
+        .put(`${this.baseURI}/${parcel.id}/destination`)
         .send({ destination: newDestination })
-        .set('Authorization', `Bearer ${this.allowedUserToken}`)
+        .set('Authorization', `Bearer ${userCreatingParcelToken}`)
         .then((response) => {
           response.should.have.status(200);
           response.should.be.a('object');
           parcelDeliveryOrderTest(response.body);
           response.body.should.have.property('destination').eql(newDestination);
-          response.body.should.have.property('status').eql(statuses.AwaitingProcessing);
+          response.body.should.have.property('status').eql(statuses.AwaitingProcessing.code);
         }));
     });
   }
 
   changeOrderStatus() {
-    const url = `${this.baseURI}/4/status`;
-    describe(`PUT ${url}`, () => {
+    let mockAdminToken;
+    let userCreatingParcelToken;
+    let parcel;
+    before((done) => {
+      mockAdminToken = jwt.sign({
+        id: uuid(),
+        admin: true,
+      }, process.env.secret);
+      chai.request(this.server)
+        .post('/api/v1/auth/signup')
+        .send({
+          user: {
+            email: 'user-Pahahagta@test.com',
+            password: 'finito',
+            firstname: 'Test',
+            lastname: 'Test',
+          },
+        })
+        .then((response) => {
+          userCreatingParcelToken = response.body.token;
+          jwt.verify(userCreatingParcelToken, process.env.secret, (_err, decoded) => {
+            server.close();
+            server.listen(port);
+            if (decoded) {
+              chai.request(this.server)
+                .post('/api/v1/parcels')
+                .send({
+                  parcel: {
+                    userId: decoded.id,
+                    destination: 'Some Place',
+                    pickUpLocation: 'Some pickup',
+                  },
+                })
+                .set('Authorization', userCreatingParcelToken)
+                .then((createParcelResponse) => {
+                // parcel
+                  parcel = createParcelResponse.body;
+                  done();
+                // extract parcelId
+                })
+                .catch(err => console.error('createParcelError', err));
+            }
+          });
+        })
+        .catch(err => console.error('User Sign up error ', err));
+    });
+    describe(`PUT ${this.baseURI}/id/status`, () => {
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
-        .put(`${url}`)
+        .put(`${this.baseURI}/${parcel.id}/status`)
         .then((response) => {
           response.should.have.status(401);
           response.body.should.be.an('object');
@@ -346,8 +505,8 @@ export default class ParcelsApiTests {
         }));
 
       it('it should not allow access to non-admins', () => chai.request(this.server)
-        .put(`${url}`)
-        .set('Authorization', `Bearer ${this.token}`)
+        .put(`${this.baseURI}/${parcel.id}/status`)
+        .set('Authorization', `Bearer ${userCreatingParcelToken}`)
         .then((response) => {
           response.should.have.status(401);
           response.should.be.a('object');
@@ -355,8 +514,8 @@ export default class ParcelsApiTests {
         }));
 
       it('it should not allow you admin to change status without providing new status', () => chai.request(this.server)
-        .put(`${url}`)
-        .set('Authorization', `Bearer ${this.mockAdminToken}`)
+        .put(`${this.baseURI}/${parcel.id}/status`)
+        .set('Authorization', `Bearer ${mockAdminToken}`)
         .then((response) => {
           response.should.have.status(422);
           response.body.should.be.a('object');
@@ -368,23 +527,68 @@ export default class ParcelsApiTests {
         }));
 
       it('it should allow an admin to change status of a parcel delivery order', () => chai.request(this.server)
-        .put(`${url}`)
-        .send({ status: statuses.Delivered })
-        .set('Authorization', `Bearer ${this.mockAdminToken}`)
+        .put(`${this.baseURI}/${parcel.id}/status`)
+        .send({ status: statuses.Delivered.code })
+        .set('Authorization', `Bearer ${mockAdminToken}`)
         .then((response) => {
           response.should.have.status(200);
           response.should.be.a('object');
           parcelDeliveryOrderTest(response.body);
-          response.body.should.have.property('status').eql(statuses.Delivered);
+          response.body.should.have.property('status').eql(statuses.Delivered.code);
         }));
     });
   }
 
   changeOrderLocation() {
-    const url = `${this.baseURI}/4/presentLocation`;
-    describe(`PUT ${url}`, () => {
+    let mockAdminToken;
+    let userCreatingParcelToken;
+    let parcel;
+    describe(`PUT ${this.baseURI}/id/presentLocation`, () => {
+      before((done) => {
+        mockAdminToken = jwt.sign({
+          id: uuid(),
+          admin: true,
+        }, process.env.secret);
+        chai.request(this.server)
+          .post('/api/v1/auth/signup')
+          .send({
+            user: {
+              email: 'user-Pahahagta@test.com',
+              password: 'finito',
+              firstname: 'Test',
+              lastname: 'Test',
+            },
+          })
+          .then((response) => {
+            userCreatingParcelToken = response.body.token;
+            jwt.verify(userCreatingParcelToken, process.env.secret, (_err, decoded) => {
+              server.close();
+              server.listen(port);
+              if (decoded) {
+                chai.request(this.server)
+                  .post('/api/v1/parcels')
+                  .send({
+                    parcel: {
+                      userId: decoded.id,
+                      destination: 'Some Place',
+                      pickUpLocation: 'Some pickup',
+                    },
+                  })
+                  .set('Authorization', userCreatingParcelToken)
+                  .then((createParcelResponse) => {
+                  // parcel
+                    parcel = createParcelResponse.body;
+                    done();
+                  // extract parcelId
+                  })
+                  .catch(err => console.error('createParcelError', err));
+              }
+            });
+          })
+          .catch(err => console.error('User Sign up error ', err));
+      });
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
-        .put(`${url}`)
+        .put(`${this.baseURI}/${parcel.id}/presentLocation`)
         .then((response) => {
           response.should.have.status(401);
           response.body.should.be.an('object');
@@ -393,8 +597,8 @@ export default class ParcelsApiTests {
         }));
 
       it('it should not allow access to non-admins', () => chai.request(this.server)
-        .put(`${url}`)
-        .set('Authorization', `Bearer ${this.token}`)
+        .put(`${this.baseURI}/${parcel.id}/presentLocation`)
+        .set('Authorization', `Bearer ${userCreatingParcelToken}`)
         .then((response) => {
           response.should.have.status(401);
           response.should.be.a('object');
@@ -402,8 +606,8 @@ export default class ParcelsApiTests {
         }));
 
       it('it should not allow you admin to change status without providing new location', () => chai.request(this.server)
-        .put(`${url}`)
-        .set('Authorization', `Bearer ${this.mockAdminToken}`)
+        .put(`${this.baseURI}/${parcel.id}/presentLocation`)
+        .set('Authorization', `Bearer ${mockAdminToken}`)
         .then((response) => {
           response.should.have.status(422);
           response.body.should.be.a('object');
@@ -415,15 +619,15 @@ export default class ParcelsApiTests {
         }));
 
       const newLocation = 'Mile 12, Lagos';
-      it('it should allow an admin to change status of a parcel delivery order', () => chai.request(this.server)
-        .put(`${url}`)
+      it('it should allow an admin to update Location of a parcel delivery order', () => chai.request(this.server)
+        .put(`${this.baseURI}/${parcel.id}/presentLocation`)
         .send({ presentLocation: newLocation })
-        .set('Authorization', `Bearer ${this.mockAdminToken}`)
+        .set('Authorization', `Bearer ${mockAdminToken}`)
         .then((response) => {
           response.should.have.status(200);
           response.should.be.a('object');
-          parcelDeliveryOrderTest(response.body);
-          response.body.should.have.property('presentLocation').eql(newLocation);
+          parcelDeliveryOrderTest(response.body, { excludes: ['presentlocation'] });
+          response.body.should.have.property('presentlocation').eql(newLocation);
         }));
     });
   }

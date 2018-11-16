@@ -1,5 +1,7 @@
+import dontenv from 'dotenv';
 import { pool } from '.';
 import dbHelpers from './helpers';
+dontenv.config();
 
 // process.env.NODE_ENV = 'test';
 
@@ -56,9 +58,7 @@ const dropParcelsTable = () => {
 };
 
 
-
-const createAllTables = () => {
-  return createUsersTable().then((resultOne) => {
+const createAllTables = () => createUsersTable().then((resultOne) => {
     // console.log(resultOne);
     console.log('successfully created users table');
     return createParcelsTable().then((resultTwo) => {
@@ -70,12 +70,10 @@ const createAllTables = () => {
   }).catch((errOne) => {
     console.error('error creating users table', errOne);
   });
-};
 /**
  * Drop All Tables
  */
-const dropAllTables = () => {
-  return dropParcelsTable().then((resultOne) => {
+const dropAllTables = () => dropParcelsTable().then((resultOne) => {
     // console.log(resultOne);
     console.log('successfully dropped parcels table');
     return dropUsersTable().then((resultTwo) => {
@@ -87,25 +85,32 @@ const dropAllTables = () => {
   }).catch((errOne) => {
     console.error('error dropping parcels table', errOne);
   });
-};
 
 
-dropAllTables().then((res) => {
-  console.log(res);
-  console.log('Attempting to create tables');
-  createAllTables().then((result) => {
-    console.log(result);
-    pool.end();
-  }).catch((error) => {
-    console.error(error);
-    pool.end();
-  });
-  // pool.end();
-})
-.catch((err) => {
-  console.log(err);
+// create db if not exists
+pool.query(`create database ${process.env.DB_NAME} IF NOT EXISTS ${process.env.DB_NAME}`).then((resCreateDB) => {
+  console.log('result of creating DB', resCreateDB);
+  dropAllTables().then((res) => {
+    console.log(res);
+    console.log('Attempting to create tables');
+    createAllTables().then((result) => {
+      console.log(result);
+      pool.end();
+    }).catch((error) => {
+      console.error(error);
+      pool.end();
+    });
+    // pool.end();
+  })
+    .catch((err) => {
+      console.log(err);
+      pool.end();
+    });
+}).catch((errorCreateDB) => {
+  console.error('error creating DB', errorCreateDB);
   pool.end();
 });
+
 // createAllTables();
 
 /*
