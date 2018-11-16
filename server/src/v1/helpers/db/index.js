@@ -3,6 +3,10 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+/**
+ * Returns a pool object
+ * @returns {pool}
+ */
 const createPool = () => {
   let poolObj = {
     user: process.env.DB_USER,
@@ -24,6 +28,12 @@ const createPool = () => {
 export const pool = createPool();
 
 const DB = {
+  /**
+ * Returns a promise of a query
+ * @param {string} text
+ * @param {array} params
+ * @returns {promise}
+ */
   query(text, params) {
     return new Promise((resolve, reject) => {
       pool.query(text, params)
@@ -36,17 +46,17 @@ const DB = {
     });
   },
 
-  queryCb(text, params, cb) {
-    pool.query(text, params, (err, res) => {
-      if (err) cb(err, null);
-      cb(null, res);
-    });
-  },
-
+  /**
+ * Returns a pool object
+ * @returns {pool}
+ */
   pool() {
     return pool;
   },
-
+  /**
+ * Returns a pool object
+ * @returns {pool}
+ */
   createPool() {
     return createPool();
   },

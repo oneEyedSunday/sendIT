@@ -17,6 +17,10 @@ import Middleware from './v1/middlewares';
 import db from './v1/helpers/db';
 // import models
 
+/**
+ * Server module 
+ * @module server
+ */
 export class Server {
   constructor() {
     this.app = express();
@@ -25,10 +29,23 @@ export class Server {
     this.api();
   }
 
+  /**
+ * bootstrap - return an instance of server class
+ *
+ * @function bootstrap
+ * @memberof  module:server
+ * @return {object}
+ */
   static bootstrap() {
     return new Server();
   }
 
+  /**
+ * api - Setup api endpoints
+ *
+ * @function api
+ * @memberof  module:server
+ */
   api() {
     this.app.get('/api', (req, res) => res.json({
       message: 'Welcome to SendIT, assess api at /api/vx x being the version of the API you wish to access',
@@ -41,7 +58,12 @@ export class Server {
     this.app.use('/api/v1/auth', AuthRoutes);
   }
 
-
+/**
+ * config - Configure server
+ *
+ * @function config
+ * @memberof  module:server
+ */
   config() {
     dotenv.config();
     this.app.set('json spaces', 2);
@@ -57,6 +79,12 @@ export class Server {
     // });
   }
 
+  /**
+ * db - Setup DB connection
+ *
+ * @function db
+ * @memberof  module:server
+ */
   db() {
     this.pool = db.createPool();
 
@@ -65,6 +93,12 @@ export class Server {
     });
   }
 
+  /**
+ * close - Close and dispose server
+ *
+ * @function close
+ * @memberof  module:server
+ */
   close() {
     this.app.close();
   }

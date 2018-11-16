@@ -1,6 +1,18 @@
 import bcrypt from 'bcrypt-nodejs';
 
+/**
+ * Helper Class containing functions for Authentication.
+ * @type {object}
+ * @const
+ * @namespace AuthHelper
+ */
 export default class AuthHelper {
+  /**
+   * Function to wrap around hashing
+ * @function
+ * @param {string} plain - String to be hashed
+ * @return {Promise}
+ */
   static hash(plain) {
     return new Promise((resolve, reject) => {
       bcrypt.hash(plain, null, null, (err, hash) => {
@@ -10,6 +22,13 @@ export default class AuthHelper {
     });
   }
 
+  /**
+   * Function to wrap around comparison
+ * @function
+ * @param {string} plain - String to compare with hash
+ * @param {string} hash - Hash to compare with
+ * @return {Promise}
+ */
   static compare(plain, hash) {
     return new Promise((resolve, reject) => {
       bcrypt.compare(plain, hash, (err, result) => {

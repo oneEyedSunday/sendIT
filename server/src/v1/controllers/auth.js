@@ -4,8 +4,19 @@ import { userHelpers } from '../helpers/mockdb';
 import AuthHelpers from '../helpers/auth';
 import dbHelpers from '../helpers/db/helpers';
 
-
+/**
+ * Auth controller - All functions for the handling authentication routes
+ * @module controllers/users
+ */
 const authController = {
+  /**
+ * signup - Sign up a user
+ *
+ * @function signup
+ * @memberof  module:controllers/auth
+ * @param  {Object} req  Express request object
+ * @param  {Object} res  Express response object
+ */
   signup(req, res) {
     const { user } = req.body;
     Validator.check(user, ['email', 'password', 'firstname', 'lastname']);
@@ -40,6 +51,14 @@ const authController = {
       }).catch(() => res.status(500).json({ error: 'An error occured while processing your request.' }));
   },
 
+  /**
+ * login - User log in
+ *
+ * @function login
+ * @memberof  module:controllers/auth
+ * @param  {Object} req  Express request object
+ * @param  {Object} res  Express response object
+ */
   login(req, res) {
     Validator.check(req.body, ['email', 'password']);
     const errors = Validator.errors();
