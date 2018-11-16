@@ -1,13 +1,31 @@
 import uuidv4 from 'uuid/v4';
 import db from '.';
 
+/**
+ * Function to return singular form of table name
+ * @function
+ * @param {string} tablename - Tablename
+ * @return {string}
+ */
 const singularTableName = (tablename) => {
   const firstLetter = tablename.charAt(0).toUpperCase();
   const singular = tablename.substr(0, tablename.length - 1);
   return firstLetter.concat(singular.slice(1));
 };
 
+/**
+ * Helper Class containing functions for DB Queries.
+ * @type {object}
+ * @const
+ * @namespace DBHelper
+ */
 const DBHelpers = {
+  /**
+ * Function to create a user in DB
+ * @function
+ * @param {object} userObject - Object containing user data
+ * @return {object}
+ */
   async createUser(userObject) {
     const text = `INSERT INTO
           users(id, email, firstname, lastname, password, admin, created_date, modified_date)
@@ -36,6 +54,12 @@ const DBHelpers = {
     }
   },
 
+  /**
+ * Function to create a parcel in DB
+ * @function
+ * @param {object} parcelObject - Object containing parcel data
+ * @return {object}
+ */
   async createParcel(parcelObject) {
     const text = `INSERT INTO
           parcels(id, userId, destination, pickUpLocation, presentLocation, price,  status, created_date, modified_date)
@@ -61,6 +85,12 @@ const DBHelpers = {
     }
   },
 
+  /**
+ * Function to get all data in a table
+ * @function
+ * @param {string} tablename - Table in DB
+ * @return {array}
+ */
   async findAll(tablename) {
     const findAllQuery = `SELECT * FROM ${tablename}`;
     try {
@@ -73,6 +103,14 @@ const DBHelpers = {
       throw new Error(error);
     }
   },
+
+  /**
+ * Function to find by id in DB
+ * @function
+ * @param {string} tablename - Table to look up
+ * @param {string} id - Id
+ * @return {object}
+ */
   async find(tablename, id) {
     const text = `SELECT * FROM ${tablename} WHERE id = $1`;
     try {
@@ -90,6 +128,14 @@ const DBHelpers = {
     }
   },
 
+
+  /**
+ * Function to find data in table by email
+ * @function
+ * @param {string} userObject - Object containing user data
+ * @param {string} email - email address to look up 
+ * @return {object}
+ */
   async findByEmail(tablename, email) {
     const text = `SELECT * FROM ${tablename} WHERE email = $1`;
     try {
@@ -107,6 +153,12 @@ const DBHelpers = {
     }
   },
 
+  /**
+ * Function to get parcels belonging to a user
+ * @function
+ * @param {string} userId - Id of user
+ * @return {array}
+ */
   async getParcelsByUserId(userId) {
     try {
       const query = 'SELECT * from parcels WHERE userId=$1';
@@ -117,6 +169,14 @@ const DBHelpers = {
     }
   },
 
+  /**
+ * Function to update a single field in row of DB table
+ * @function
+ * @param {string} tablename - table
+ * @param {string} id - id
+ * @param {object} fieldObject - Object containing field and data
+ * @return {object}
+ */
   async updateSingleField(tablename, id, fieldObject) {
     const keys = Object.keys(fieldObject);
     if (!keys || keys.length !== 1) throw new Error('You supplied wrong field object');
@@ -144,6 +204,13 @@ const DBHelpers = {
     }
   },
 
+  /**
+ * Function to delete from DB
+ * @function
+ * @param {string} tablename - Table to delete from
+ * @param {object} id - id of item to delete
+ * @return {object}
+ */
   async delete(tablename, id) {
     const deleteQuery = 'DELETE FROM $1 WHERE id=$2 returning *';
     try {
