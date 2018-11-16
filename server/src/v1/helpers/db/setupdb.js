@@ -1,5 +1,7 @@
+import dontenv from 'dotenv';
 import { pool } from '.';
 import dbHelpers from './helpers';
+dontenv.config();
 
 // process.env.NODE_ENV = 'test';
 
@@ -56,9 +58,7 @@ const dropParcelsTable = () => {
 };
 
 
-
-const createAllTables = () => {
-  return createUsersTable().then((resultOne) => {
+const createAllTables = () => createUsersTable().then((resultOne) => {
     // console.log(resultOne);
     console.log('successfully created users table');
     return createParcelsTable().then((resultTwo) => {
@@ -70,12 +70,10 @@ const createAllTables = () => {
   }).catch((errOne) => {
     console.error('error creating users table', errOne);
   });
-};
 /**
  * Drop All Tables
  */
-const dropAllTables = () => {
-  return dropParcelsTable().then((resultOne) => {
+const dropAllTables = () => dropParcelsTable().then((resultOne) => {
     // console.log(resultOne);
     console.log('successfully dropped parcels table');
     return dropUsersTable().then((resultTwo) => {
@@ -87,11 +85,10 @@ const dropAllTables = () => {
   }).catch((errOne) => {
     console.error('error dropping parcels table', errOne);
   });
-};
 
 
 // create db if not exists
-pool.query('create database ${process.env.DB_NAME} IF NOT EXISTS ${process.env.DB_NAME}').then((resCreateDB) => {
+pool.query(`create database ${process.env.DB_NAME} IF NOT EXISTS ${process.env.DB_NAME}`).then((resCreateDB) => {
   console.log('result of creating DB', resCreateDB);
   dropAllTables().then((res) => {
     console.log(res);
@@ -105,14 +102,14 @@ pool.query('create database ${process.env.DB_NAME} IF NOT EXISTS ${process.env.D
     });
     // pool.end();
   })
-  .catch((err) => {
-    console.log(err);
-    pool.end();
-  });
+    .catch((err) => {
+      console.log(err);
+      pool.end();
+    });
 }).catch((errorCreateDB) => {
-  console.error('error creating DB', errorCreateDB)
+  console.error('error creating DB', errorCreateDB);
   pool.end();
-})
+});
 
 // createAllTables();
 
