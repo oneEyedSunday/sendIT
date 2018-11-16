@@ -47,7 +47,8 @@
     border-bottom: 1px solid black;
 }
 
-@media (max-width: 900px) {
+
+@media (max-width: 950px) {
     .row {
         font-size: 1.2em;
     }
@@ -55,6 +56,13 @@
     .button {
         padding-left: 2px;
         padding-right: 2px;
+    }
+    #detailsWithMap {
+        flex-direction: column;
+    }
+
+    #detailsWithMap .card {
+        min-width: 450px;
     }
 }
 

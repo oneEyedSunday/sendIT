@@ -45,6 +45,10 @@ html, body {
     justify-content: space-between
 }
 
+.justify-content__sa {
+    justify-content: space-around;
+}
+
 .rounded-edges {
     border-radius: 5px;
 }
@@ -256,6 +260,7 @@ html, body {
     padding: 5px 10px;
     font-size: inherit;
     font-weight: inherit;
+    border-radius: 5px;
 }
 
 
