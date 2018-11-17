@@ -12,10 +12,13 @@
     <div class="container">
         <nav class="header">
             <div class="header__content flex justify-content__sb">
-                <div class="logo rounded-edges">
-                    <a href="../index.html" title="Home"></a>
+                <div class="flex justify-content__sb">
+                    <div class="logo rounded-edges">
+                        <a href="#" title="Home"></a>
+                    </div>
+                    <a href="index.html" class="logo__text">SendIT</a>
                 </div>
-                <div class="nav">
+                <div class="nav" id="nav">
                         <ul class="menu flex align-items__center justify-content__sb">
                             <li class="menu_item">
                                     <a href="../user/index.html">Profile</a>
@@ -31,52 +34,86 @@
             </div>
         </nav>
         <main class="main">
-            <div>
-                    <div class="row">
-                        <p>Your parcel delivery orders, Create more delivery orders   <a href="create.html">here</a></p>
-                    </div>
-                    <div id="overflowContainer">
-                        <table>
-                            <thead class="table__head">
-                                <tr>
-                                        <th>S/N</th>
-                                        <th>Date Created</th>
-                                        <th>Destination</th>
-                                        <th>Delivery Status</th>
-                                        <th colspan="3">Options</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>October 31st</td>
-                                    <td>Ojota, Lagos</td>
-                                    <td>In Transit</td>
-                                    <td>Cancel</td>
-                                    <td>Details</td>
-                                    <td>Edit</td>                                         
-                                </tr>
-                                <tr>
-                                        <td>1</td>
-                                        <td>October 31st</td>
-                                        <td>Ojota, Lagos</td>
-                                        <td>In Transit</td>
-                                        <td>Cancel</td>
-                                        <td>Details</td>
-                                        <td>Edit</td>                                    
-                                    </tr>
-                                    <tr>
-                                            <td>1</td>
-                                            <td>October 31st</td>
-                                            <td>Ojota, Lagos</td>
-                                            <td>In Transit</td>
-                                            <td>Cancel</td>
-                                            <td>Details</td>
-                                            <td>Edit</td>                                    
-                                        </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="context">
+                    <p><a href="create.html" class="action link">&plus;</a> Your parcels delivery orders</p>
+            </div>
+            <div id="overflowContainer">
+                <table>
+                    <thead class="">
+                        <tr>
+                                <th>S/N</th>
+                                <th>Date Created</th>
+                                <th>Destination</th>
+                                <th>Delivery Status</th>
+                                <th colspan="3">Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>October 31st</td>
+                            <td>Ojota, Lagos</td>
+                            <td>In Transit</td>
+                            <td>
+                                    <button class="button danger">
+                                        Cancel
+                                    </button>
+                            </td>
+                            <td>
+                                    <button class="button">
+                                        <a href="../parcels/details.html?parcelId=1">Details</a>
+                                    </button>
+                            </td>
+                            <td>
+                                    <button class="button">
+                                        <a href="../parcels/edit.html?parcelId=1">Edit</a>
+                                    </button>
+                            </td>                                         
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>October 31st</td>
+                            <td>Ojota, Lagos</td>
+                            <td>In Transit</td>
+                            <td>
+                                    <button class="button danger">
+                                        Cancel
+                                    </button>
+                            </td>
+                            <td>
+                                    <button class="button">
+                                        <a href="../parcels/details.html?parcelId=2">Details</a>
+                                    </button>
+                            </td>
+                            <td>
+                                    <button class="button">
+                                        <a href="../parcels/edit.html?parcelId=2">Edit</a>
+                                    </button>
+                            </td>                                    
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>October 31st</td>
+                            <td>Ojota, Lagos</td>
+                            <td>In Transit</td>
+                            <td>
+                                    <button class="button danger">
+                                        Cancel
+                                    </button>
+                            </td>
+                            <td>
+                                    <button class="button">
+                                        <a href="../parcels/details.html?parcelId=3">Details</a>
+                                    </button>
+                            </td>
+                            <td>
+                                    <button class="button">
+                                        <a href="../parcels/edit.html?parcelId=3">Edit</a>
+                                    </button>
+                            </td>                                    
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </main>
         <footer class="footer flex align-items__center">
@@ -91,5 +128,6 @@
                 </div>
         </footer>
     </div>
+    <script src="../main.js"></script>
 </body>
 </html>

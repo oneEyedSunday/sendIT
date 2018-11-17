@@ -27,56 +27,66 @@
                 </div>
             </div>
         </nav>
-        <main class="flex-column justify-content__center align-items__center">
-            <div class="card flex-column full-width">
-                <div class="row">
-                    <p>All parcel delivery orders</p>
-                </div>
-                <div class="row table table__head">
-                    <span>S/N</span>
-                    <span>Date Created</span>
-                    <span>Destination</span>
-                    <span>Delivery Status</span>
-                    <span>Options</span>
-                </div>
-                <div class="row table">
-                        <span>1</span>
-                        <span>October 31st</span>
-                        <span>Ojota, Lagos</span>
-                        <!-- TODO (oneeyedsunday) -->
-                        <!-- Visual indicators to parcel status -->
-                        <span>In transit</span> 
-                        <div>
-                            <button class="button">
-                                <a href="../parcels/details.html?parcelId=1&context=admin">Details</a>
-                            </button>
-                            <button class="button primary-action">
-                                    <a href="../parcels/edit.html?parcelId=1&context=admin">Update Details</a>
-                            </button>
-                         </div>    
-                </div>
-                <div class="row table">
-                        <span>2</span>
-                        <span>October 31st</span>                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-                        <span>Ikeja, Lagos</span>
-                        <span>Cancelled</span>
-                        <div>
-                            <button class="button">
-                                <a href="../parcels/details.html?parcelId=2&context=admin">Details</a>
-                            </button>
-                         </div>    
-                </div>
-                <div class="row table">
-                        <span>3</span>
-                        <span>October 31st</span>
-                        <span>Maitama, Abuja</span>
-                        <span>Delivered</span>
-                        <div>
-                            <button class="button">
-                                <a href="../parcels/details.html?parcelId=3&context=admin">Details</a>
-                            </button>
-                         </div>    
-                </div>
+        <main class="main">
+            <div class="context pt">
+                All parcel delivery orders.
+            </div>
+            <div id="overflowContainer">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>S/N</th>
+                            <th>Date Created</th>
+                            <th>Destination</th>
+                            <th>Status</th>
+                            <th colspan="2">Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <!-- TODO (oneeyedsunday) -->
+                            <!-- Visual indicators to parcel status -->
+                            <td>1</td>
+                            <td>October 31st</td>
+                            <td>Ojota, Lagos</td>
+                            <td>In Transit</td>
+                            <td>
+                                <button class="button">
+                                    <a href="../parcels/details.html?parcelId=1&context=admin">Details</a>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="button primary-action">
+                                        <a href="../parcels/edit.html?parcelId=1&context=admin">Update</a>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>October 31st</td>
+                            <td>Ikeja, Lagos</td>
+                            <td>Cancelled</td>
+                            <td>
+                                    <button class="button">
+                                        <a href="../parcels/details.html?parcelId=2&context=admin">Details</a>
+                                    </button>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>October 31st</td>
+                            <td>Maitama, Abuja</td>
+                            <td>Cancelled</td>
+                            <td>
+                                    <button class="button">
+                                        <a href="../parcels/details.html?parcelId=3&context=admin">Details</a>
+                                    </button>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </main>
         <footer class="footer flex align-items__center">

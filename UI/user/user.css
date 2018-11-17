@@ -1,6 +1,7 @@
 
 
 .box {
+    font-family: 'Lato', Arial, Helvetica, sans-serif;
     border: 1px solid #92369e;
     box-shadow: 6px 3px 0px 0px var(--secondary-bg-color);
     padding: 10px;
@@ -14,6 +15,10 @@
     padding: 5px 10px;
 }
 
+.button {
+    font-family: 'Lato', Arial, Helvetica, sans-serif;
+    font-size: 400;
+}
 
 .button a {
     color: #fff;
