@@ -5,17 +5,70 @@ html {
 table {
     width: 100%;
     border-collapse: collapse;
-    border: 3px solid purple;
-    border-top: none;
+    /* border: 3px solid purple; */
+    border: none;
+    /* white-space: nowrap; */
+    font-size: 1.2em;
+}
+
+tr {
+    padding: 10px;
+    border-bottom: 1px solid var(--secondary-bg-color);
+}
+tr:nth-child(even){background-color: #f2f2f2}
+
+td {
+    padding: 10px;
+}
+
+thead {
+    border-bottom: 2px solid var(--secondary-bg-color);
     white-space: nowrap;
 }
 
-tr:nth-child(even){background-color: #f2f2f2}
+.action {
+    color: green;
+    text-decoration: none;
+    font-size: 1.5em;
+    font-weight: bold;
+}
 
+
+.link {
+    text-decoration: none;
+    margin-right: 5px;
+}
+
+.btn__link {
+    border: 1px solid;
+    text-decoration: none;
+    padding: 5px 50px;
+    color: #fff;
+    background-color: lightgreen;
+    border-color: #fff;
+    
+}
+.btn__link:hover, .btn__link:focus {
+    border-color: lightgreen;
+    color: lightgreen;   
+    background-color: #fff;
+}
 
 #overflowContainer {
     overflow-x: auto;
 }
+.context {
+    font-size: 1.2em;
+    font-weight: 400;
+    text-align: center;
+}
+
+#overflowContainer, .context {
+    margin: 0 auto;
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+}
+
 
 #overflowContainer::-webkit-scrollbar {
     display: none;
@@ -45,8 +98,32 @@ tr:nth-child(even){background-color: #f2f2f2}
     /* border-bottom: 1px solid black; */
 }
 
+.card {
+    min-width: auto;
+}
+
+button.button.full-width {
+    width: 100%;
+}
+
+.form {
+    font-size: 1.2em;
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    margin-top: 1.3em;
+}
+
+input {
+    font-family: Helvetica;
+    font-size: 1.1em;
+}
+
 .table > *:last-child {
     border-right: none;
+}
+
+button.button {
+    width: 80px;
 }
 
 button.button a {
@@ -95,15 +172,24 @@ button.button:hover > a, button.button:focus > a {
         padding-right: 2px;
     }
     #detailsWithMap {
-        flex-direction: column;
+        flex-direction: column-reverse;
     }
 
     #detailsWithMap .card {
-        min-width: 450px;
+        min-width: auto;
+    }
+
+    #map {
+        min-width: 430px;
     }
 }
 
 @media (max-width: 700px) {
+    .main {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
     .row {
         font-size: 1em;
     }
@@ -111,6 +197,17 @@ button.button:hover > a, button.button:focus > a {
     .button {
         padding-left: 2px;
         padding-right: 2px;
+    }
+}
+
+@media (max-width: 600px) {
+    .form__field {
+        flex-direction: column;
+    }
+
+    .form__field label {
+        margin: 5px auto;
+        text-align: center;
     }
 }
 

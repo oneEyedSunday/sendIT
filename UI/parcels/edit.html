@@ -13,10 +13,13 @@
     <div class="container">
         <nav class="header">
             <div class="header__content flex justify-content__sb">
-                <div class="logo rounded-edges">
-                    <a href="../index.html" title="Home"></a>
-                </div>
-                <div class="nav">
+                    <div class="flex justify-content__sb">
+                        <div class="logo rounded-edges">
+                            <a href="#" title="Home"></a>
+                        </div>
+                        <a href="index.html" class="logo__text">SendIT</a>
+                    </div>
+                <div class="nav" id="nav">
                         <ul class="menu flex align-items__center justify-content__sb">
                             <li class="menu_item">
                                     <a href="../user/index.html">Profile</a>
@@ -32,18 +35,18 @@
             </div>
         </nav>
         <main class="flex-column justify-content__center align-items__center">
-            <div class="card">
-                <h2 class="form__title text-center">Edit Parcel Delivery Order</h2>
+            <div class="card my-5">
+                <div class="context">
+                    <a href="./index.html" class="link" title="Go Back">&NestedLessLess;</a>
+                    Edit your parcel delivery order
+                </div>
                 <form action="#" method="POST" class="form">
-                    <div class="form__field">
+                    <div class="form__field flex">
                         <label for="destination">Destination</label>
                         <input type="text"  name="destination" placeholder="Parcel Destination"/>
                     </div>
-                    <div class="header__content flex justify-content__sb" id="actionButtons">
-                        <!-- TODO (oneeyedsunday)  -->
-                        <!-- prevent defaults -->
-                        <button type="submit" class="button margin-auto ">Edit Delivery Order</button>
-                        <button type="submit" class="button margin-auto danger">Cancel Delivery Order</button>
+                    <div class="form__field flex justify-content__sb" id="actionButtons">
+                        <button type="submit" class="button primary-action y-four-fifths  full-width">Confirm Update</button>
                     </div>
                 </form>
             </div>
@@ -60,6 +63,7 @@
                 </div>
         </footer>
     </div>
+    <script src="../main.js"></script>
     <script src="parcels.js"></script>
 </body>
 </html>
