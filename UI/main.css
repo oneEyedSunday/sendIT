@@ -202,7 +202,7 @@ html, body {
 }
 
 .showcase__item:nth-of-type(1) {
-    flex-direction: column-reverse;
+    /* flex-direction: column-reverse; */
 }
 
 /* TODO (oneeyedsunday */
