@@ -6,12 +6,22 @@ table {
     width: 100%;
     border-collapse: collapse;
     border: 3px solid purple;
+    border-top: none;
     white-space: nowrap;
 }
+
+tr:nth-child(even){background-color: #f2f2f2}
+
 
 #overflowContainer {
     overflow-x: auto;
 }
+
+#overflowContainer::-webkit-scrollbar {
+    display: none;
+}
+
+
 .table {
     display: grid;
     grid-template-columns: 0.5fr repeat(3, 1fr) 2fr;
