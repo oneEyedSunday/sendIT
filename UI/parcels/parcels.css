@@ -2,14 +2,24 @@ html {
     background-color: #fff;
 }
 
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 3px solid purple;
+    white-space: nowrap;
+}
+
+#overflowContainer {
+    overflow-x: auto;
+}
 .table {
     display: grid;
     grid-template-columns: 0.5fr repeat(3, 1fr) 2fr;
     border-top: 1px solid black;
     border-right: 1px solid black;
     border-left: 1px solid black;
-    min-width: 600px;
-    white-space: nowrap;
+    /* min-width: 600px; */
+    /* white-space: nowrap; */
 }
 
 .table__head {
@@ -91,10 +101,6 @@ button.button:hover > a, button.button:focus > a {
     .button {
         padding-left: 2px;
         padding-right: 2px;
-    }
-
-    .table {
-        overflow-x: visible;
     }
 }
 
