@@ -8,6 +8,7 @@
     padding: 1em;
     margin: 2em auto 0 auto;
     /* max-width: 600px; */
+    border-radius: 4px;
 }
 
 .form__title {
@@ -16,7 +17,7 @@
 }
 
 .form__field {
-    height: 80px;
+    height: 60px;
     padding: 0.5em 5px;
 }
 
@@ -27,7 +28,7 @@
 
 .form__field input {
     background: #fff;
-    height: 80%;
+    height: 70%;
     border: 1px solid var(--secondary-bg-color);
     padding: 2px 5px;
 }
