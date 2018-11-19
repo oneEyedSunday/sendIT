@@ -13,10 +13,13 @@
     <div class="container">
         <nav class="header">
             <div class="header__content flex justify-content__sb">
-                <div class="logo rounded-edges">
-                    <a href="../index.html" title="Home"></a>
-                </div>
-                <div class="nav">
+                    <div class="flex justify-content__sb">
+                            <div class="logo rounded-edges">
+                                <a href="#" title="Home"></a>
+                            </div>
+                            <a href="index.html" class="logo__text">SendIT</a>
+                    </div>
+                <div class="nav" id="nav">
                         <ul class="menu flex align-items__center justify-content__sb">
                             <li class="menu_item">
                                     <a href="../user/index.html">Profile</a>
@@ -44,7 +47,7 @@
                                 <input type="text"  name="destination" placeholder="Parcel Destination"/>
                             </div>
                             <div class="form__field flex">
-                                <label for="pickuplocation">Pickk Up Location</label>
+                                <label for="pickuplocation">Pick Up Location</label>
                                 <input type="text"  name="pickuplocation" placeholder="Pick Up Location"/>
                             </div>
                             <div class="form__field">
@@ -66,5 +69,6 @@
                 </div>
         </footer>
     </div>
+    <script src="../main.js"></script>
 </body>
 </html>
