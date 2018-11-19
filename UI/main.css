@@ -60,12 +60,20 @@ a {
     width: 100%
 }
 
+.two-fifths {
+    width: 40%;
+}
+
 .three-fifths {
     width: 60%;
 }
 
 .y-four-fifths {
     height: 80%;
+}
+
+.full-height {
+    height: 100%;
 }
 
 .four-fifths {
@@ -119,8 +127,11 @@ a {
 }
 
 .header__content .logo {
-    background-color: red;
-    border: 1px solid red;
+    /* background-color: red; */
+    background-image: url(./images/logo.png);
+    /* border: 1px solid red; */
+    background-size: cover;
+    background-repeat: no-repeat;
     height: 50px;
     width: 50px;
     position: relative;
@@ -422,6 +433,18 @@ button.tall-btn {
     .howto div p::after {
         content: '\2193';
         margin-left: 5px;
+    }
+
+    .banner__content > p {
+        max-width: 100%;
+    }
+
+    .banner__content button {
+        margin-top: 20px;
+    }
+
+    p.subtitle {
+        word-wrap: none;
     }
 }
 
