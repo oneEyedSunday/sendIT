@@ -8,6 +8,7 @@
     padding: 1em;
     margin: 2em auto 0 auto;
     /* max-width: 600px; */
+    border-radius: 4px;
 }
 
 .form__title {
@@ -16,10 +17,8 @@
 }
 
 .form__field {
-    height: 30px;
-    display: grid;
+    height: 60px;
     padding: 0.5em 5px;
-    grid-template-columns: 200px 1fr;
 }
 
 .form__field label {
@@ -29,6 +28,23 @@
 
 .form__field input {
     background: #fff;
+    height: 70%;
     border: 1px solid var(--secondary-bg-color);
     padding: 2px 5px;
+    border-radius: 2px;
+}
+
+@media (max-width: 600px) {
+    .form__field {
+        height: 60px;
+    }
+
+    .form__field input {
+        padding: 1px 2px;
+        width: 100%;
+    }
+
+    .form__field input::placeholder {
+        font-size: 1.1em;
+    }
 }

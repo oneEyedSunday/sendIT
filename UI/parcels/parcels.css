@@ -1,3 +1,79 @@
+html {
+    background-color: #fff;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    /* border: 3px solid purple; */
+    border: none;
+    /* white-space: nowrap; */
+    font-size: 1.2em;
+}
+
+tr {
+    padding: 10px;
+    border-bottom: 1px solid var(--secondary-bg-color);
+}
+tr:nth-child(even){background-color: #f2f2f2}
+
+td {
+    padding: 10px;
+}
+
+thead {
+    border-bottom: 2px solid var(--secondary-bg-color);
+    white-space: nowrap;
+}
+
+.action {
+    color: green;
+    text-decoration: none;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+
+.link {
+    text-decoration: none;
+    margin-right: 5px;
+}
+
+.btn__link {
+    border: 1px solid;
+    text-decoration: none;
+    padding: 5px 50px;
+    color: #fff;
+    background-color: lightgreen;
+    border-color: #fff;
+    
+}
+.btn__link:hover, .btn__link:focus {
+    border-color: lightgreen;
+    color: lightgreen;   
+    background-color: #fff;
+}
+
+#overflowContainer {
+    overflow-x: auto;
+}
+.context {
+    font-size: 1.2em;
+    font-weight: 400;
+    text-align: center;
+}
+
+#overflowContainer, .context {
+    margin: 0 auto;
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+}
+
+
+#overflowContainer::-webkit-scrollbar {
+    display: none;
+}
+
 
 .table {
     display: grid;
@@ -5,6 +81,13 @@
     border-top: 1px solid black;
     border-right: 1px solid black;
     border-left: 1px solid black;
+    /* min-width: 600px; */
+    /* white-space: nowrap; */
+}
+
+.table__head {
+    background-color: var(--secondary-bg-color);
+    color: #fff;
 }
 
 .table > span, .table > div {
@@ -15,10 +98,41 @@
     /* border-bottom: 1px solid black; */
 }
 
+.card {
+    min-width: auto;
+}
+
+button.button.full-width {
+    width: 100%;
+}
+
+.form {
+    font-size: 1.2em;
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    margin-top: 1.3em;
+}
+
+input {
+    font-family: Helvetica;
+    font-size: 1.1em;
+}
+
 .table > *:last-child {
     border-right: none;
 }
 
+button.button {
+    width: 80px;
+}
+
+button.button a {
+    color: #fff;
+}
+
+button.button:hover > a, button.button:focus > a {
+    color: var(--secondary-bg-color);
+}
 
 .table > span, .table > div {
     /* padding-bottom: 0; */
@@ -47,7 +161,8 @@
     border-bottom: 1px solid black;
 }
 
-@media (max-width: 900px) {
+
+@media (max-width: 950px) {
     .row {
         font-size: 1.2em;
     }
@@ -56,9 +171,25 @@
         padding-left: 2px;
         padding-right: 2px;
     }
+    #detailsWithMap {
+        flex-direction: column-reverse;
+    }
+
+    #detailsWithMap .card {
+        min-width: auto;
+    }
+
+    #map {
+        min-width: 430px;
+    }
 }
 
 @media (max-width: 700px) {
+    .main {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
     .row {
         font-size: 1em;
     }
@@ -66,6 +197,17 @@
     .button {
         padding-left: 2px;
         padding-right: 2px;
+    }
+}
+
+@media (max-width: 600px) {
+    .form__field {
+        flex-direction: column;
+    }
+
+    .form__field label {
+        margin: 5px auto;
+        text-align: center;
     }
 }
 
