@@ -13,10 +13,13 @@
     <div class="container">
         <nav class="header">
             <div class="header__content flex justify-content__sb">
-                <div class="logo rounded-edges">
-                    <a href="../index.html" title="Home"></a>
-                </div>
-                <div class="nav">
+                    <div class="flex justify-content__sb">
+                            <div class="logo rounded-edges">
+                                <a href="#" title="Home"></a>
+                            </div>
+                            <a href="index.html" class="logo__text">SendIT</a>
+                    </div>
+                <div class="nav" id="nav">
                         <ul class="menu flex align-items__center justify-content__sb">
                             <li class="menu_item">
                                     <a href="../user/index.html">Profile</a>
@@ -31,16 +34,27 @@
                 </div>
             </div>
         </nav>
-        <main class="flex-column justify-content__center align-items__center flex-column">
-            <div class="card">
-                <h2 class="form__title text-center">Create Parcel Delivery Order</h2>
-                <form action="#" method="POST" class="form">
-                    <div class="form__field">
-                        <label for="destination">Destination</label>
-                        <input type="text"  name="destination" placeholder="Parcel Destination"/>
+        <main class="main">
+            <div class="flex-column justify-content__center align-items__center">
+                    <div class="card my-5">
+                        <div class="context">
+                            <a href="./index.html" class="link" title="Go Back">&NestedLessLess;</a>
+                            Create a parcel delivery Order
+                        </div>
+                        <form action="#" method="POST" class="form">
+                            <div class="form__field flex">
+                                <label for="destination">Destination</label>
+                                <input type="text"  name="destination" placeholder="Parcel Destination"/>
+                            </div>
+                            <div class="form__field flex">
+                                <label for="pickuplocation">Pick Up Location</label>
+                                <input type="text"  name="pickuplocation" placeholder="Pick Up Location"/>
+                            </div>
+                            <div class="form__field">
+                                    <button type="submit" class="button primary-action y-four-fifths  full-width">Create Delivery Order</button>
+                            </div>
+                        </form>
                     </div>
-                    <button type="submit" class="button margin-auto ">Create Delivery Order</button>
-                </form>
             </div>
         </main>
         <footer class="footer flex align-items__center">
@@ -55,5 +69,6 @@
                 </div>
         </footer>
     </div>
+    <script src="../main.js"></script>
 </body>
 </html>
