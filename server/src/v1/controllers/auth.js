@@ -18,10 +18,16 @@ const authController = {
  * @param  {Object} res  Express response object
  */
   signup(req, res) {
-    const { user } = req.body;
-    Validator.check(user, ['email', 'password', 'firstname', 'lastname']);
+    // return res.json([]);
+    let userObject = {};
+    if (req.body.user) {
+      userObject = req.body.user;
+    } else {
+      Object.assign(userObject, req.body);
+    }
+    Validator.check(userObject, ['email', 'password', 'firstname', 'lastname']);
     const errors = Validator.errors();
-    const isEmail = /\S+@\S+\.\S+/.test(user.email);
+    const isEmail = /\S+@\S+\.\S+/.test(userObject.email);
     if (!isEmail) errors.push({ email: 'Email is Invalid' });
     if (errors.length > 0) {
       return res.status(422).send({
@@ -30,14 +36,14 @@ const authController = {
       });
     }
     // if (user.email === 'test@test.com') user.parcels = [4];
-    AuthHelpers.hash(user.password)
+    AuthHelpers.hash(userObject.password)
       .then((hash) => {
         dbHelpers.createUser({
-          email: user.email,
-          firstname: user.firstname,
-          lastname: user.lastname,
-          password: hash, 
-          admin: user.admin,
+          email: userObject.email,
+          firstname: userObject.firstname,
+          lastname: userObject.lastname,
+          password: hash,
+          admin: userObject.admin,
         }).then((newUser) => {
           const uiUser = {};
           Object.assign(uiUser, newUser);
