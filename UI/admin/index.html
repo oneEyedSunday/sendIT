@@ -28,7 +28,7 @@
             </div>
         </nav>
         <main class="main">
-            <div class="context pt">
+            <div class="context pt margin-y-mixed">
                 All parcel delivery orders.
             </div>
             <div id="overflowContainer">
@@ -44,8 +44,6 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <!-- TODO (oneeyedsunday) -->
-                            <!-- Visual indicators to parcel status -->
                             <td>1</td>
                             <td>October 31st</td>
                             <td>Ojota, Lagos</td>
@@ -84,6 +82,34 @@
                                     </button>
                             </td>
                             <td></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>November 1st</td>
+                            <td>Garki, Abuja</td>
+                            <td>Delivered</td>
+                            <td>
+                                    <button class="button">
+                                        <a href="../parcels/details.html?parcelId=4&context=admin">Details</a>
+                                    </button>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>November 21st</td>
+                            <td>Wuse, Abuja</td>
+                            <td>In Transit</td>
+                            <td>
+                                    <button class="button">
+                                        <a href="../parcels/details.html?parcelId=5&context=admin">Details</a>
+                                    </button>
+                            </td>
+                            <td>
+                                <button class="button primary-action">
+                                    <a href="details.html?parcelId=5&context=admin">Update</a>
+                                </button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

@@ -33,10 +33,23 @@ thead {
     font-weight: bold;
 }
 
+.main {
+    height: auto;
+    min-height: calc(100vh - 210px);
+}
+
+.margin-y-mixed, .context.margin-y-mixed {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
 
 .link {
     text-decoration: none;
     margin-right: 5px;
+}
+
+.float-left {
+    float: left;
 }
 
 .btn__link {

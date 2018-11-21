@@ -197,12 +197,21 @@ if ((getUrl() === prefixURL + "parcels/edit.html") || (getUrl() ===  prefixURL +
 
     if(getUrl() === prefixURL + "parcels/edit.html" && hasQuery("&context=admin")){
         console.log("Load admin content");
-        document.querySelector(".form__title.text-center").innerHTML = "Admin: Make Changes to Parcel Order Details"
+        document.querySelector(".form__title.text-center").innerHTML = "Admin: Make Changes to Parcel Order Details";
+    }
+
+
+
+    if(getUrl() === prefixURL + "parcels/details.html" && !hasQuery("&context=admin")) {
+        const editLink = document.querySelector('a[href="edit.html"]')
+        if (editLink) editLink.setAttribute('href', `edit.html?parcelId=${parcelId}`);
     }
 
     if(getUrl() === prefixURL + "parcels/details.html" && hasQuery("&context=admin")){
         console.log("Load admin content");
-        actionButtonNode.setAttribute('class', 'button primary-action');
+        const editLink = document.querySelector('a[href="edit.html"]');
+        editLink.style.display = 'none';
+        actionButtonNode.setAttribute('class', 'button y-four-fifths full-width primary-action');
         actionButtonNode.innerHTML = "";
         const newLink = createElement("a", {
             "href": `${prefixURL}parcels/edit.html?parcelId=${parcelId}&context=admin`
@@ -210,7 +219,7 @@ if ((getUrl() === prefixURL + "parcels/edit.html") || (getUrl() ===  prefixURL +
 
         newLink.innerText = "Update Parcel Delivery Order";
         actionButtonNode.appendChild(newLink)
-        document.querySelector(".form__title.text-center").innerHTML = "Admin: Parcel Delivery Order Details"
+        // document.querySelector(".form__title.text-center").innerHTML = "Admin: Parcel Delivery Order Details"
     }
 
     if(getUrl() === 'parcels/edit.html' && hasQuery('&context=admin')) {

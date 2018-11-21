@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../main.css">
     <link rel="stylesheet" href="../forms.css">
     <link rel="stylesheet" href="parcels.css">
+    <link rel="stylesheet" href="modal.css">
     <link rel="stylesheet" href="map.css">
 </head>
 <body>
@@ -36,9 +37,17 @@
             </div>
         </nav>
         <main class="flex justify-content__sa align-items__center my-5" id="detailsWithMap">
+                <div id="cancelModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" id="closeModal">&times;</span>
+                        <p>Are you sure you want to cancel order?
+                        <button class="button danger">Yes</button>
+                        </p>
+                    </div>
+                </div>
             <div class="card">
                 <div class="context">
-                        <a href="./index.html" class="link" title="Go Back">&NestedLessLess;</a>
+                        <a href="./index.html" class="link float-left" title="Go Back">&NestedLessLess;</a>
                          Order Details
                 </div>
                 <form action="#" method="POST" class="form">
@@ -62,6 +71,7 @@
                             <label for="present-location">Present Location</label>
                             <input type="text"  name="present-location" placeholder="Present Location" disabled readonly/>
                     </div>
+                            <a href="edit.html" class="text-center">Edit Order Here &rarr;</a>
                     <div class="form__field">
                             <button type="submit" class="button y-four-fifths full-width danger" id="actionButton">Cancel Order</button>
                     </div>
@@ -87,6 +97,7 @@
     <script src="../main.js"></script>
     <script src="parcels.js"></script>
     <script src="map.js"></script>
+    <script src="modal.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClZqFiclDWHCP-qNtiZug5qoUMw_U3G3g&callback=initMap">
     </script>
 </body>

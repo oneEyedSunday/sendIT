@@ -7,6 +7,7 @@
     <title>SendIT - Parcels: You pack!, we delivery!!</title>
     <link rel="stylesheet" href="../main.css">
     <link rel="stylesheet" href="parcels.css">
+    <link rel="stylesheet" href="modal.css">
 </head>
 <body>
     <div class="container">
@@ -34,12 +35,20 @@
             </div>
         </nav>
         <main class="main">
+            <div id="cancelModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" id="closeModal">&times;</span>
+                    <p>Are you sure you want to cancel order?
+                        <button class="button danger">Yes</button>
+                    </p>
+                </div>
+            </div>
             <div class="context">
                     <p>Your parcels delivery orders <a href="create.html" class="action link" title="Create Order">&plus;</a></p>  
             </div>
             <div id="overflowContainer">
-                <table>
-                    <thead class="">
+                <table class="margin-y-mixed">
+                    <thead>
                         <tr>
                                 <th>S/N</th>
                                 <th>Date Created</th>
@@ -71,7 +80,7 @@
                             </td>                                         
                         </tr>
                         <tr>
-                            <td>1</td>
+                            <td>2</td>
                             <td>October 31st</td>
                             <td>Ojota, Lagos</td>
                             <td>In Transit</td>
@@ -92,10 +101,10 @@
                             </td>                                    
                         </tr>
                         <tr>
-                            <td>1</td>
-                            <td>October 31st</td>
-                            <td>Ojota, Lagos</td>
-                            <td>In Transit</td>
+                            <td>3</td>
+                            <td>November 5th</td>
+                            <td>Maryland, Lagos</td>
+                            <td>Awaiting Processing</td>
                             <td>
                                     <button class="button danger">
                                         Cancel
@@ -109,6 +118,92 @@
                             <td>
                                     <button class="button">
                                         <a href="../parcels/edit.html?parcelId=3">Edit</a>
+                                    </button>
+                            </td>                                    
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>November 5th</td>
+                            <td>Sango Ota, Lagos</td>
+                            <td>Delivered</td>
+                            <td>
+                            </td>
+                            <td>
+                                    <button class="button">
+                                        <a href="../parcels/details.html?parcelId=4">Details</a>
+                                    </button>
+                            </td>
+                            <td>
+                            </td>                                    
+                        </tr><tr>
+                            <td>5</td>
+                            <td>November, 7th</td>
+                            <td>Oshodi, Lagos</td>
+                            <td>Cancelled</td>
+                            <td>
+                            </td>
+                            <td>
+                                    <button class="button">
+                                        <a href="../parcels/details.html?parcelId=5">Details</a>
+                                    </button>
+                            </td>
+                            <td>
+                                    <button class="button">
+                                        <a href="../parcels/edit.html?parcelId=5">Edit</a>
+                                    </button>
+                            </td>                                    
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>November, 10th</td>
+                            <td>Ikorodu, Lagos</td>
+                            <td>Delivered</td>
+                            <td>
+                            </td>
+                            <td>
+                                    <button class="button">
+                                        <a href="../parcels/details.html?parcelId=6">Details</a>
+                                    </button>
+                            </td>
+                            <td>
+                            </td>                                    
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>November, 20th</td>
+                            <td>Anthony, Lagos</td>
+                            <td>Delivered</td>
+                            <td>
+                            </td>
+                            <td>
+                                    <button class="button">
+                                        <a href="../parcels/details.html?parcelId=7">Details</a>
+                                    </button>
+                            </td>
+                            <td>
+                                    <button class="button">
+                                        <a href="../parcels/edit.html?parcelId=7">Edit</a>
+                                    </button>
+                            </td>                                    
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>November 21st</td>
+                            <td>Maryland, Lagos</td>
+                            <td>In Transit</td>
+                            <td>
+                                    <button class="button danger">
+                                        Cancel
+                                    </button>
+                            </td>
+                            <td>
+                                    <button class="button">
+                                        <a href="../parcels/details.html?parcelId=8">Details</a>
+                                    </button>
+                            </td>
+                            <td>
+                                    <button class="button">
+                                        <a href="../parcels/edit.html?parcelId=8">Edit</a>
                                     </button>
                             </td>                                    
                         </tr>
@@ -129,5 +224,6 @@
         </footer>
     </div>
     <script src="../main.js"></script>
+    <script src="modal.js"></script>
 </body>
 </html>

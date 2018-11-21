@@ -22,8 +22,8 @@
 }
 
 .form__field label {
-    margin-right: 10px;
-    margin-left: auto;
+    margin-right: auto;
+    margin-left: 10px;
 }
 
 .form__field input {

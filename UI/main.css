@@ -175,6 +175,7 @@ a {
 .menu_item {
     display: inline;
     padding: 10px;
+    padding-bottom: 0;
     cursor: pointer;
 }
 
