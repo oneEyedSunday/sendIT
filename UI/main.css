@@ -108,7 +108,7 @@ a {
 /* Styles */
 
 .container {
-    max-width: 1400px;
+    /* max-width: 1400px; */
     background-color: #fff;
     color: var(--primary-color);
     margin: 0 auto;
@@ -179,11 +179,11 @@ a {
 }
 
 .menu_item.active, .menu_item:hover, .menu_item:focus {
-    background-color: #fff;
+    /* background-color: #fff; */
 }
 
 .menu_item.active a, .menu_item:hover a, .menu_item:focus a {
-    color: var(--secondary-bg-color);
+    color: var(--primary-bg-color);
 }
 
 .menu_item a {
@@ -225,12 +225,18 @@ a {
 }
 
 section {
-    margin-bottom: 25px;
+    /* margin-bottom: 25px; */
 }
 
 .howto {
-    margin-top: 20px;
-    background-color: #f0e3d6;
+    /* margin-top: 20px; */
+    /* background-color: #f0e3d6; */
+    /* background-color: #e6cadd; */
+    /* background-color: #eee1ff; */
+    /* background-color: #faffe0; */
+    /* background-color: #ecd0cd; */
+    background-color: #fdfafa;
+    /* #faf8f8 */
     width: 100%;
     font-family: 'Lato', Arial, Helvetica, sans-serif;
     font-size: 1.2em;
@@ -279,8 +285,8 @@ section {
 }
 
 .showcase {
-    margin-top: 20px;
-    margin-bottom: 20px;
+    /* margin-top: 20px; */
+    /* margin-bottom: 20px; */
 }
 
 .showcase .showcase__item:first-of-type {
@@ -409,7 +415,7 @@ button.tall-btn {
     }
 
     .showcase .showcase__item {
-        margin-bottom: 20px;
+        /* margin-bottom: 20px; */
     }
     
     .showcase .showcase__item:first-of-type {

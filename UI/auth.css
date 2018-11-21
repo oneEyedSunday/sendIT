@@ -2,7 +2,7 @@
     margin: 10px auto;
 }
 
-input, input::placeholder {
+input, input::placeholder, .form__field a, .form__field p, .form__field h2 {
     font-family: 'Raleway', sans-serif;
     font-size: 1.2em;
     padding-left: 10px;
@@ -12,6 +12,7 @@ input, input::placeholder {
     font-size: 1.3em;
     border-radius: 20px;
     height: 60%;
+    padding: 5px 20px;
 }
 
 .space-left {
