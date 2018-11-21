@@ -8,6 +8,7 @@
     "dev": "nodemon ./bin/www",
     "test": "./node_modules/.bin/mocha build/v1/tests",
     "lint": "eslint  src --ignore-path .eslintignore --config .eslintrc",
+    "lint-fix": "eslint src --ignore-path .eslintignore --config .eslintrc --fix",
     "build-js": "./node_modules/.bin/babel src -d build",
     "watch-js": "./node_modules/.bin/babel --watch src -d build",
     "cover": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha  build/v1/tests/",
