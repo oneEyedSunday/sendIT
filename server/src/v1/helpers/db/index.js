@@ -4,8 +4,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 /**
- * Returns a pool object
- * @returns {pool}
+ * Create and return  a pool object
+ * @function
+ * @returns {objecr} Pool - Pool object created
  */
 const createPool = () => {
   let poolObj = {
@@ -32,7 +33,7 @@ const DB = {
  * Returns a promise of a query
  * @param {string} text
  * @param {array} params
- * @returns {promise}
+ * @returns {promise} Promise
  */
   query(text, params) {
     return new Promise((resolve, reject) => {
@@ -48,14 +49,16 @@ const DB = {
 
   /**
  * Returns a pool object
- * @returns {pool}
+ * @function
+ * @returns {object} pool - The pool object in use by app
  */
   pool() {
     return pool;
   },
   /**
- * Returns a pool object
- * @returns {pool}
+ * Return the pool creation function
+ * @function
+ * @returns {Function} pol function
  */
   createPool() {
     return createPool();

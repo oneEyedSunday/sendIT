@@ -17,6 +17,7 @@ const ParcelsController = {
  * @memberof  module:controllers/parcels
  * @param  {Object} req  Express request object
  * @param  {Object} res  Express response object
+ * @returns {array} Returns array of parcels
  */
   index(req, res) {
     dbHelpers.findAll('parcels')
@@ -32,6 +33,8 @@ const ParcelsController = {
  * @memberof  module:controllers/parcels
  * @param  {Object} req  Express request object
  * @param  {Object} res  Express response object
+ * @returns {null} order
+ * @throws {error} error
  */
   getOrder(req, res) {
     dbHelpers.find('parcels', req.params.id)
@@ -46,6 +49,8 @@ const ParcelsController = {
  * @memberof  module:controllers/parcels
  * @param  {Object} req  Express request object
  * @param  {Object} res  Express response object
+ * @returns {object} returns the updated Order
+ * @throws {objecr} Throws an object containing the Error
  */
   cancelOrder(req, res) {
     if (req.parcel.status === statuses.Cancelled) {
@@ -63,6 +68,7 @@ const ParcelsController = {
  * @memberof  module:controllers/parcels
  * @param  {Object} req  Express request object
  * @param  {Object} res  Express response object
+ * @return {object} Returns the created parcel or an object containing error
  */
   createOrder(req, res) {
     const { parcel } = req.body;
@@ -93,6 +99,7 @@ const ParcelsController = {
  * @memberof  module:controllers/parcels
  * @param  {Object} req  Express request object
  * @param  {Object} res  Express response object
+ * @return {object} Returns the updated parcel or an object containing error
  */
   changeOrderDestination(req, res) {
     Validator.check(req.body, ['destination']);
@@ -115,6 +122,7 @@ const ParcelsController = {
  * @memberof  module:controllers/parcels
  * @param  {Object} req  Express request object
  * @param  {Object} res  Express response object
+ * @return {object} Returns the updated parcel or an object containing error
  */
   updateOrderStatus(req, res) {
     Validator.check(req.body, ['status']);
@@ -137,6 +145,7 @@ const ParcelsController = {
  * @memberof  module:controllers/parcels
  * @param  {Object} req  Express request object
  * @param  {Object} res  Express response object
+ * @return {object} Returns the updated parcel or an object containing error
  */
   updateOrderLocation(req, res) {
     Validator.check(req.body, ['presentLocation']);

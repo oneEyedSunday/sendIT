@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import Validator from '../helpers/validator';
-import { userHelpers } from '../helpers/mockdb';
+// import { userHelpers } from '../helpers/mockdb';
 import AuthHelpers from '../helpers/auth';
 import dbHelpers from '../helpers/db/helpers';
 
@@ -16,6 +16,7 @@ const authController = {
  * @memberof  module:controllers/auth
  * @param  {Object} req  Express request object
  * @param  {Object} res  Express response object
+ * @returns {object} Returns an object containing user details or error
  */
   signup(req, res) {
     // return res.json([]);
@@ -64,6 +65,7 @@ const authController = {
  * @memberof  module:controllers/auth
  * @param  {Object} req  Express request object
  * @param  {Object} res  Express response object
+ * @returns {object} Returns an object containing user details or error
  */
   login(req, res) {
     Validator.check(req.body, ['email', 'password']);
@@ -78,7 +80,10 @@ const authController = {
       .then((foundUser) => {
         AuthHelpers.compare(req.body.password, foundUser.password)
           .then((result) => {
-            const token = jwt.sign({ id: foundUser.id, admin: foundUser.admin }, process.env.secret);
+            const token = jwt.sign({
+              id: foundUser.id,
+              admin: foundUser.admin
+            }, process.env.secret);
             return res.json({ auth: result, token });
           })
           .catch(() => res.status(500).json({ error: 'An error occured while processing your request' }));

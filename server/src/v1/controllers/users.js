@@ -12,6 +12,7 @@ const UsersController = {
  * @memberof  module:controllers/users
  * @param  {Object} req  Express request object
  * @param  {Object} res  Express response object
+ * @return {object} Returns the users in system or an object containing error
  */
   index(req, res) {
     dbHelpers.findAll('users')
@@ -26,6 +27,7 @@ const UsersController = {
  * @memberof  module:controllers/users
  * @param  {Object} req  Express request object
  * @param  {Object} res  Express response object
+ * @return {object} Returns the parcels for a user or an object containing error
  */
   getParcels(req, res) {
     if (!req.user.admin && (req.user.id !== req.params.id)) {
