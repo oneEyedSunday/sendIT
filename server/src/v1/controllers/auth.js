@@ -8,7 +8,7 @@ import dbHelpers from '../helpers/db/helpers';
  * Auth controller - All functions for the handling authentication routes
  * @module controllers/users
  */
-const authController = {
+export default class AuthController {
   /**
  * signup - Sign up a user
  *
@@ -18,7 +18,7 @@ const authController = {
  * @param  {Object} res  Express response object
  * @returns {object} Returns an object containing user details or error
  */
-  signup(req, res) {
+  static signup(req, res) {
     // return res.json([]);
     let userObject = {};
     if (req.body.user) {
@@ -56,7 +56,7 @@ const authController = {
           return res.status(400).json({ error: error.message });
         });
       }).catch(() => res.status(500).json({ error: 'An error occured while processing your request.' }));
-  },
+  }
 
   /**
  * login - User log in
@@ -67,7 +67,7 @@ const authController = {
  * @param  {Object} res  Express response object
  * @returns {object} Returns an object containing user details or error
  */
-  login(req, res) {
+  static login(req, res) {
     Validator.check(req.body, ['email', 'password']);
     const errors = Validator.errors();
     if (errors.length > 0) {
@@ -89,7 +89,5 @@ const authController = {
           .catch(() => res.status(500).json({ error: 'An error occured while processing your request' }));
       })
       .catch(() => res.status(401).send({ auth: false, message: 'Invalid credentials' }));
-  },
-};
-
-export default authController;
+  }
+}
