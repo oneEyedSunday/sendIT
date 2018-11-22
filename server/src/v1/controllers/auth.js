@@ -4,6 +4,10 @@ import Validator from '../helpers/validator';
 import AuthHelpers from '../helpers/auth';
 import DbHelpers from '../models/helpers';
 
+const {
+  createUser, findByEmailFromTable
+} = DbHelpers;
+
 /**
  * Auth controller - All functions for the handling authentication routes
  * @module controllers/users
@@ -39,7 +43,7 @@ export default class AuthController {
     // if (user.email === 'test@test.com') user.parcels = [4];
     AuthHelpers.hash(userObject.password)
       .then((hash) => {
-        DbHelpers.createUser({
+        createUser({
           email: userObject.email,
           firstname: userObject.firstname,
           lastname: userObject.lastname,
@@ -76,7 +80,7 @@ export default class AuthController {
         errors,
       });
     }
-    DbHelpers.findByEmailFromTable('users', req.body.email)
+    findByEmailFromTable('users', req.body.email)
       .then((foundUser) => {
         AuthHelpers.compare(req.body.password, foundUser.password)
           .then((result) => {
