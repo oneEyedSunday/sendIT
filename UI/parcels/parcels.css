@@ -46,10 +46,15 @@ thead {
 .link {
     text-decoration: none;
     margin-right: 5px;
+    font-size: 1.5em;
 }
 
 .float-left {
     float: left;
+}
+
+.float-right {
+    float: right;
 }
 
 .btn__link {
@@ -127,6 +132,10 @@ button.button.full-width {
     width: 100%;
 }
 
+button.button.three-fifths {
+    width: 60%;
+}
+
 .form {
     font-size: 1.2em;
     font-family: 'Lato', sans-serif;
@@ -137,6 +146,10 @@ button.button.full-width {
 input {
     font-family: Helvetica;
     font-size: 1.1em;
+}
+
+.form__field input {
+    margin: 0 5px;
 }
 
 .table > *:last-child {

@@ -51,6 +51,12 @@
     margin-right: 0;
 }
 
+@media (max-width: 800px) {
+    .card.flex {
+        flex-direction: column;
+    }
+}
+
 @media (max-width: 500px) {
     .box {
         padding: 5px;
