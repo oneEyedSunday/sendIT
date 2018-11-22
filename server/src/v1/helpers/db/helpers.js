@@ -5,7 +5,7 @@ import db from '.';
  * Function to return singular form of table name
  * @function
  * @param {string} tablename - Tablename
- * @return {string}
+ * @return {string} Singular form of tablename
  */
 const singularTableName = (tablename) => {
   const firstLetter = tablename.charAt(0).toUpperCase();
@@ -24,7 +24,7 @@ const DBHelpers = {
  * Function to create a user in DB
  * @function
  * @param {object} userObject - Object containing user data
- * @return {object}
+ * @return {object} created User
  */
   async createUser(userObject) {
     const text = `INSERT INTO
@@ -58,7 +58,7 @@ const DBHelpers = {
  * Function to create a parcel in DB
  * @function
  * @param {object} parcelObject - Object containing parcel data
- * @return {object}
+ * @return {object} created Parcel Object
  */
   async createParcel(parcelObject) {
     const text = `INSERT INTO
@@ -89,7 +89,7 @@ const DBHelpers = {
  * Function to get all data in a table
  * @function
  * @param {string} tablename - Table in DB
- * @return {array}
+ * @return {array} array of items in table
  */
   async findAll(tablename) {
     const findAllQuery = `SELECT * FROM ${tablename}`;
@@ -109,7 +109,7 @@ const DBHelpers = {
  * @function
  * @param {string} tablename - Table to look up
  * @param {string} id - Id
- * @return {object}
+ * @return {object} item
  */
   async find(tablename, id) {
     const text = `SELECT * FROM ${tablename} WHERE id = $1`;
@@ -132,9 +132,10 @@ const DBHelpers = {
   /**
  * Function to find data in table by email
  * @function
- * @param {string} userObject - Object containing user data
- * @param {string} email - email address to look up 
- * @return {object}
+ * @param {string} tablename - Object containing user data
+ * @param {string} email - email address to look up
+ * @return {object} User Object found
+ * @throws {error} Error
  */
   async findByEmail(tablename, email) {
     const text = `SELECT * FROM ${tablename} WHERE email = $1`;
@@ -157,7 +158,7 @@ const DBHelpers = {
  * Function to get parcels belonging to a user
  * @function
  * @param {string} userId - Id of user
- * @return {array}
+ * @return {array} Parcels owned by User
  */
   async getParcelsByUserId(userId) {
     try {
@@ -175,7 +176,7 @@ const DBHelpers = {
  * @param {string} tablename - table
  * @param {string} id - id
  * @param {object} fieldObject - Object containing field and data
- * @return {object}
+ * @return {object} updated item
  */
   async updateSingleField(tablename, id, fieldObject) {
     const keys = Object.keys(fieldObject);
@@ -209,7 +210,7 @@ const DBHelpers = {
  * @function
  * @param {string} tablename - Table to delete from
  * @param {object} id - id of item to delete
- * @return {object}
+ * @return {object} object containing message acknowledging delete
  */
   async delete(tablename, id) {
     const deleteQuery = 'DELETE FROM $1 WHERE id=$2 returning *';
@@ -237,5 +238,6 @@ export default DBHelpers;
 // }).then(result => Users.delete(result.id));
 // Users.findAll('users').then(result => console.log(result));
 // Users.getOne('94a49a7b-705c-470d-9a1a-5312b79c0f74').then(result => console.log(result));
-// Users.update('94a49a7b-705c-470d-9a1a-5312b79c0f74', { firstname: 'Ranny' }).then(result => console.log(result));
+// Users.update('94a49a7b-705c-470d-9a1a-5312b79c074', { firstname: 'Ranny' })
+// .then(result => console.log(result));
 // console.log(singularTableName('parcels'));

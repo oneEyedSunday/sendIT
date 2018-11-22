@@ -11,7 +11,7 @@ export default class AuthHelper {
    * Function to wrap around hashing
  * @function
  * @param {string} plain - String to be hashed
- * @return {Promise}
+ * @return {Promise} Promise to resolve or reject
  */
   static hash(plain) {
     return new Promise((resolve, reject) => {
@@ -27,7 +27,7 @@ export default class AuthHelper {
  * @function
  * @param {string} plain - String to compare with hash
  * @param {string} hash - Hash to compare with
- * @return {Promise}
+ * @return {Promise} Promise to reject or resolve
  */
   static compare(plain, hash) {
     return new Promise((resolve, reject) => {

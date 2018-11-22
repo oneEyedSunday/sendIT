@@ -12,6 +12,7 @@ export default class Validator {
  * @function
  * @param {object} item - Item to run checks on
  * @param {object} options - Object containing validation options
+ * @returns {null} null
  */
   static check(item, options) {
     if (Array.isArray(options)) {
@@ -24,6 +25,7 @@ export default class Validator {
  * @function
  * @param {object} item - Object to run check on
  * @param {string} field - field to check on
+ * @returns {null} null
  */
   static checkBody(item, field) {
     if (!Object.prototype.hasOwnProperty.call(item, field)) {
@@ -37,7 +39,7 @@ export default class Validator {
   /**
  * Function to return errors
  * @function
- * @return {array}
+ * @return {array} errors - returns the array of errors
  */
   static errors() {
     const err = errors;

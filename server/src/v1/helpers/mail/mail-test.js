@@ -68,8 +68,10 @@ const mailOptions = {
   html: `
   <html>
     <body>
-    Hello <b>firstname</b>, your parcel delivery order parcelId has been created, It is currently status.
-    Click on this <a href="google.com" target="blank">link</a> anytime to see the details of the order
+    Hello <b>firstname</b>, your parcel delivery order parcelId has been created,
+    It is currently status.
+    Click on this <a href="google.com" target="blank">link</a>
+     anytime to see the details of the order
     </body>
   </html>
   `,
@@ -98,7 +100,7 @@ client.sendMail(mailOptions, (err, info) => {
 // export default mailRouter;
 */
 
-import mailHelper from './mail'
+import mailHelper from './mail';
 
 const message = {
   subject: 'Parcel Delivery Order Status',
@@ -110,4 +112,5 @@ const message = {
     `,
 };
 
+// eslint-disable-next-line no-console
 mailHelper('senditsandbox@mailinator.com', message, null).then(info => console.log(info)).catch(err => console.log(`An error occured ${err}`));

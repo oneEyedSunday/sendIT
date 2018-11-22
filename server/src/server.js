@@ -18,10 +18,15 @@ import db from './v1/helpers/db';
 // import models
 
 /**
- * Server module 
+ * Server module
  * @module server
  */
 export class Server {
+  /**
+   * @function constructor
+   * @memberof module:server
+   * @returns {null} No return
+   */
   constructor() {
     this.app = express();
     this.config();
@@ -34,7 +39,7 @@ export class Server {
  *
  * @function bootstrap
  * @memberof  module:server
- * @return {object}
+ * @return {object} The server object
  */
   static bootstrap() {
     return new Server();
@@ -45,6 +50,7 @@ export class Server {
  *
  * @function api
  * @memberof  module:server
+ * @returns {null} No return
  */
   api() {
     this.app.get('/api', (req, res) => res.json({
@@ -58,11 +64,12 @@ export class Server {
     this.app.use('/api/v1/auth', AuthRoutes);
   }
 
-/**
+  /**
  * config - Configure server
  *
  * @function config
  * @memberof  module:server
+ * @returns {null} No return
  */
   config() {
     dotenv.config();
@@ -84,6 +91,7 @@ export class Server {
  *
  * @function db
  * @memberof  module:server
+ * @returns {null} No return
  */
   db() {
     this.pool = db.createPool();
@@ -98,6 +106,7 @@ export class Server {
  *
  * @function close
  * @memberof  module:server
+ * @returns {null} No return
  */
   close() {
     this.app.close();
@@ -110,7 +119,8 @@ app.set('port', port);
 const server = http.createServer(app);
 server.listen(port).on('error', (err) => {
   // eslint-disable-next-line no-console
-  console.error(`An error occured with errcode ${err.code}, couldn't start server.\nPlease close instances of server on port ${port} elsewhere.`);
+  console.error(`An error occured with errcode ${err.code},
+  couldn't start server.\nPlease close instances of server on port ${port} elsewhere.`);
   process.exit(-1);
 });
 */

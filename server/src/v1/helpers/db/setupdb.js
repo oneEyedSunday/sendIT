@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import dontenv from 'dotenv';
 import { pool } from '.';
 
@@ -60,11 +61,16 @@ const dropParcelsTable = () => {
   return pool.query(queryText);
 };
 
-
-const createAllTables = () => createUsersTable().then((resultOne) => {
+/**
+ * Create All Tables in DB
+ * @function
+ * @returns {null} null
+ * Create All Tables
+ */
+const createAllTables = () => createUsersTable().then(() => {
   // console.log(resultOne);
   console.log('successfully created users table');
-  return createParcelsTable().then((resultTwo) => {
+  return createParcelsTable().then(() => {
     // console.log(resultTwo);
     console.log('successfully created Parcels table');
   }).catch((errorTwo) => {
@@ -73,13 +79,17 @@ const createAllTables = () => createUsersTable().then((resultOne) => {
 }).catch((errOne) => {
   console.error('error creating users table', errOne);
 });
+
 /**
+ * Drop All Tables in DB
+ * @function
+ * @returns {null} null
  * Drop All Tables
  */
-const dropAllTables = () => dropParcelsTable().then((resultOne) => {
+const dropAllTables = () => dropParcelsTable().then(() => {
   // console.log(resultOne);
   console.log('successfully dropped parcels table');
-  return dropUsersTable().then((resultTwo) => {
+  return dropUsersTable().then(() => {
     // console.log(resultTwo);
     console.log('successfully dropped users table');
   }).catch((errTwo) => {
