@@ -475,7 +475,7 @@ export default class ParcelsApiTests {
           response.should.have.status(200);
           response.should.be.a('object');
           parcelDeliveryOrderTest(response.body);
-          response.body.should.have.property('destination').eql(newDestination);
+          response.body.should.have.property('destination').eql(newDestination.toLowerCase());
           response.body.should.have.property('status').eql(statuses.AwaitingProcessing.code);
         }));
     });
@@ -665,7 +665,7 @@ export default class ParcelsApiTests {
           response.should.have.status(200);
           response.should.be.a('object');
           parcelDeliveryOrderTest(response.body, { excludes: ['presentlocation'] });
-          response.body.should.have.property('presentlocation').eql(newLocation);
+          response.body.should.have.property('presentlocation').eql(newLocation.toLowerCase());
         }));
     });
   }

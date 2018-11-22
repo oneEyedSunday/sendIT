@@ -3,7 +3,7 @@
  * @requires express
  */
 import { Router } from 'express';
-import authController from '../controllers/auth';
+import authController from '../controllers/AuthController';
 import ValidationMiddleware from '../middlewares/validation';
 
 const { signup, login } = authController;

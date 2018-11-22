@@ -4,7 +4,7 @@
  */
 
 import { Router } from 'express';
-import ParcelsController from '../controllers/parcels';
+import ParcelsController from '../controllers/ParcelsController';
 import Middleware from '../middlewares';
 import ValidationMiddleware from '../middlewares/validation';
 

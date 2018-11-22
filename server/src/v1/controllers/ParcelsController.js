@@ -92,7 +92,8 @@ export default class ParcelsController {
       // eslint-disable-next-line prefer-destructuring
       weight = req.body.weight;
     } else {
-      weight = -1;
+      if (req.body.weight) weight = -1;
+      weight = 30;
     }
 
     try {
