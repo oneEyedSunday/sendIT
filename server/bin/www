@@ -1,33 +1,19 @@
 #!/usr/bin/env node
-"use strict";
 
-//module dependencies
-var server = require("../build/server");
-var debug = require("debug")("sendit:httpServer");
-var http = require("http");
-
-//create http server
-var httpPort = normalizePort(process.env.PORT || 8080);
-var app = server.Server.bootstrap().app;
-app.set("port", httpPort);
-var httpServer = http.createServer(app);
-
-//listen on provided ports
-httpServer.listen(httpPort);
-
-//add error handler
-httpServer.on("error", onError);
-
-//start listening on port
-httpServer.on("listening", onListening);
-
+const debug = require('debug')('sendit:httpServer');
+const http = require('http');
+const { bootstrap } = require('../build/server');
 
 /**
  * Normalize a port into a number, string, or false.
+ * @function normalizePort
+ * @param {port} val - the port
+ * @returns {string |number | boolean} returns the normalized port
  */
 function normalizePort(val) {
-  var port = parseInt(val, 10);
+  const port = parseInt(val, 10);
 
+  // eslint-disable-next-line no-restricted-globals
   if (isNaN(port)) {
     // named pipe
     return val;
@@ -41,26 +27,48 @@ function normalizePort(val) {
   return false;
 }
 
+// create http server
+const httpPort = normalizePort(process.env.PORT || 8080);
+const { app } = bootstrap(debug);
+app.set('port', httpPort);
+const httpServer = http.createServer(app);
+
+/**
+ * @function onListening
+ * @returns {null} No return
+ */
+function onListening() {
+  const addr = httpServer.address();
+  const bind = typeof addr === 'string'
+    ? `pipe ${addr}`
+    : `port ${addr.port}`;
+  debug(`Listening on ${bind}`);
+}
+
 /**
  * Event listener for HTTP server "error" event.
+ * @function onError
+ * @param {object} error - The error
+ * @throws {error} Throws an error
+ * @returns {null} No return
  */
 function onError(error) {
-  if (error.syscall !== "listen") {
+  if (error.syscall !== 'listen') {
     throw error;
   }
 
-  var bind = typeof port === "string"
-    ? "Pipe " + port
-    : "Port " + port;
+  const bind = typeof httpPort === 'string'
+    ? `Pipe ${httpPort}`
+    : `Port ${httpPort}`;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
-    case "EACCES":
-      console.error(bind + " requires elevated privileges");
+    case 'EACCES':
+      debug(`${bind} requires elevated privileges`);
       process.exit(1);
       break;
-    case "EADDRINUSE":
-      console.error(bind + " is already in use");
+    case 'EADDRINUSE':
+      debug(`${bind} is already in use`);
       process.exit(1);
       break;
     default:
@@ -68,13 +76,12 @@ function onError(error) {
   }
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
-function onListening() {
-  var addr = httpServer.address();
-  var bind = typeof addr === "string"
-    ? "pipe " + addr
-    : "port " + addr.port;
-  debug("Listening on " + bind);
-}
+
+// listen on provided ports
+httpServer.listen(httpPort);
+
+// add error handler
+httpServer.on('error', onError);
+
+// start listening on port
+httpServer.on('listening', onListening);

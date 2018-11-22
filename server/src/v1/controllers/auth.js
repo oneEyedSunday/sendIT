@@ -1,14 +1,16 @@
 import jwt from 'jsonwebtoken';
-import Validator from '../helpers/validator';
-// import { userHelpers } from '../helpers/mockdb';
 import AuthHelpers from '../helpers/auth';
-import dbHelpers from '../helpers/db/helpers';
+import DbHelpers from '../models/helpers';
+
+const {
+  createUser, findByEmailFromTable
+} = DbHelpers;
 
 /**
  * Auth controller - All functions for the handling authentication routes
  * @module controllers/users
  */
-const authController = {
+export default class AuthController {
   /**
  * signup - Sign up a user
  *
@@ -18,28 +20,18 @@ const authController = {
  * @param  {Object} res  Express response object
  * @returns {object} Returns an object containing user details or error
  */
-  signup(req, res) {
-    // return res.json([]);
-    let userObject = {};
-    if (req.body.user) {
-      userObject = req.body.user;
-    } else {
-      Object.assign(userObject, req.body);
-    }
-    Validator.check(userObject, ['email', 'password', 'firstname', 'lastname']);
-    const errors = Validator.errors();
-    const isEmail = /\S+@\S+\.\S+/.test(userObject.email);
-    if (!isEmail) errors.push({ email: 'Email is Invalid' });
-    if (errors.length > 0) {
-      return res.status(422).send({
-        message: 'Validation errors',
-        errors,
-      });
-    }
-    // if (user.email === 'test@test.com') user.parcels = [4];
+  static signup(req, res) {
+    const userObject = {
+      email: req.body.email.trim(),
+      password: req.body.password.trim(),
+      firstname: req.body.firstname.trim(),
+      lastname: req.body.lastname.trim(),
+      admin: req.body.admin
+    };
+
     AuthHelpers.hash(userObject.password)
       .then((hash) => {
-        dbHelpers.createUser({
+        createUser({
           email: userObject.email,
           firstname: userObject.firstname,
           lastname: userObject.lastname,
@@ -56,7 +48,7 @@ const authController = {
           return res.status(400).json({ error: error.message });
         });
       }).catch(() => res.status(500).json({ error: 'An error occured while processing your request.' }));
-  },
+  }
 
   /**
  * login - User log in
@@ -67,29 +59,27 @@ const authController = {
  * @param  {Object} res  Express response object
  * @returns {object} Returns an object containing user details or error
  */
-  login(req, res) {
-    Validator.check(req.body, ['email', 'password']);
-    const errors = Validator.errors();
-    if (errors.length > 0) {
-      return res.status(422).send({
-        message: 'Validation errors',
-        errors,
-      });
-    }
-    dbHelpers.findByEmail('users', req.body.email)
+  static login(req, res) {
+    const userObject = {
+      email: req.body.email.trim(),
+      password: req.body.password.trim(),
+    };
+
+    findByEmailFromTable('users', userObject.email)
       .then((foundUser) => {
-        AuthHelpers.compare(req.body.password, foundUser.password)
+        AuthHelpers.compare(userObject.password, foundUser.password)
           .then((result) => {
-            const token = jwt.sign({
+            if (result === false) return res.status(401).json({ auth: false, message: 'Invalid Credentials' });
+            jwt.sign({
               id: foundUser.id,
               admin: foundUser.admin
-            }, process.env.secret);
-            return res.json({ auth: result, token });
+            }, process.env.secret, (err, token) => {
+              if (err) return res.status(500).json({ error: 'An error occured while processing your request' });
+              return res.json({ auth: true, token });
+            });
           })
           .catch(() => res.status(500).json({ error: 'An error occured while processing your request' }));
       })
       .catch(() => res.status(401).send({ auth: false, message: 'Invalid credentials' }));
-  },
-};
-
-export default authController;
+  }
+}

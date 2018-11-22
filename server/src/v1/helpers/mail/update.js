@@ -1,11 +1,10 @@
+/* eslint-disable no-console */
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
-// import mailSender from './mail';
-import dbHelper from '../db/helpers';
+import dbHelper from '../../models';
+import mailSender from './mail';
 
 dotenv.config();
-// change baseURl to UI not API url
-// get a better testing condition
 const baseURL = process.env.DATABASE_URL ? 'https://ispoa-sendit.herokuapp.com' : 'localhost:8080';
 
 const getStatus = (code) => {
@@ -25,14 +24,12 @@ const getStatus = (code) => {
 
 const updateUserWithStatus = (userId, parcel, existingParcel = true, cancelled = false) => {
   let user;
-  // code should be integer
+  if (typeof parcel.status === 'string') parcel.status = parseInt(parcel.status, 10);
   const status = getStatus(parcel.status);
   let grammar = existingParcel ? 'updated' : 'created';
   grammar = cancelled ? grammar === 'cancelled' : grammar;
-  // fiind user infor from userId
   dbHelper.find('users', userId).then((result) => {
     user = result;
-    // console.log(user);
     jwt.sign(userId, process.env.secret, (err, decoded) => {
       const message = {
         subject: 'Parcel Delivery Order Status Update',
@@ -45,11 +42,10 @@ const updateUserWithStatus = (userId, parcel, existingParcel = true, cancelled =
         ${baseURL}/api/v1/parcels/${parcel.id}?token=${decoded}
         `,
       };
-      // save rates
       // eslint-disable-next-line no-console
       console.log(message.html);
-      // mailSender(user.email, message, null).then(info => console.log(info))
-      // .catch(error => console.error(error));
+      mailSender(user.email, message, null).then(info => console.log(info))
+        .catch(error => console.error(error));
     });
   });
 };

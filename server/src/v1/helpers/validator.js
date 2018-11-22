@@ -28,11 +28,27 @@ export default class Validator {
  * @returns {null} null
  */
   static checkBody(item, field) {
-    if (!Object.prototype.hasOwnProperty.call(item, field)) {
+    if (!Object.prototype.hasOwnProperty.call(item, field) || item[field].length < 1) {
       const error = {};
       error.field = field;
       error.message = `${field} cannot be missing`;
       errors.push(error);
+    }
+  }
+
+
+  /**
+ * Function to trim strings in an object, targetted at request.body
+ * @function
+ * @param {object} object Object whose fields are to be trimmed
+ * @return {object} req.body - returns trimmed request.body
+ */
+  static trimBody(object) {
+    const fields = Object.keys(object);
+    for (let i = 0; i < fields.length; i += 1) {
+      if (typeof object[fields[i]] === 'string') {
+        object[fields[i]] = object[fields[i]].trim();
+      }
     }
   }
 

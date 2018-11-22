@@ -1,8 +1,29 @@
 import jwt from 'jsonwebtoken';
-import DBHelpers from '../helpers/db/helpers';
+import DBHelpers from '../models/helpers';
 
 /** Class representing Middleware functions. */
 export default class Middleware {
+/**
+ * Middleware to ensure request body is syntactically correct JSON
+ * if content-type is text/plain.
+ * @module Middlewares
+ * @function
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @return {undefined}
+ */
+  static ensureJSONCompliant(req, res, next) {
+    try {
+      if (req.headers['content-type'] === 'text/plain') {
+        req.body = JSON.parse(req.body);
+      }
+      next();
+    } catch (error) {
+      return res.status(400).json({ error: 'You sent a badly formatted JSON as text, please correct' });
+    }
+  }
+
   /**
  * Middleware to ensure request is from an authenticated user.
  * @module Middlewares
@@ -13,9 +34,7 @@ export default class Middleware {
  * @return {undefined}
  */
   static async isAuth(req, res, next) {
-    // return next();
-    if (req.url === '/api' || req.url === '/api/' || req.url === '/api/v1/auth/signup' || req.url === '/api/v1/auth/login') return next();
-    let token = req.headers.authorization || req.query.token;
+    let token = req.headers.authorization;
     if (token && token.startsWith('Bearer ')) {
       token = token.slice(7, token.length);
     }
@@ -62,7 +81,7 @@ export default class Middleware {
  */
   static async parcelExists(req, res, next) {
     try {
-      const parcel = await DBHelpers.find('parcels', req.params.id);
+      const parcel = await DBHelpers.findByIdFromTable('parcels', req.params.id);
       req.parcel = parcel;
       return next();
     } catch (error) {
@@ -99,9 +118,7 @@ export default class Middleware {
  * @return {undefined}
  */
   static async isOwnerOrAdmin(req, res, next) {
-    // return next();
     if (!req.user.admin) {
-      // not admin, check if its
       if (req.user.id !== req.params.id) {
         return res.status(403).json({ error: 'You do not have access to this resource' });
       }
