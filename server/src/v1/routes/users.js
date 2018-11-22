@@ -4,8 +4,11 @@
  */
 
 import { Router } from 'express';
-import usersController from '../controllers/users';
+import UsersController from '../controllers/users';
 import Middleware from '../middlewares';
+
+const { isAdmin } = Middleware;
+const { getParcels, index } = UsersController;
 
 
 /**
@@ -24,7 +27,7 @@ const router = Router();
  * @inner
  * @param {callback} middleware - Express middleware.
  */
-router.get('/', Middleware.isAdmin, usersController.index);
+router.get('/', isAdmin, index);
 
 /**
  * Route serving getting a parcel.
@@ -34,5 +37,5 @@ router.get('/', Middleware.isAdmin, usersController.index);
  * @inner
  * @param {callback} middleware - Express middleware.
  */
-router.get('/:id/parcels', usersController.getParcels);
+router.get('/:id/parcels', getParcels);
 export default router;

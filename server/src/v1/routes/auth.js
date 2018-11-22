@@ -5,6 +5,8 @@
 import { Router } from 'express';
 import authController from '../controllers/auth';
 
+const { signup, login } = authController;
+
 /**
  * Express router to mount authentication related functions on.
  * @type {object}
@@ -21,7 +23,7 @@ const router = Router();
  * @inner
  * @param {callback} middleware - Express middleware.
  */
-router.post('/signup', authController.signup);
+router.post('/signup', signup);
 
 /**
  * Route serving logging in.
@@ -31,5 +33,5 @@ router.post('/signup', authController.signup);
  * @inner
  * @param {callback} middleware - Express middleware.
  */
-router.post('/login', authController.login);
+router.post('/login', login);
 export default router;
