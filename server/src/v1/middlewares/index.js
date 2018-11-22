@@ -3,6 +3,26 @@ import DBHelpers from '../models/helpers';
 
 /** Class representing Middleware functions. */
 export default class Middleware {
+/**
+ * Middleware to ensure request body is syntactically correct JSON
+ * if content-type is text/plain.
+ * @module Middlewares
+ * @function
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @return {undefined}
+ */
+  static ensureJSONCompliant(req, res, next) {
+    try {
+      if (req.headers['content-type'] === 'text/plain') {
+        req.body = JSON.parse(req.body);
+      }
+      next();
+    } catch (error) {
+      return res.status(400).json({ error: 'You sent a badly formatted JSON as text, please correct' });
+    }
+  }
   /**
  * Middleware to ensure request is from an authenticated user.
  * @module Middlewares

@@ -14,6 +14,7 @@ import AuthRoutes from './v1/routes/auth';
 import Middleware from './v1/middlewares';
 import db from './v1/models';
 
+const { isAuth, ensureJSONCompliant } = Middleware;
 
 /**
  * Server module
@@ -59,8 +60,9 @@ export default class Server {
     this.app.get('/api/v1/', (req, res) => res.json({
       message: 'API v1 works',
     }));
+    this.app.use(ensureJSONCompliant);
     this.app.use('/api/v1/auth', AuthRoutes);
-    this.app.use(Middleware.isAuth);
+    this.app.use(isAuth);
     this.app.use('/api/v1/parcels', ParcelsRoutes);
     this.app.use('/api/v1/users', UsersRoutes);
   }
@@ -77,6 +79,7 @@ export default class Server {
     dotenv.config();
     this.debugger = stdOut;
     this.app.set('json spaces', 2);
+    this.app.use(bodyParser.text());
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({
       extended: true,
