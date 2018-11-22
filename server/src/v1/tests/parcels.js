@@ -208,7 +208,19 @@ export default class ParcelsApiTests {
 */
   createOrder() {
     let userCreatingParcelToken;
-    let parcel;
+    const parcel = {
+      destination: 'Some Destination',
+      pickUpLocation: 'Some Pickup',
+    };
+    const parcelWithWeightAsString = {};
+    const parcelWithWeightAsInteger = {};
+    Object.assign(parcelWithWeightAsInteger, parcel, { weight: 500 });
+    Object.assign(parcelWithWeightAsString, parcel, { weight: '150' });
+    const parcelWithInvalidWeight = {
+      destination: 'Some Destination',
+      pickUpLocation: 'Some Pickup',
+      weight: { key: 'blabs' }
+    };
     describe(`POST ${this.baseURI}`, () => {
       before((done) => {
         chai.request(this.server)
@@ -221,10 +233,6 @@ export default class ParcelsApiTests {
           })
           .then((response) => {
             userCreatingParcelToken = response.body.token;
-            parcel = {
-              destination: 'Some Destination',
-              pickUpLocation: 'Some Pickup',
-            };
             done();
           })
           .catch(err => console.error('User Sign up error ', err));
@@ -246,6 +254,40 @@ export default class ParcelsApiTests {
             response.should.have.status(200);
             response.body.should.be.a('object');
             parcelDeliveryOrderTest(response.body);
+          });
+      });
+
+      it('it should create a parcel delivery order with weight specified as string', () => {
+        chai.request(this.server).post(this.baseURI)
+          .send(parcelWithWeightAsString)
+          .set('Authorization', `Bearer ${userCreatingParcelToken}`)
+          .then((response) => {
+            response.should.have.status(200);
+            response.body.should.be.a('object');
+            parcelDeliveryOrderTest(response.body);
+          });
+      });
+
+      it('it should create a parcel delivery order with weight specified as integer', () => {
+        chai.request(this.server).post(this.baseURI)
+          .send(parcelWithWeightAsInteger)
+          .set('Authorization', `Bearer ${userCreatingParcelToken}`)
+          .then((response) => {
+            response.should.have.status(200);
+            response.body.should.be.a('object');
+            parcelDeliveryOrderTest(response.body);
+          });
+      });
+
+      it('it should not create a parcel delivery order with weight not specified as string or number', () => {
+        chai.request(this.server).post(this.baseURI)
+          .send(parcelWithInvalidWeight)
+          .set('Authorization', `Bearer ${userCreatingParcelToken}`)
+          .then((response) => {
+            response.should.have.status(400);
+            response.body.should.be.a('object');
+            response.body.should.have.property('error');
+            response.body.error.should.eql('Weight specified is invalid, cannot bill. ABort parcel order creation');
           });
       });
 
@@ -475,7 +517,7 @@ export default class ParcelsApiTests {
           response.should.have.status(200);
           response.should.be.a('object');
           parcelDeliveryOrderTest(response.body);
-          response.body.should.have.property('destination').eql(newDestination);
+          response.body.should.have.property('destination').eql(newDestination.toLowerCase());
           response.body.should.have.property('status').eql(statuses.AwaitingProcessing.code);
         }));
     });
@@ -665,7 +707,7 @@ export default class ParcelsApiTests {
           response.should.have.status(200);
           response.should.be.a('object');
           parcelDeliveryOrderTest(response.body, { excludes: ['presentlocation'] });
-          response.body.should.have.property('presentlocation').eql(newLocation);
+          response.body.should.have.property('presentlocation').eql(newLocation.toLowerCase());
         }));
     });
   }

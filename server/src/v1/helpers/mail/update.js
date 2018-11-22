@@ -28,6 +28,8 @@ const updateUserWithStatus = (userId, parcel, existingParcel = true, cancelled =
   const status = getStatus(parcel.status);
   let grammar = existingParcel ? 'updated' : 'created';
   grammar = cancelled ? grammar === 'cancelled' : grammar;
+  const tellPrice = (grammar === 'created') ? parcel.price : null;
+  const chargeText = tellPrice ? `You bill is ${parcel.price} <br>` : '';
   dbHelper.find('users', userId).then((result) => {
     user = result;
     jwt.sign(userId, process.env.secret, (err, decoded) => {
@@ -37,6 +39,7 @@ const updateUserWithStatus = (userId, parcel, existingParcel = true, cancelled =
         Hello <b>${user.firstname}</b>, your parcel delivery order #${parcel.id} has been ${grammar},
         <br />
         It is now <em>${status}</em>.<br />
+        ${chargeText}
         Click <a href="${baseURL}/api/v1/parcels/${parcel.id}?token=${decoded}" target="blank">here</a> to see the details of the order.
         <br />This is the link in case the above isn't clickable. <br />
         ${baseURL}/api/v1/parcels/${parcel.id}?token=${decoded}

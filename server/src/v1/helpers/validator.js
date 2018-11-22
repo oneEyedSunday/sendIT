@@ -47,7 +47,7 @@ export default class Validator {
     const fields = Object.keys(object);
     for (let i = 0; i < fields.length; i += 1) {
       if (typeof object[fields[i]] === 'string') {
-        object[fields[i]] = object[fields[i]].trim();
+        object[fields[i]] = object[fields[i]].trim().toLowerCase();
       }
     }
   }

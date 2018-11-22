@@ -7,11 +7,11 @@ const {
 const officeLocation = 'Maryland, Lagos';
 const defaultPrice = 'N500';
 const getPriceFromWeightRange = (weight) => {
-  if (weight < 51) return defaultPrice;
+  if (weight > -1 && weight < 51) return defaultPrice;
   if (weight > 50 && weight < 101) return 'N1000';
   if (weight > 100 && weight < 201) return 'N3000';
   if (weight > 200) return 'N5000';
-  return defaultPrice;
+  throw new Error('Weight specified is invalid, cannot bill. ABort parcel order creation');
 };
 /**
  * Parcels controller - All functions for the handling parcel routes
@@ -80,8 +80,6 @@ export default class ParcelsController {
  */
   static createOrder(req, res) {
     let weight;
-    // price
-    // weight is a number
     if (typeof req.body.weight === 'string') {
       const convertedWeight = parseInt(req.body.weight, 10);
       // eslint-disable-next-line no-restricted-globals
@@ -90,18 +88,28 @@ export default class ParcelsController {
       } else {
         weight = convertedWeight;
       }
+    } else if (typeof req.body.weight === 'number') {
+      // eslint-disable-next-line prefer-destructuring
+      weight = req.body.weight;
+    } else {
+      weight = (req.body.weight ? -1 : 30);
     }
-    const price = getPriceFromWeightRange(weight);
-    createParcel({
-      userId: req.user.id,
-      destination: req.body.destination,
-      presentLocation: officeLocation,
-      pickUpLocation: req.body.pickUpLocation,
-      weight,
-      status: statuses.AwaitingProcessing.code,
-      price,
-    }).then(createdParcel => res.json(createdParcel))
-      .catch(error => res.status(400).json({ error: error.message }));
+
+    try {
+      const price = getPriceFromWeightRange(weight);
+      createParcel({
+        userId: req.user.id,
+        destination: req.body.destination,
+        presentLocation: officeLocation,
+        pickUpLocation: req.body.pickUpLocation,
+        weight,
+        status: statuses.AwaitingProcessing.code,
+        price,
+      }).then(createdParcel => res.json(createdParcel))
+        .catch(error => res.status(400).json({ error: error.message }));
+    } catch (error) {
+      return res.status(400).json({ error: error.message });
+    }
   }
 
   /**
