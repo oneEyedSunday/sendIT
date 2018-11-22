@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-env node, mocha */
 /* eslint-disable import/no-extraneous-dependencies */
 import chai from 'chai';
@@ -6,7 +7,7 @@ import http from 'http';
 import jwt from 'jsonwebtoken';
 import uuid from 'uuid/v4';
 import dotenv from 'dotenv';
-import Server from '../../server';
+import { bootstrap } from '../../server';
 
 dotenv.config();
 chai.should();
@@ -14,7 +15,7 @@ chai.use(chaiHttp);
 
 process.env.NODE_ENV = 'test';
 const port = 8081;
-const { app } = Server.bootstrap();
+const { app } = bootstrap();
 app.set('port', port);
 const server = http.createServer(app);
 server.listen(port).on('error', (err) => {
@@ -22,17 +23,33 @@ server.listen(port).on('error', (err) => {
   console.error(`An error occured with errcode ${err.code}, couldn't start server.\nPlease close instances of server on port ${port} elsewhere.`);
   process.exit(-1);
 });
+
+/**
+ * User Api tests - All tests for the user endpont
+ * @module tests/users
+ */
 export default class UsersApiTests {
+  /**
+   * @function constructor
+   * @memberof module:users
+   * @param {object} host - URL of server
+   * @returns {null} No return
+   */
   constructor(host = null) {
     this.server = host;
     this.baseURI = '/api/v1/users';
   }
 
-
+  /**
+ * runTests - run all tests specified
+ *
+ * @function runTests
+ * @memberof  module:users
+ * @return {null} No return
+*/
   runTests() {
     describe('Users API Tests', () => {
       before((done) => {
-
         chai.request(this.server)
           .post('/api/v1/auth/signup')
           .send({
@@ -55,7 +72,7 @@ export default class UsersApiTests {
           })
           .catch(err => console.error(err));
       });
-      this.list();
+      this.listUsers();
       this.getUserParcels();
 
       after(() => {
@@ -64,7 +81,14 @@ export default class UsersApiTests {
     });
   }
 
-  list() {
+  /**
+ * listUsers - a test to ensure listing users is running as expected
+ *
+ * @function listUsers
+ * @memberof  module:parcel
+ * @return {null} No return
+*/
+  listUsers() {
     describe(`GET ${this.baseURI}`, () => {
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
         .get(this.baseURI)
@@ -85,6 +109,13 @@ export default class UsersApiTests {
     });
   }
 
+  /**
+ * getUserParcels - a test to ensure getting a user parcels works as expected
+ *
+ * @function getUserParcels
+ * @memberof  module:users
+ * @return {null} No return
+*/
   getUserParcels() {
     describe(`GET ${this.baseURI}/<userId>/parcels`, () => {
       before((done) => {

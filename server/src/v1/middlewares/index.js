@@ -13,8 +13,6 @@ export default class Middleware {
  * @return {undefined}
  */
   static async isAuth(req, res, next) {
-    // return next();
-    if (req.url === '/api' || req.url === '/api/' || req.url === '/api/v1/auth/signup' || req.url === '/api/v1/auth/login') return next();
     let token = req.headers.authorization || req.query.token;
     if (token && token.startsWith('Bearer ')) {
       token = token.slice(7, token.length);
@@ -99,9 +97,7 @@ export default class Middleware {
  * @return {undefined}
  */
   static async isOwnerOrAdmin(req, res, next) {
-    // return next();
     if (!req.user.admin) {
-      // not admin, check if its
       if (req.user.id !== req.params.id) {
         return res.status(403).json({ error: 'You do not have access to this resource' });
       }

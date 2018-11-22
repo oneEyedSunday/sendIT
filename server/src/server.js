@@ -59,9 +59,10 @@ export default class Server {
     this.app.get('/api/v1/', (req, res) => res.json({
       message: 'API v1 works',
     }));
+    this.app.use('/api/v1/auth', AuthRoutes);
+    this.app.use(Middleware.isAuth);
     this.app.use('/api/v1/parcels', ParcelsRoutes);
     this.app.use('/api/v1/users', UsersRoutes);
-    this.app.use('/api/v1/auth', AuthRoutes);
   }
 
   /**
@@ -82,7 +83,6 @@ export default class Server {
     }));
     this.app.use(methodOverride());
     this.app.use('/api-docs', swagger.serve, swagger.setup(swaggerDoc));
-    this.app.use(Middleware.isAuth);
   }
 
   /**
@@ -111,17 +111,5 @@ export default class Server {
     this.app.close();
   }
 }
-/*
-const port = 8080;
-const { app } = Server.bootstrap();
-app.set('port', port);
-const server = http.createServer(app);
-server.listen(port).on('error', (err) => {
-  console.error(`An error occured with errcode ${err.code},
-  couldn't start server.\nPlease close instances of server on port ${port} elsewhere.`);
-  process.exit(-1);
-});
-*/
-
 
 export const { bootstrap } = Server;

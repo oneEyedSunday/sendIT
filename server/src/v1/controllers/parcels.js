@@ -20,6 +20,7 @@ export default class ParcelsController {
  * @memberof  module:controllers/parcels
  * @param  {Object} req  Express request object
  * @param  {Object} res  Express response object
+
  * @returns {array} Returns array of parcels
  */
   static getAllOrders(req, res) {
@@ -82,7 +83,6 @@ export default class ParcelsController {
         errors,
       });
     }
-    // parcel.id = parcelHelpers.findAll().length + 1;
     createParcel({
       userId: req.user.id,
       destination: parcel.destination,

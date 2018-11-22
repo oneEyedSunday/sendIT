@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import Validator from '../helpers/validator';
-// import { userHelpers } from '../helpers/mockdb';
 import AuthHelpers from '../helpers/auth';
 import DbHelpers from '../models/helpers';
 
@@ -23,7 +22,6 @@ export default class AuthController {
  * @returns {object} Returns an object containing user details or error
  */
   static signup(req, res) {
-    // return res.json([]);
     let userObject = {};
     if (req.body.user) {
       userObject = req.body.user;
@@ -40,7 +38,6 @@ export default class AuthController {
         errors,
       });
     }
-    // if (user.email === 'test@test.com') user.parcels = [4];
     AuthHelpers.hash(userObject.password)
       .then((hash) => {
         createUser({
