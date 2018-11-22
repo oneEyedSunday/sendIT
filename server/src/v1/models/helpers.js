@@ -62,8 +62,8 @@ export default class DBHelper {
  */
   static async createParcel(parcelObject) {
     const text = `INSERT INTO
-          parcels(id, userId, destination, pickUpLocation, presentLocation, price,  status, created_date, modified_date)
-          VALUES($1, $2, $3, $4, $5, $6, $7,  NOW(), NOW())
+          parcels(id, userId, destination, pickUpLocation, presentLocation, price, weight, status, created_date, modified_date)
+          VALUES($1, $2, $3, $4, $5, $6, $7, $8,  NOW(), NOW())
           returning *`;
     const values = [
       uuidv4(),
@@ -72,6 +72,7 @@ export default class DBHelper {
       parcelObject.pickUpLocation,
       parcelObject.presentLocation,
       parcelObject.price,
+      parcelObject.weight,
       parcelObject.status,
     ];
 
