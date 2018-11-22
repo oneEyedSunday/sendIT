@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import DBHelpers from '../helpers/db/helpers';
+import DBHelpers from '../models/helpers';
 
 /** Class representing Middleware functions. */
 export default class Middleware {

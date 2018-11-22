@@ -6,7 +6,7 @@ import http from 'http';
 import jwt from 'jsonwebtoken';
 import uuid from 'uuid/v4';
 import dotenv from 'dotenv';
-import { Server } from '../../server';
+import Server from '../../server';
 
 dotenv.config();
 chai.should();

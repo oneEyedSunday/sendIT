@@ -1,12 +1,10 @@
-/* eslint-env node, mocha */
-/* eslint-disable import/no-extraneous-dependencies */
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import http from 'http';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import uuid from 'uuid/v4';
-import { Server } from '../../server';
+import Server from '../../server';
 import { statuses } from '../helpers/mockdb';
 
 dotenv.config();
