@@ -1,4 +1,4 @@
-import dbHelpers from '../helpers/db/helpers';
+import dbHelpers from '../models/helpers';
 
 /**
  * Users controller - All functions for the handling user routes

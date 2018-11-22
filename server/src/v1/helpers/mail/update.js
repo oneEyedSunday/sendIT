@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
-// import mailSender from './mail';
-import dbHelper from '../db/helpers';
+import dbHelper from '../../models';
 
 dotenv.config();
 // change baseURl to UI not API url

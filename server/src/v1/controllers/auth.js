@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import Validator from '../helpers/validator';
 // import { userHelpers } from '../helpers/mockdb';
 import AuthHelpers from '../helpers/auth';
-import dbHelpers from '../helpers/db/helpers';
+import dbHelpers from '../models/helpers';
 
 /**
  * Auth controller - All functions for the handling authentication routes

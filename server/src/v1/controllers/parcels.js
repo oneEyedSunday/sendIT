@@ -1,6 +1,6 @@
 import Validator from '../helpers/validator';
 import { statuses } from '../helpers/mockdb';
-import dbHelpers from '../helpers/db/helpers';
+import dbHelpers from '../models/helpers';
 
 const officeLocation = 'Maryland, Lagos';
 const defaultPrice = 'N500';
