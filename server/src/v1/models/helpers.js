@@ -19,14 +19,14 @@ const singularTableName = (tablename) => {
  * @const
  * @namespace DBHelper
  */
-const DBHelpers = {
+export default class DBHelper {
   /**
  * Function to create a user in DB
  * @function
  * @param {object} userObject - Object containing user data
  * @return {object} created User
  */
-  async createUser(userObject) {
+  static async createUser(userObject) {
     const text = `INSERT INTO
           users(id, email, firstname, lastname, password, admin, created_date, modified_date)
           VALUES($1, $2, $3, $4, $5, $6, NOW(), NOW())
@@ -52,7 +52,7 @@ const DBHelpers = {
       // console.log(error.name);
       throw new Error(error.message);
     }
-  },
+  }
 
   /**
  * Function to create a parcel in DB
@@ -60,7 +60,7 @@ const DBHelpers = {
  * @param {object} parcelObject - Object containing parcel data
  * @return {object} created Parcel Object
  */
-  async createParcel(parcelObject) {
+  static async createParcel(parcelObject) {
     const text = `INSERT INTO
           parcels(id, userId, destination, pickUpLocation, presentLocation, price,  status, created_date, modified_date)
           VALUES($1, $2, $3, $4, $5, $6, $7,  NOW(), NOW())
@@ -83,7 +83,7 @@ const DBHelpers = {
       // return res.status(400).send(error);
       throw new Error(error);
     }
-  },
+  }
 
   /**
  * Function to get all data in a table
@@ -91,7 +91,7 @@ const DBHelpers = {
  * @param {string} tablename - Table in DB
  * @return {array} array of items in table
  */
-  async findAll(tablename) {
+  static async findAll(tablename) {
     const findAllQuery = `SELECT * FROM ${tablename}`;
     try {
       // const { rows, rowCount } = await db.query(findAllQuery);
@@ -102,7 +102,7 @@ const DBHelpers = {
       // return res.status(400).send(error);
       throw new Error(error);
     }
-  },
+  }
 
   /**
  * Function to find by id in DB
@@ -111,7 +111,7 @@ const DBHelpers = {
  * @param {string} id - Id
  * @return {object} item
  */
-  async find(tablename, id) {
+  static async find(tablename, id) {
     const text = `SELECT * FROM ${tablename} WHERE id = $1`;
     try {
       const { rows } = await db.query(text, [id]);
@@ -126,8 +126,7 @@ const DBHelpers = {
       // return res.status(400).send(error)
       throw new Error(error);
     }
-  },
-
+  }
 
   /**
  * Function to find data in table by email
@@ -137,7 +136,7 @@ const DBHelpers = {
  * @return {object} User Object found
  * @throws {error} Error
  */
-  async findByEmail(tablename, email) {
+  static async findByEmail(tablename, email) {
     const text = `SELECT * FROM ${tablename} WHERE email = $1`;
     try {
       const { rows } = await db.query(text, [email]);
@@ -152,7 +151,7 @@ const DBHelpers = {
       // return res.status(400).send(error)
       throw new Error(error);
     }
-  },
+  }
 
   /**
  * Function to get parcels belonging to a user
@@ -160,7 +159,7 @@ const DBHelpers = {
  * @param {string} userId - Id of user
  * @return {array} Parcels owned by User
  */
-  async getParcelsByUserId(userId) {
+  static async getParcelsByUserId(userId) {
     try {
       const query = 'SELECT * from parcels WHERE userId=$1';
       const { rows } = await db.query(query, [userId]);
@@ -168,7 +167,7 @@ const DBHelpers = {
     } catch (error) {
       throw new Error(error.message || 'An error occured');
     }
-  },
+  }
 
   /**
  * Function to update a single field in row of DB table
@@ -178,7 +177,7 @@ const DBHelpers = {
  * @param {object} fieldObject - Object containing field and data
  * @return {object} updated item
  */
-  async updateSingleField(tablename, id, fieldObject) {
+  static async updateSingleField(tablename, id, fieldObject) {
     const keys = Object.keys(fieldObject);
     if (!keys || keys.length !== 1) throw new Error('You supplied wrong field object');
     const field = keys[0];
@@ -203,7 +202,7 @@ const DBHelpers = {
       // return res.status(400).send(err);
       throw new Error(err);
     }
-  },
+  }
 
   /**
  * Function to delete from DB
@@ -212,7 +211,7 @@ const DBHelpers = {
  * @param {object} id - id of item to delete
  * @return {object} object containing message acknowledging delete
  */
-  async delete(tablename, id) {
+  static async delete(tablename, id) {
     const deleteQuery = 'DELETE FROM $1 WHERE id=$2 returning *';
     try {
       const { rows } = await db.query(deleteQuery, [tablename, id]);
@@ -226,10 +225,9 @@ const DBHelpers = {
       // return res.status(400).send(error);
       throw new Error(error);
     }
-  },
-};
+  }
+}
 
-export default DBHelpers;
 // Users.create({
 //   email: 'test@test.com',
 //   firstname: 'Test',
