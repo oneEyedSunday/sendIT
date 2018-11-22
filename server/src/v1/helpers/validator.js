@@ -28,7 +28,7 @@ export default class Validator {
  * @returns {null} null
  */
   static checkBody(item, field) {
-    if (!Object.prototype.hasOwnProperty.call(item, field)) {
+    if (!Object.prototype.hasOwnProperty.call(item, field) || item[field].length < 1) {
       const error = {};
       error.field = field;
       error.message = `${field} cannot be missing`;

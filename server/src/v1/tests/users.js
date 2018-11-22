@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-/* eslint-env node, mocha */
 /* eslint-disable import/no-extraneous-dependencies */
 import chai from 'chai';
 import chaiHttp from 'chai-http';

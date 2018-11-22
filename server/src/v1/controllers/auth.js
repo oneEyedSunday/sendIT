@@ -25,7 +25,8 @@ export default class AuthController {
     Validator.check(req.body, ['email', 'password', 'firstname', 'lastname']);
     const errors = Validator.errors();
     const isEmail = /\S+@\S+\.\S+/.test(req.body.email);
-    if (!isEmail) errors.push({ email: 'Email is Invalid' });
+    if (!isEmail) errors.push({ field: 'email', message: 'Email is Invalid' });
+    if (req.body.password && req.body.password.trim().length < 6) errors.push({ field: 'password', message: 'Password length must be more than six characters' });
     if (errors.length > 0) {
       return res.status(422).send({
         message: 'Validation errors',
@@ -90,11 +91,14 @@ export default class AuthController {
       .then((foundUser) => {
         AuthHelpers.compare(userObject.password, foundUser.password)
           .then((result) => {
-            const token = jwt.sign({
+            if (result === false) return res.status(401).json({ auth: false, message: 'Invalid Credentials' });
+            jwt.sign({
               id: foundUser.id,
               admin: foundUser.admin
-            }, process.env.secret);
-            return res.json({ auth: result, token });
+            }, process.env.secret, (err, token) => {
+              if (err) return res.status(500).json({ error: 'An error occured while processing your request' });
+              return res.json({ auth: true, token });
+            });
           })
           .catch(() => res.status(500).json({ error: 'An error occured while processing your request' }));
       })
