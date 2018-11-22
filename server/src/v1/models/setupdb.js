@@ -39,6 +39,7 @@ const createParcelsTable = () => {
             destination VARCHAR(125) NOT NULL,
             presentLocation VARCHAR(20) NOT NULL,
             pickUpLocation VARCHAR(125) NOT NULL,
+            weight INTEGER DEFAULT 30 NOT NULL,
             price VARCHAR(10) NOT NULL,
             status INTEGER NOT NULL,
             created_date TIMESTAMP,

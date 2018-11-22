@@ -6,7 +6,13 @@ const {
 } = DbHelpers;
 const officeLocation = 'Maryland, Lagos';
 const defaultPrice = 'N500';
-
+const getPriceFromWeightRange = (weight) => {
+  if (weight < 51) return defaultPrice;
+  if (weight > 50 && weight < 101) return 'N1000';
+  if (weight > 100 && weight < 201) return 'N3000';
+  if (weight > 200) return 'N5000';
+  return defaultPrice;
+};
 /**
  * Parcels controller - All functions for the handling parcel routes
  * @module controllers/users
@@ -73,13 +79,27 @@ export default class ParcelsController {
  * @return {object} Returns the created parcel or an object containing error
  */
   static createOrder(req, res) {
+    let weight;
+    // price
+    // weight is a number
+    if (typeof req.body.weight === 'string') {
+      const convertedWeight = parseInt(req.body.weight, 10);
+      // eslint-disable-next-line no-restricted-globals
+      if (isNaN(convertedWeight)) {
+        weight = 30;
+      } else {
+        weight = convertedWeight;
+      }
+    }
+    const price = getPriceFromWeightRange(weight);
     createParcel({
       userId: req.user.id,
       destination: req.body.destination,
       presentLocation: officeLocation,
       pickUpLocation: req.body.pickUpLocation,
+      weight,
       status: statuses.AwaitingProcessing.code,
-      price: defaultPrice,
+      price,
     }).then(createdParcel => res.json(createdParcel))
       .catch(error => res.status(400).json({ error: error.message }));
   }
