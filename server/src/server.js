@@ -21,7 +21,7 @@ import db from './v1/helpers/db';
  * Server module
  * @module server
  */
-export class Server {
+export default class Server {
   /**
    * @function constructor
    * @memberof module:server
@@ -124,3 +124,6 @@ server.listen(port).on('error', (err) => {
   process.exit(-1);
 });
 */
+
+
+export const { bootstrap } = Server;
