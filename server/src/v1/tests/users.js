@@ -53,12 +53,10 @@ export default class UsersApiTests {
         chai.request(this.server)
           .post('/api/v1/auth/signup')
           .send({
-            user: {
-              email: `${Date.now()}@yahoo.com`,
-              password: 'finito',
-              firstname: 'Pier',
-              lastname: 'Dragowski',
-            },
+            email: `${Date.now()}@yahoo.com`,
+            password: 'finito',
+            firstname: 'Pier',
+            lastname: 'Dragowski',
           })
           .then((response) => {
             this.token = response.body.token;
@@ -122,12 +120,10 @@ export default class UsersApiTests {
         chai.request(this.server)
           .post('/api/v1/auth/signup')
           .send({
-            user: {
-              email: `${Date.now()}@test.com`,
-              password: 'finito',
-              firstname: 'Test',
-              lastname: 'Test',
-            },
+            email: `${Date.now()}@test.com`,
+            password: 'finito',
+            firstname: 'Test',
+            lastname: 'Test',
           })
           .then((response) => {
             this.allowedUserToken = response.body.token;
@@ -138,11 +134,9 @@ export default class UsersApiTests {
               chai.request(this.server)
                 .post('/api/v1/parcels')
                 .send({
-                  parcel: {
-                    userId: this.userOwningParcel.id,
-                    destination: 'Some Place',
-                    pickUpLocation: 'Some pickup',
-                  },
+                  userId: this.userOwningParcel.id,
+                  destination: 'Some Place',
+                  pickUpLocation: 'Some pickup',
                 })
                 .set('Authorization', this.allowedUserToken)
                 .then((createParcelResponse) => {

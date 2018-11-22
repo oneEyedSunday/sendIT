@@ -22,15 +22,9 @@ export default class AuthController {
  * @returns {object} Returns an object containing user details or error
  */
   static signup(req, res) {
-    let userObject = {};
-    if (req.body.user) {
-      userObject = req.body.user;
-    } else {
-      Object.assign(userObject, req.body);
-    }
-    Validator.check(userObject, ['email', 'password', 'firstname', 'lastname']);
+    Validator.check(req.body, ['email', 'password', 'firstname', 'lastname']);
     const errors = Validator.errors();
-    const isEmail = /\S+@\S+\.\S+/.test(userObject.email);
+    const isEmail = /\S+@\S+\.\S+/.test(req.body.email);
     if (!isEmail) errors.push({ email: 'Email is Invalid' });
     if (errors.length > 0) {
       return res.status(422).send({
@@ -38,6 +32,15 @@ export default class AuthController {
         errors,
       });
     }
+
+    const userObject = {
+      email: req.body.email.trim(),
+      password: req.body.password.trim(),
+      firstname: req.body.firstname.trim(),
+      lastname: req.body.lastname.trim(),
+      admin: req.body.admin
+    };
+
     AuthHelpers.hash(userObject.password)
       .then((hash) => {
         createUser({
@@ -77,9 +80,15 @@ export default class AuthController {
         errors,
       });
     }
-    findByEmailFromTable('users', req.body.email)
+
+    const userObject = {
+      email: req.body.email.trim(),
+      password: req.body.password.trim(),
+    };
+
+    findByEmailFromTable('users', userObject.email)
       .then((foundUser) => {
-        AuthHelpers.compare(req.body.password, foundUser.password)
+        AuthHelpers.compare(userObject.password, foundUser.password)
           .then((result) => {
             const token = jwt.sign({
               id: foundUser.id,

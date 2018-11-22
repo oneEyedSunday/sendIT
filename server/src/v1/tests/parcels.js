@@ -140,12 +140,10 @@ export default class ParcelsApiTests {
         chai.request(this.server)
           .post('/api/v1/auth/signup')
           .send({
-            user: {
-              email: `${Date.now()}@test.com`,
-              password: 'finito',
-              firstname: 'Test',
-              lastname: 'Test',
-            },
+            email: `${Date.now()}@test.com`,
+            password: 'finito',
+            firstname: 'Test',
+            lastname: 'Test',
           })
           .then((response) => {
             userCreatingParcelToken = response.body.token;
@@ -156,11 +154,9 @@ export default class ParcelsApiTests {
                 chai.request(this.server)
                   .post('/api/v1/parcels')
                   .send({
-                    parcel: {
-                      userId: decoded.id,
-                      destination: 'Some Place',
-                      pickUpLocation: 'Some pickup',
-                    },
+                    userId: decoded.id,
+                    destination: 'Some Place',
+                    pickUpLocation: 'Some pickup',
                   })
                   .set('Authorization', userCreatingParcelToken)
                   .then((createParcelResponse) => {
@@ -218,12 +214,10 @@ export default class ParcelsApiTests {
         chai.request(this.server)
           .post('/api/v1/auth/signup')
           .send({
-            user: {
-              email: `user-Pa${Date.now()}@test.com`,
-              password: 'finito',
-              firstname: 'Test',
-              lastname: 'Test',
-            },
+            email: `user-Pa${Date.now()}@test.com`,
+            password: 'finito',
+            firstname: 'Test',
+            lastname: 'Test',
           })
           .then((response) => {
             userCreatingParcelToken = response.body.token;
@@ -246,7 +240,7 @@ export default class ParcelsApiTests {
 
       it('it should create a parcel delivery order', () => {
         chai.request(this.server).post(this.baseURI)
-          .send({ parcel })
+          .send(parcel)
           .set('Authorization', `Bearer ${userCreatingParcelToken}`)
           .then((response) => {
             response.should.have.status(200);
@@ -257,7 +251,7 @@ export default class ParcelsApiTests {
 
       it('it should not create a parcel delivery order without destination speciified', () => chai.request(this.server)
         .post(this.baseURI)
-        .send({ parcel: { pickUpLocation: 'Some Pickup' } })
+        .send({ pickUpLocation: 'Some Pickup' })
         .set('Authorization', `Bearer ${userCreatingParcelToken}`)
         .then((response) => {
           response.should.have.status(422);
@@ -271,7 +265,7 @@ export default class ParcelsApiTests {
 
       it('it should not create a parcel delivery order without the pick up location speciified', () => chai.request(this.server)
         .post(this.baseURI)
-        .send({ parcel: { destination: 'SOme Destination' } })
+        .send({ destination: 'SOme Destination' })
         .set('Authorization', `Bearer ${userCreatingParcelToken}`)
         .then((response) => {
           response.should.have.status(422);
@@ -285,7 +279,7 @@ export default class ParcelsApiTests {
 
       it('it should not create a parcel delivery order without the pick up location and destination speciified', () => chai.request(this.server)
         .post(this.baseURI)
-        .send({ parcel: {} })
+        .send({})
         .set('Authorization', `Bearer ${userCreatingParcelToken}`)
         .then((response) => {
           response.should.have.status(422);
@@ -322,12 +316,10 @@ export default class ParcelsApiTests {
         chai.request(this.server)
           .post('/api/v1/auth/signup')
           .send({
-            user: {
-              email: `user-${Date.now()}Pahahagta@test.com`,
-              password: 'finito',
-              firstname: 'Test',
-              lastname: 'Test',
-            },
+            email: `user-${Date.now()}Pahahagta@test.com`,
+            password: 'finito',
+            firstname: 'Test',
+            lastname: 'Test',
           })
           .then((response) => {
             userCreatingParcelToken = response.body.token;
@@ -338,18 +330,14 @@ export default class ParcelsApiTests {
                 chai.request(this.server)
                   .post('/api/v1/parcels')
                   .send({
-                    parcel: {
-                      userId: decoded.id,
-                      destination: 'Some Place',
-                      pickUpLocation: 'Some pickup',
-                    },
+                    userId: decoded.id,
+                    destination: 'Some Place',
+                    pickUpLocation: 'Some pickup',
                   })
                   .set('Authorization', userCreatingParcelToken)
                   .then((createParcelResponse) => {
-                  // parcel
                     parcel = createParcelResponse.body;
                     done();
-                  // extract parcelId
                   })
                   .catch(err => console.error('createParcelError', err));
               }
@@ -416,12 +404,10 @@ export default class ParcelsApiTests {
         chai.request(this.server)
           .post('/api/v1/auth/signup')
           .send({
-            user: {
-              email: `user-${Date.now()}Pahahagta@test.com`,
-              password: 'finito',
-              firstname: 'Test',
-              lastname: 'Test',
-            },
+            email: `user-${Date.now()}Pahahagta@test.com`,
+            password: 'finito',
+            firstname: 'Test',
+            lastname: 'Test',
           })
           .then((response) => {
             userCreatingParcelToken = response.body.token;
@@ -432,18 +418,14 @@ export default class ParcelsApiTests {
                 chai.request(this.server)
                   .post('/api/v1/parcels')
                   .send({
-                    parcel: {
-                      userId: decoded.id,
-                      destination: 'Some Place',
-                      pickUpLocation: 'Some pickup',
-                    },
+                    userId: decoded.id,
+                    destination: 'Some Place',
+                    pickUpLocation: 'Some pickup',
                   })
                   .set('Authorization', userCreatingParcelToken)
                   .then((createParcelResponse) => {
-                  // parcel
                     parcel = createParcelResponse.body;
                     done();
-                  // extract parcelId
                   })
                   .catch(err => console.error('createParcelError', err));
               }
@@ -518,12 +500,10 @@ export default class ParcelsApiTests {
       chai.request(this.server)
         .post('/api/v1/auth/signup')
         .send({
-          user: {
-            email: `user-${Date.now()}Pahahagta@test.com`,
-            password: 'finito',
-            firstname: 'Test',
-            lastname: 'Test',
-          },
+          email: `user-${Date.now()}Pahahagta@test.com`,
+          password: 'finito',
+          firstname: 'Test',
+          lastname: 'Test',
         })
         .then((response) => {
           userCreatingParcelToken = response.body.token;
@@ -534,18 +514,14 @@ export default class ParcelsApiTests {
               chai.request(this.server)
                 .post('/api/v1/parcels')
                 .send({
-                  parcel: {
-                    userId: decoded.id,
-                    destination: 'Some Place',
-                    pickUpLocation: 'Some pickup',
-                  },
+                  userId: decoded.id,
+                  destination: 'Some Place',
+                  pickUpLocation: 'Some pickup',
                 })
                 .set('Authorization', userCreatingParcelToken)
                 .then((createParcelResponse) => {
-                // parcel
                   parcel = createParcelResponse.body;
                   done();
-                // extract parcelId
                 })
                 .catch(err => console.error('createParcelError', err));
             }
@@ -618,12 +594,10 @@ export default class ParcelsApiTests {
         chai.request(this.server)
           .post('/api/v1/auth/signup')
           .send({
-            user: {
-              email: `user-${Date.now()}Pahahagta@test.com`,
-              password: 'finito',
-              firstname: 'Test',
-              lastname: 'Test',
-            },
+            email: `user-${Date.now()}Pahahagta@test.com`,
+            password: 'finito',
+            firstname: 'Test',
+            lastname: 'Test',
           })
           .then((response) => {
             userCreatingParcelToken = response.body.token;
@@ -634,11 +608,9 @@ export default class ParcelsApiTests {
                 chai.request(this.server)
                   .post('/api/v1/parcels')
                   .send({
-                    parcel: {
-                      userId: decoded.id,
-                      destination: 'Some Place',
-                      pickUpLocation: 'Some pickup',
-                    },
+                    userId: decoded.id,
+                    destination: 'Some Place',
+                    pickUpLocation: 'Some pickup',
                   })
                   .set('Authorization', userCreatingParcelToken)
                   .then((createParcelResponse) => {

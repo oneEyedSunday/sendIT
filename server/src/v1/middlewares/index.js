@@ -13,7 +13,7 @@ export default class Middleware {
  * @return {undefined}
  */
   static async isAuth(req, res, next) {
-    let token = req.headers.authorization || req.query.token;
+    let token = req.headers.authorization;
     if (token && token.startsWith('Bearer ')) {
       token = token.slice(7, token.length);
     }
@@ -60,7 +60,7 @@ export default class Middleware {
  */
   static async parcelExists(req, res, next) {
     try {
-      const parcel = await DBHelpers.find('parcels', req.params.id);
+      const parcel = await DBHelpers.findByIdFromTable('parcels', req.params.id);
       req.parcel = parcel;
       return next();
     } catch (error) {

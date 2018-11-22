@@ -74,8 +74,7 @@ export default class ParcelsController {
  * @return {object} Returns the created parcel or an object containing error
  */
   static createOrder(req, res) {
-    const { parcel } = req.body;
-    Validator.check(parcel, ['destination', 'pickUpLocation']);
+    Validator.check(req.body, ['destination', 'pickUpLocation']);
     const errors = Validator.errors();
     if (errors.length > 0) {
       return res.status(422).send({
@@ -85,9 +84,9 @@ export default class ParcelsController {
     }
     createParcel({
       userId: req.user.id,
-      destination: parcel.destination,
+      destination: req.body.destination,
       presentLocation: officeLocation,
-      pickUpLocation: parcel.pickUpLocation,
+      pickUpLocation: req.body.pickUpLocation,
       status: statuses.AwaitingProcessing.code,
       price: defaultPrice,
     }).then(createdParcel => res.json(createdParcel))
