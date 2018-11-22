@@ -287,12 +287,17 @@ section {
 
 .showcase {
     /* margin-top: 20px; */
-    /* margin-bottom: 20px; */
+    margin-bottom: 20px;
 }
 
-.showcase .showcase__item:first-of-type {
+.showcase .showcase__item {
     /* margin-right: 20px; */
-    /* border-right: 1px solid #fff; */
+    border-right: 1px solid #fff;
+}
+
+.showcase .showcase__item:last-of-type {
+    /* margin-right: 20px; */
+    border-right: none;
 }
 
 .showcase__text {
@@ -419,7 +424,7 @@ button.tall-btn {
         /* margin-bottom: 20px; */
     }
     
-    .showcase .showcase__item:first-of-type {
+    .showcase .showcase__item {
         border-right: none;
         border-bottom: 1px solid #fff;
         margin-right: 0;
