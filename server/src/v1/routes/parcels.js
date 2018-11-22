@@ -9,7 +9,7 @@ import Middleware from '../middlewares';
 
 const { isAdmin, parcelExists, isOwner } = Middleware;
 const {
-  index, getOrder,
+  getAllOrders, getOrder,
   cancelOrder, changeOrderDestination, updateOrderLocation, updateOrderStatus,
   createOrder
 } = ParcelsController;
@@ -31,7 +31,7 @@ const router = Router();
  * @inner
  * @param {callback} middleware - Express middleware.
  */
-router.get('/', isAdmin, index);
+router.get('/', isAdmin, getAllOrders);
 
 /**
  * Route serving login form.

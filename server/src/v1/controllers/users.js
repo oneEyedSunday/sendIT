@@ -14,7 +14,7 @@ const UsersController = {
  * @param  {Object} res  Express response object
  * @return {object} Returns the users in system or an object containing error
  */
-  index(req, res) {
+  getAllUsers(req, res) {
     dbHelpers.findAll('users')
       .then(result => res.json(result))
       .catch(error => res.status(400).json({ error: error.message }));
@@ -29,7 +29,7 @@ const UsersController = {
  * @param  {Object} res  Express response object
  * @return {object} Returns the parcels for a user or an object containing error
  */
-  getParcels(req, res) {
+  getAUsersParcels(req, res) {
     if (!req.user.admin && (req.user.id !== req.params.id)) {
       return res.status(403).json({ error: 'You do not have access to this resource' });
     }

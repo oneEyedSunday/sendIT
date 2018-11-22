@@ -19,7 +19,7 @@ const ParcelsController = {
  * @param  {Object} res  Express response object
  * @returns {array} Returns array of parcels
  */
-  index(req, res) {
+  getAllOrders(req, res) {
     dbHelpers.findAll('parcels')
       .then(result => res.json(result))
       .catch(error => res.status(400).json(error));
