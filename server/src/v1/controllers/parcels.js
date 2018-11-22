@@ -1,4 +1,3 @@
-import Validator from '../helpers/validator';
 import { statuses } from '../helpers/mockdb';
 import DbHelpers from '../models/helpers';
 
@@ -74,14 +73,6 @@ export default class ParcelsController {
  * @return {object} Returns the created parcel or an object containing error
  */
   static createOrder(req, res) {
-    Validator.check(req.body, ['destination', 'pickUpLocation']);
-    const errors = Validator.errors();
-    if (errors.length > 0) {
-      return res.status(422).send({
-        message: 'Validation errors',
-        errors,
-      });
-    }
     createParcel({
       userId: req.user.id,
       destination: req.body.destination,
@@ -103,14 +94,6 @@ export default class ParcelsController {
  * @return {object} Returns the updated parcel or an object containing error
  */
   static changeOrderDestination(req, res) {
-    Validator.check(req.body, ['destination']);
-    const errors = Validator.errors();
-    if (errors.length > 0) {
-      return res.status(422).send({
-        message: 'Validation errors',
-        errors,
-      });
-    }
     updateSingleFieldInTable('parcels', req.params.id, { destination: req.body.destination })
       .then(updatedParcel => res.json(updatedParcel))
       .catch(error => res.status(400).json({ error: error.message }));
@@ -126,14 +109,6 @@ export default class ParcelsController {
  * @return {object} Returns the updated parcel or an object containing error
  */
   static updateOrderStatus(req, res) {
-    Validator.check(req.body, ['status']);
-    const errors = Validator.errors();
-    if (errors.length > 0) {
-      return res.status(422).send({
-        message: 'Validation errors',
-        errors,
-      });
-    }
     updateSingleFieldInTable('parcels', req.params.id, { status: req.body.status })
       .then(updatedParcel => res.json(updatedParcel))
       .catch(error => res.status(400).json({ error: error.message }));
@@ -149,14 +124,6 @@ export default class ParcelsController {
  * @return {object} Returns the updated parcel or an object containing error
  */
   static updateOrderLocation(req, res) {
-    Validator.check(req.body, ['presentLocation']);
-    const errors = Validator.errors();
-    if (errors.length > 0) {
-      return res.status(422).send({
-        message: 'Validation errors',
-        errors,
-      });
-    }
     updateSingleFieldInTable('parcels', req.params.id, { presentLocation: req.body.presentLocation })
       .then(updatedParcel => res.json(updatedParcel))
       .catch(error => res.status(400).json({ error: error.message }));

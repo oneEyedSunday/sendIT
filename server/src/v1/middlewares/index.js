@@ -23,6 +23,7 @@ export default class Middleware {
       return res.status(400).json({ error: 'You sent a badly formatted JSON as text, please correct' });
     }
   }
+
   /**
  * Middleware to ensure request is from an authenticated user.
  * @module Middlewares

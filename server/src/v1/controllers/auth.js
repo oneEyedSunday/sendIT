@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import Validator from '../helpers/validator';
 import AuthHelpers from '../helpers/auth';
 import DbHelpers from '../models/helpers';
 
@@ -22,18 +21,6 @@ export default class AuthController {
  * @returns {object} Returns an object containing user details or error
  */
   static signup(req, res) {
-    Validator.check(req.body, ['email', 'password', 'firstname', 'lastname']);
-    const errors = Validator.errors();
-    const isEmail = /\S+@\S+\.\S+/.test(req.body.email);
-    if (!isEmail) errors.push({ field: 'email', message: 'Email is Invalid' });
-    if (req.body.password && req.body.password.trim().length < 6) errors.push({ field: 'password', message: 'Password length must be more than six characters' });
-    if (errors.length > 0) {
-      return res.status(422).send({
-        message: 'Validation errors',
-        errors,
-      });
-    }
-
     const userObject = {
       email: req.body.email.trim(),
       password: req.body.password.trim(),
@@ -73,15 +60,6 @@ export default class AuthController {
  * @returns {object} Returns an object containing user details or error
  */
   static login(req, res) {
-    Validator.check(req.body, ['email', 'password']);
-    const errors = Validator.errors();
-    if (errors.length > 0) {
-      return res.status(422).send({
-        message: 'Validation errors',
-        errors,
-      });
-    }
-
     const userObject = {
       email: req.body.email.trim(),
       password: req.body.password.trim(),

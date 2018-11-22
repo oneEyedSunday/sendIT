@@ -6,6 +6,7 @@
 import { Router } from 'express';
 import ParcelsController from '../controllers/parcels';
 import Middleware from '../middlewares';
+import ValidationMiddleware from '../middlewares/validation';
 
 const { isAdmin, parcelExists, isOwner } = Middleware;
 const {
@@ -13,6 +14,12 @@ const {
   cancelOrder, changeOrderDestination, updateOrderLocation, updateOrderStatus,
   createOrder
 } = ParcelsController;
+
+const {
+  parcelCreationValidation, parcelDestinationUpdateValidation,
+  parcelStatusUpdateValidation,
+  parcelLocationUpdateValidation
+} = ValidationMiddleware;
 
 /**
  * Express router to mount parcel related functions on.
@@ -53,7 +60,7 @@ router.get('/:id', parcelExists, getOrder);
  * @param {string} path - Express path
  * @param {callback} middleware - Express middleware.
  */
-router.put('/:id/cancel', parcelExists, Middleware.isOwner, cancelOrder);
+router.put('/:id/cancel', parcelExists, isOwner, cancelOrder);
 
 /**
  * Route serving login form.
@@ -64,7 +71,7 @@ router.put('/:id/cancel', parcelExists, Middleware.isOwner, cancelOrder);
  * @param {string} path - Express path
  * @param {callback} middleware - Express middleware.
  */
-router.put('/:id/destination', parcelExists, isOwner, changeOrderDestination);
+router.put('/:id/destination', parcelExists, isOwner, parcelDestinationUpdateValidation, changeOrderDestination);
 
 /**
  * Route serving login form.
@@ -75,7 +82,7 @@ router.put('/:id/destination', parcelExists, isOwner, changeOrderDestination);
  * @param {string} path - Express path
  * @param {callback} middleware - Express middleware.
  */
-router.put('/:id/status', isAdmin, parcelExists, updateOrderStatus);
+router.put('/:id/status', isAdmin, parcelExists, parcelStatusUpdateValidation, updateOrderStatus);
 
 /**
  * Route serving login form.
@@ -86,7 +93,7 @@ router.put('/:id/status', isAdmin, parcelExists, updateOrderStatus);
  * @param {string} path - Express path
  * @param {callback} middleware - Express middleware.
  */
-router.put('/:id/presentLocation', isAdmin, parcelExists, updateOrderLocation);
+router.put('/:id/presentLocation', isAdmin, parcelExists, parcelLocationUpdateValidation, updateOrderLocation);
 
 /**
  * Route serving login form.
@@ -97,6 +104,6 @@ router.put('/:id/presentLocation', isAdmin, parcelExists, updateOrderLocation);
  * @param {string} path - Express path
  * @param {callback} middleware - Express middleware.
  */
-router.post('/', createOrder);
+router.post('/', parcelCreationValidation, createOrder);
 
 export default router;
