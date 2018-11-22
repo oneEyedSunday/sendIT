@@ -1,6 +1,6 @@
 import Validator from '../helpers/validator';
 import { statuses } from '../helpers/mockdb';
-import dbHelpers from '../models/helpers';
+import DbHelpers from '../models/helpers';
 
 const officeLocation = 'Maryland, Lagos';
 const defaultPrice = 'N500';
@@ -20,7 +20,7 @@ export default class ParcelsController {
  * @returns {array} Returns array of parcels
  */
   static getAllOrders(req, res) {
-    dbHelpers.findAll('parcels')
+    DbHelpers.findAllInTable('parcels')
       .then(result => res.json(result))
       .catch(error => res.status(400).json(error));
   }
@@ -36,7 +36,7 @@ export default class ParcelsController {
  * @throws {error} error
  */
   static getOrder(req, res) {
-    dbHelpers.find('parcels', req.params.id)
+    DbHelpers.findByIdFromTable('parcels', req.params.id)
       .then(result => res.json(result))
       .catch(err => res.status(400).json(err));
   }
@@ -55,7 +55,7 @@ export default class ParcelsController {
     if (req.parcel.status === statuses.Cancelled) {
       return res.status(409).send({ error: 'Parcel Delivery order already cancelled' });
     }
-    dbHelpers.updateSingleField('parcels', req.params.id, { status: 4 })
+    DbHelpers.updateSingleFieldInTable('parcels', req.params.id, { status: 4 })
       .then(updatedParcel => res.json(updatedParcel))
       .catch(error => res.status(400).json({ error: error.message }));
   }
@@ -80,7 +80,7 @@ export default class ParcelsController {
       });
     }
     // parcel.id = parcelHelpers.findAll().length + 1;
-    dbHelpers.createParcel({
+    DbHelpers.createParcel({
       userId: req.user.id,
       destination: parcel.destination,
       presentLocation: officeLocation,
@@ -109,7 +109,7 @@ export default class ParcelsController {
         errors,
       });
     }
-    dbHelpers.updateSingleField('parcels', req.params.id, { destination: req.body.destination })
+    DbHelpers.updateSingleFieldInTable('parcels', req.params.id, { destination: req.body.destination })
       .then(updatedParcel => res.json(updatedParcel))
       .catch(error => res.status(400).json({ error: error.message }));
   }
@@ -132,7 +132,7 @@ export default class ParcelsController {
         errors,
       });
     }
-    dbHelpers.updateSingleField('parcels', req.params.id, { status: req.body.status })
+    DbHelpers.updateSingleFieldInTable('parcels', req.params.id, { status: req.body.status })
       .then(updatedParcel => res.json(updatedParcel))
       .catch(error => res.status(400).json({ error: error.message }));
   }
@@ -155,7 +155,7 @@ export default class ParcelsController {
         errors,
       });
     }
-    dbHelpers.updateSingleField('parcels', req.params.id, { presentLocation: req.body.presentLocation })
+    DbHelpers.updateSingleFieldInTable('parcels', req.params.id, { presentLocation: req.body.presentLocation })
       .then(updatedParcel => res.json(updatedParcel))
       .catch(error => res.status(400).json({ error: error.message }));
   }

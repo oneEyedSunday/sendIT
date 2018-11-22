@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import Validator from '../helpers/validator';
 // import { userHelpers } from '../helpers/mockdb';
 import AuthHelpers from '../helpers/auth';
-import dbHelpers from '../models/helpers';
+import DbHelpers from '../models/helpers';
 
 /**
  * Auth controller - All functions for the handling authentication routes
@@ -39,7 +39,7 @@ export default class AuthController {
     // if (user.email === 'test@test.com') user.parcels = [4];
     AuthHelpers.hash(userObject.password)
       .then((hash) => {
-        dbHelpers.createUser({
+        DbHelpers.createUser({
           email: userObject.email,
           firstname: userObject.firstname,
           lastname: userObject.lastname,
@@ -76,7 +76,7 @@ export default class AuthController {
         errors,
       });
     }
-    dbHelpers.findByEmail('users', req.body.email)
+    DbHelpers.findByEmailFromTable('users', req.body.email)
       .then((foundUser) => {
         AuthHelpers.compare(req.body.password, foundUser.password)
           .then((result) => {

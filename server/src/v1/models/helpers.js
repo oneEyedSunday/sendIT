@@ -91,7 +91,7 @@ export default class DBHelper {
  * @param {string} tablename - Table in DB
  * @return {array} array of items in table
  */
-  static async findAll(tablename) {
+  static async findAllInTable(tablename) {
     const findAllQuery = `SELECT * FROM ${tablename}`;
     try {
       // const { rows, rowCount } = await db.query(findAllQuery);
@@ -111,7 +111,7 @@ export default class DBHelper {
  * @param {string} id - Id
  * @return {object} item
  */
-  static async find(tablename, id) {
+  static async findByIdFromTable(tablename, id) {
     const text = `SELECT * FROM ${tablename} WHERE id = $1`;
     try {
       const { rows } = await db.query(text, [id]);
@@ -136,7 +136,7 @@ export default class DBHelper {
  * @return {object} User Object found
  * @throws {error} Error
  */
-  static async findByEmail(tablename, email) {
+  static async findByEmailFromTable(tablename, email) {
     const text = `SELECT * FROM ${tablename} WHERE email = $1`;
     try {
       const { rows } = await db.query(text, [email]);
@@ -177,7 +177,7 @@ export default class DBHelper {
  * @param {object} fieldObject - Object containing field and data
  * @return {object} updated item
  */
-  static async updateSingleField(tablename, id, fieldObject) {
+  static async updateSingleFieldInTable(tablename, id, fieldObject) {
     const keys = Object.keys(fieldObject);
     if (!keys || keys.length !== 1) throw new Error('You supplied wrong field object');
     const field = keys[0];
@@ -211,7 +211,7 @@ export default class DBHelper {
  * @param {object} id - id of item to delete
  * @return {object} object containing message acknowledging delete
  */
-  static async delete(tablename, id) {
+  static async deleteFromTableById(tablename, id) {
     const deleteQuery = 'DELETE FROM $1 WHERE id=$2 returning *';
     try {
       const { rows } = await db.query(deleteQuery, [tablename, id]);

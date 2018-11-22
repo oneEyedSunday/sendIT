@@ -1,4 +1,4 @@
-import dbHelpers from '../models/helpers';
+import DbHelpers from '../models/helpers';
 
 /**
  * Users controller - All functions for the handling user routes
@@ -15,7 +15,7 @@ export default class UsersController {
  * @return {object} Returns the users in system or an object containing error
  */
   static getAllUsers(req, res) {
-    dbHelpers.findAll('users')
+    DbHelpers.findAllInTable('users')
       .then(result => res.json(result))
       .catch(error => res.status(400).json({ error: error.message }));
   }
@@ -33,7 +33,7 @@ export default class UsersController {
     if (!req.user.admin && (req.user.id !== req.params.id)) {
       return res.status(403).json({ error: 'You do not have access to this resource' });
     }
-    dbHelpers.getParcelsByUserId(req.params.id)
+    DbHelpers.getParcelsByUserId(req.params.id)
       .then(parcels => res.json(parcels))
       .catch(error => res.status(400).json({ error: error.message }));
   }
