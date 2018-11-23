@@ -433,7 +433,7 @@ button.tall-btn {
     .showcase__text {
         font-family: 'Raleway', sans-serif;
         padding: 10% 30px;
-        color: #fff;
+        color: var(--primary-color);
         font-size: 1.5em;
     }
 }
