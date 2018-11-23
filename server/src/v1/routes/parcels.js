@@ -8,7 +8,7 @@ import ParcelsController from '../controllers/ParcelsController';
 import Middleware from '../middlewares';
 import ValidationMiddleware from '../middlewares/validation';
 
-const { isAdmin, parcelExists, isOwner } = Middleware;
+const { isAdmin, parcelExists, isOwner, isOwnerOrAdmin } = Middleware;
 const {
   getAllOrders, getOrder,
   cancelOrder, changeOrderDestination, updateOrderLocation, updateOrderStatus,
@@ -49,7 +49,7 @@ router.get('/', isAdmin, getAllOrders);
  * @param {string} path - Express path
  * @param {callback} middleware - Express middleware.
  */
-router.get('/:id', parcelExists, getOrder);
+router.get('/:id', parcelExists, isOwnerOrAdmin, getOrder);
 
 /**
  * Route serving login form.

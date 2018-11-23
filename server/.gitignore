@@ -3,3 +3,4 @@ build
 coverage
 yarn-error.log
 .env
+.nyc_output
