@@ -303,7 +303,7 @@ section {
 .showcase__text {
     font-family: 'Raleway', sans-serif;
     padding: 10px 30px;
-    color: --var(--primary-color);
+    color: var(--primary-color);
     font-size: 1.3em;
     text-align: center;
 }
