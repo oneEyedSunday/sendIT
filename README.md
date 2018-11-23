@@ -11,6 +11,7 @@ SendIT is an [andela](https://www.andela.com) boot-camp project written in javas
 * Pivotal Tracker Board [here](https://www.pivotaltracker.com/n/projects/2215838)
 * Api Hosted [here](https://ispoa-sendit.herokuapp.com/api)
 * UI teplates hosted [here](https://oneeyedsunday.github.io/sendIT/UI/index.html)
+* PT Story with exported POSTMAN [here](https://www.pivotaltracker.com/story/show/162164664)
 
 # Getting Started
 ## Installation
