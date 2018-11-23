@@ -1,4 +1,4 @@
-import { statuses } from '../helpers/mockdb';
+import statuses from '../helpers/statuses';
 import DbHelpers from '../models/helpers';
 
 const {

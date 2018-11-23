@@ -119,7 +119,7 @@ export default class Middleware {
  */
   static async isOwnerOrAdmin(req, res, next) {
     if (!req.user.admin) {
-      if (req.user.id !== req.params.id) {
+      if (req.user.id !== parseInt(req.params.id, 10)) {
         return res.status(403).json({ error: 'You do not have access to this resource' });
       }
       next();

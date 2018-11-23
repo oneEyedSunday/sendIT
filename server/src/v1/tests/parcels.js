@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import uuid from 'uuid/v4';
 import { bootstrap } from '../../server';
-import { statuses } from '../helpers/mockdb';
+import statuses from '../helpers/statuses';
 
 dotenv.config();
 chai.should();
