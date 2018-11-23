@@ -11,7 +11,7 @@
     "lint-fix": "eslint src --ignore-path .eslintignore --config .eslintrc --fix",
     "build-js": "./node_modules/.bin/babel src -d build",
     "watch-js": "./node_modules/.bin/babel --watch src -d build",
-    "cover": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha  build/v1/tests/",
+    "cover": "./node_modules/.bin/nyc --reporter=html --reporter=text ./node_modules/mocha/bin/_mocha  build/v1/tests/",
     "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls",
     "postinstall": "npm run build-js && node build/v1/models/setupdb.js"
   },
@@ -31,6 +31,7 @@
     "method-override": "^3.0.0",
     "nodemailer": "^4.7.0",
     "nodemailer-sendgrid-transport": "^0.2.0",
+    "nyc": "^13.1.0",
     "pg": "^7.6.1",
     "swagger-ui-express": "^4.0.1",
     "uuid": "^3.3.2"
