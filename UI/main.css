@@ -260,7 +260,7 @@ section {
 }
 .showcase__item {
     /* width: 100%; */
-    background-color: var(--tertiary-bg-color);
+    background-color: #e1deda;
     padding-top: 20px;
     padding-bottom: 20px;
 }
