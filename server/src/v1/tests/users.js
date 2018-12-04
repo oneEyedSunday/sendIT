@@ -7,6 +7,9 @@ import jwt from 'jsonwebtoken';
 import uuid from 'uuid/v4';
 import dotenv from 'dotenv';
 import { bootstrap } from '../../server';
+import errorCodesAndMessages from '../helpers/errors';
+
+const { authRequired, accessDenied, resourceNotExists } = errorCodesAndMessages;
 
 dotenv.config();
 chai.should();
@@ -90,10 +93,10 @@ export default class UsersApiTests {
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
         .get(this.baseURI)
         .then((response) => {
-          response.should.have.status(401);
+          response.should.have.status(authRequired.status);
           response.body.should.be.an('object');
           response.body.should.have.property('auth').eql(false);
-          response.body.should.have.property('message').eql('Authorization token is not provided.');
+          response.body.should.have.property('message').eql(authRequired.message);
         }));
 
       it('it should list all users', () => chai.request(this.server)
@@ -150,20 +153,20 @@ export default class UsersApiTests {
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
         .get(this.baseURI)
         .then((response) => {
-          response.should.have.status(401);
+          response.should.have.status(authRequired.status);
           response.body.should.be.an('object');
           response.body.should.have.property('auth').eql(false);
-          response.body.should.have.property('message').eql('Authorization token is not provided.');
+          response.body.should.have.property('message').eql(authRequired.message);
         }));
 
       it('it should not return all parcel delivery orders belonging to a user if accessed by a different user', () => chai.request(this.server)
         .get(`${this.baseURI}/1/parcels`)
         .set('Authorization', `Bearer ${this.token}`)
         .then((response) => {
-          response.should.have.status(403);
+          response.should.have.status(accessDenied.status);
           response.should.be.an('object');
           response.body.should.have.property('error');
-          response.body.should.have.property('error').eql('You do not have access to this resource');
+          response.body.should.have.property('error').eql(accessDenied.message);
         }));
 
       it('it should return all parcel delivery orders belonging to a user if accessed by an admin', () => chai.request(this.server)
@@ -194,9 +197,9 @@ export default class UsersApiTests {
         .get(`${this.baseURI}/99999999/parcels`)
         .set('Authorization', `Bearer ${this.mockAdminToken}`)
         .then((response) => {
-          response.should.have.status(400);
+          response.should.have.status(resourceNotExists.status);
           response.body.should.be.a('object');
-          response.body.should.have.property('error').eql('invalid input syntax for type uuid: "99999999"');
+          response.body.should.have.property('error').eql(`User ${resourceNotExists.message}`);
         }));
 
       it('it should return an empty array if User has no parcel delivery orders.', () => chai.request(this.server)
