@@ -91,7 +91,7 @@ export default class ValidationMiddleware {
  */
   static parcelCreationValidation(req, res, next) {
     Validator.trimBody(req.body);
-    Validator.check(req.body, ['destination', 'pickUpLocation']);
+    Validator.check(req.body, ['destination', 'pickUpLocation', 'weight']);
     const errors = Validator.errors();
     if (req.body.destination && req.body.destination.length > 125) {
       errors.push({

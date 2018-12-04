@@ -173,6 +173,7 @@ export default class ParcelsApiTests {
                     userId: decoded.id,
                     destination: 'Some Place',
                     pickUpLocation: 'Some pickup',
+                    weight: 30
                   })
                   .set('Authorization', userCreatingParcelToken)
                   .then((createParcelResponse) => {
@@ -228,6 +229,7 @@ export default class ParcelsApiTests {
     const parcel = {
       destination: 'Some Destination',
       pickUpLocation: 'Some Pickup',
+      weight: '30kg'
     };
     const parcelWithWeightAsString = {};
     const parcelWithWeightAsInteger = {};
@@ -307,6 +309,24 @@ export default class ParcelsApiTests {
             response.body.should.have.property('message');
             response.body.message.should.eql(validationErrors.message);
             // check for specific weight errors after youve implemented validation
+          });
+      });
+
+      it('it should not create a parcel delivery order without weight specified', () => {
+        chai.request(this.server).post(this.baseURI)
+          .send({
+            destination: 'Some Destination',
+            pickUpLocation: 'Some Pickup',
+          })
+          .set('Authorization', `Bearer ${userCreatingParcelToken}`)
+          .then((response) => {
+            response.should.have.status(validationErrors.status);
+            response.body.should.be.a('object');
+            response.body.should.have.property('message').eql(validationErrors.message);
+            response.body.should.have.property('errors');
+            chai.assert(Array.isArray(response.body.errors), true);
+            response.body.errors[0].should.have.property('field').eql('weight');
+            response.body.errors[0].should.have.property('message').eql('weight cannot be missing');
           });
       });
 
@@ -394,6 +414,7 @@ export default class ParcelsApiTests {
                     userId: decoded.id,
                     destination: 'Some Place',
                     pickUpLocation: 'Some pickup',
+                    weight: 500
                   })
                   .set('Authorization', userCreatingParcelToken)
                   .then((createParcelResponse) => {
@@ -483,6 +504,7 @@ export default class ParcelsApiTests {
                     userId: decoded.id,
                     destination: 'Some Place',
                     pickUpLocation: 'Some pickup',
+                    weight: 400
                   })
                   .set('Authorization', userCreatingParcelToken)
                   .then((createParcelResponse) => {
@@ -580,6 +602,7 @@ export default class ParcelsApiTests {
                   userId: decoded.id,
                   destination: 'Some Place',
                   pickUpLocation: 'Some pickup',
+                  weight: 400
                 })
                 .set('Authorization', userCreatingParcelToken)
                 .then((createParcelResponse) => {
@@ -675,6 +698,7 @@ export default class ParcelsApiTests {
                     userId: decoded.id,
                     destination: 'Some Place',
                     pickUpLocation: 'Some pickup',
+                    weight: 500
                   })
                   .set('Authorization', userCreatingParcelToken)
                   .then((createParcelResponse) => {
