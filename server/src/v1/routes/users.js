@@ -7,7 +7,7 @@ import { Router } from 'express';
 import UsersController from '../controllers/UsersController';
 import Middleware from '../middlewares';
 
-const { isAdmin } = Middleware;
+const { isAdmin, isOwnerOrAdmin } = Middleware;
 const { getAUsersParcels, getAllUsers } = UsersController;
 
 
@@ -37,5 +37,5 @@ router.get('/', isAdmin, getAllUsers);
  * @inner
  * @param {callback} middleware - Express middleware.
  */
-router.get('/:id/parcels', getAUsersParcels);
+router.get('/:id/parcels', isOwnerOrAdmin, getAUsersParcels);
 export default router;

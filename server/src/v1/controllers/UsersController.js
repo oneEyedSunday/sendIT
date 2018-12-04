@@ -1,6 +1,9 @@
 import DbHelpers from '../models/helpers';
+import errors from '../helpers/errors';
 
 const { findAllInTable, getParcelsByUserId } = DbHelpers;
+const { serverError, resourceNotExists } = errors;
+
 /**
  * Users controller - All functions for the handling user routes
  * @module controllers/users
@@ -18,7 +21,7 @@ export default class UsersController {
   static getAllUsers(req, res) {
     findAllInTable('users')
       .then(result => res.json(result))
-      .catch(error => res.status(400).json({ error: error.message }));
+      .catch(() => res.status(serverError.status).json({ error: serverError.message }));
   }
 
   /**
@@ -31,11 +34,11 @@ export default class UsersController {
  * @return {object} Returns the parcels for a user or an object containing error
  */
   static getAUsersParcels(req, res) {
-    if (!req.user.admin && (req.user.id !== req.params.id)) {
-      return res.status(403).json({ error: 'You do not have access to this resource' });
-    }
     getParcelsByUserId(req.params.id)
       .then(parcels => res.json(parcels))
-      .catch(error => res.status(400).json({ error: error.message }));
+      .catch((error) => {
+        if (error.message.indexOf('invalid input syntax for type uuid') > -1) return res.status(resourceNotExists.status).json({ error: `User ${resourceNotExists.message}` });
+        return res.status(serverError.status).json({ error: serverError.message });
+      });
   }
 }

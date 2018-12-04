@@ -1,5 +1,11 @@
 import jwt from 'jsonwebtoken';
 import DBHelpers from '../models/helpers';
+import errors from '../helpers/errors';
+
+const {
+  authFailed, authRequired, invalidToken,
+  accessDenied, serverError, resourceNotExists,
+} = errors;
 
 /** Class representing Middleware functions. */
 export default class Middleware {
@@ -20,7 +26,7 @@ export default class Middleware {
       }
       next();
     } catch (error) {
-      return res.status(400).json({ error: 'You sent a badly formatted JSON as text, please correct' });
+      return res.status(400).json({ error: 'You sent a badly form text, please ensure your text is parseable to JSON or just send JSON data.' });
     }
   }
 
@@ -41,14 +47,17 @@ export default class Middleware {
 
     if (token) {
       jwt.verify(token, process.env.secret, (err, payload) => {
-        if (err) return res.json({ auth: false, message: 'Invalid token' });
+        if (err) {
+          return res.status(invalidToken.status)
+            .json({ auth: false, message: invalidToken.message });
+        }
         req.user = payload;
         next();
       });
     } else {
-      return res.status(401).json({
+      return res.status(authFailed.status).json({
         auth: false,
-        message: 'Authorization token is not provided.',
+        message: authRequired.message,
       });
     }
   }
@@ -66,7 +75,7 @@ export default class Middleware {
     if (req.user.admin) {
       next();
     } else {
-      return res.status(401).send({ error: 'Not authorized for admin access' });
+      return res.status(accessDenied.status).send({ error: accessDenied.message });
     }
   }
 
@@ -83,9 +92,15 @@ export default class Middleware {
     try {
       const parcel = await DBHelpers.findByIdFromTable('parcels', req.params.id);
       req.parcel = parcel;
+      if (parcel === undefined || parcel === null) {
+        return res.status(resourceNotExists.status).json({ error: `Parcel delivery order ${resourceNotExists.message}` });
+      }
       return next();
     } catch (error) {
-      return res.status(400).json({ error: error.message });
+      if (error.message && error.message.indexOf('invalid input syntax for type uuid') > -1) {
+        return res.status(resourceNotExists.status).json({ error: `Parcel delivery order ${resourceNotExists.message}` });
+      }
+      return res.status(serverError.status).json({ error: serverError.message });
     }
   }
 
@@ -100,11 +115,11 @@ export default class Middleware {
  */
   static async isOwner(req, res, next) {
     try {
-      const test = (req.parcel.userid === req.user.id);
-      if (test) return next();
-      return res.status(403).send({ error: 'You do not have access to this resource' });
+      const condition = (req.parcel.userid === req.user.id);
+      if (condition) return next();
+      return res.status(accessDenied.status).send({ error: accessDenied.message });
     } catch (error) {
-      return res.status(400).send({ error: error.message });
+      return res.status(serverError.status).send({ error: serverError.message });
     }
   }
 
@@ -119,10 +134,9 @@ export default class Middleware {
  */
   static async isOwnerOrAdmin(req, res, next) {
     if (!req.user.admin) {
-      if (req.user.id !== parseInt(req.params.id, 10)) {
-        return res.status(403).json({ error: 'You do not have access to this resource' });
+      if (req.user.id !== req.params.id) {
+        return res.status(accessDenied.status).json({ error: accessDenied.message });
       }
-      next();
     }
     next();
   }

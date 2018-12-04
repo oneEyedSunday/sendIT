@@ -5,6 +5,9 @@ import chaiHttp from 'chai-http';
 import http from 'http';
 import dotenv from 'dotenv';
 import { bootstrap } from '../../server';
+import errorCodesAndMessages from '../helpers/errors';
+
+const { validationErrors, authFailed } = errorCodesAndMessages;
 
 dotenv.config();
 chai.should();
@@ -91,7 +94,7 @@ export default class AuthApiTests {
           password: 'dongoyaroo'
         })
         .then((response) => {
-          response.should.have.status(422);
+          response.should.have.status(validationErrors.status);
           response.body.should.be.an('object');
           response.body.should.have.property('message').should.be.an('object');
           response.body.should.have.property('errors');
@@ -109,7 +112,7 @@ export default class AuthApiTests {
           password: this.password
         })
         .then((response) => {
-          response.should.have.status(422);
+          response.should.have.status(validationErrors.status);
           response.body.should.be.an('object');
           response.body.should.have.property('message').should.be.an('object');
           response.body.should.have.property('errors');
@@ -127,7 +130,7 @@ export default class AuthApiTests {
           lastname: 'Khalifa',
         })
         .then((response) => {
-          response.should.have.status(422);
+          response.should.have.status(validationErrors.status);
           response.body.should.be.an('object');
           response.body.should.have.property('message').should.be.an('object');
           response.body.should.have.property('errors');
@@ -137,7 +140,7 @@ export default class AuthApiTests {
           response.body.errors[0].should.have.property('message').eql('password cannot be missing');
         }));
 
-        it('it should not sign up if email is provided but is not valid', () => chai.request(this.server)
+      it('it should not sign up if email is provided but is not valid', () => chai.request(this.server)
         .post(`${this.baseURI}/signup`)
         .send({
           email: 'someinvalidemail',
@@ -146,7 +149,7 @@ export default class AuthApiTests {
           password: 'dongoyaroo'
         })
         .then((response) => {
-          response.should.have.status(422);
+          response.should.have.status(validationErrors.status);
           response.body.should.be.an('object');
           response.body.should.have.property('message').should.be.an('object');
           response.body.should.have.property('errors');
@@ -156,7 +159,7 @@ export default class AuthApiTests {
           response.body.errors[0].should.have.property('message').eql('Email is Invalid');
         }));
 
-        it('it should not sign up if password is provided but less than 6 characters', () => chai.request(this.server)
+      it('it should not sign up if password is provided but less than 6 characters', () => chai.request(this.server)
         .post(`${this.baseURI}/signup`)
         .send({
           email: this.email,
@@ -165,7 +168,7 @@ export default class AuthApiTests {
           password: 'dong'
         })
         .then((response) => {
-          response.should.have.status(422);
+          response.should.have.status(validationErrors.status);
           response.body.should.be.an('object');
           response.body.should.have.property('message').should.be.an('object');
           response.body.should.have.property('errors');
@@ -175,7 +178,7 @@ export default class AuthApiTests {
           response.body.errors[0].should.have.property('message').eql('Password length must be more than six characters');
         }));
 
-        it('it should sign up if all requirements are met', () => chai.request(this.server)
+      it('it should sign up if all requirements are met', () => chai.request(this.server)
         .post(`${this.baseURI}/signup`)
         .send({
           email: this.email,
@@ -192,6 +195,13 @@ export default class AuthApiTests {
     });
   }
 
+  /**
+ * testLogIn - a test to ensure logging in works as expected
+ *
+ * @function testLogIn
+ * @memberof  module:auth
+ * @return {null} No return
+*/
   testLogIn() {
     describe(`POST ${this.baseURI}/login`, () => {
       const loggedInUser = {
@@ -218,12 +228,12 @@ export default class AuthApiTests {
           password: loggedInUser.password
         })
         .then((response) => {
-          response.should.have.status(401);
+          response.should.have.status(authFailed.status);
           response.body.should.be.an('object');
           response.body.should.have.property('auth');
-          response.body['auth'].should.eql(false);
+          response.body.auth.should.eql(false);
           response.body.should.have.property('message');
-          response.body.message.should.eql('Invalid credentials');
+          response.body.message.should.eql(authFailed.message);
         }));
 
       it('it should log in if details are correct', () => chai.request(this.server)
@@ -246,7 +256,7 @@ export default class AuthApiTests {
           password: ''
         })
         .then((response) => {
-          response.should.have.status(422);
+          response.should.have.status(validationErrors.status);
           response.body.should.be.an('object');
           response.body.should.have.property('message').should.be.an('object');
           response.body.should.have.property('errors');

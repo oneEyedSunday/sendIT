@@ -1,4 +1,7 @@
 import Validator from '../helpers/validator';
+import errorStatusesAndMessages from '../helpers/errors';
+
+const { validationErrors } = errorStatusesAndMessages;
 
 /** Class representing Middleware functions. */
 export default class ValidationMiddleware {
@@ -44,8 +47,8 @@ export default class ValidationMiddleware {
     if (!isEmail) errors.push({ field: 'email', message: 'Email is Invalid' });
     if (req.body.password && req.body.password.trim().length < 6) errors.push({ field: 'password', message: 'Password length must be more than six characters' });
     if (errors.length > 0) {
-      return res.status(422).send({
-        message: 'Validation errors',
+      return res.status(validationErrors.status).send({
+        message: validationErrors.message,
         errors,
       });
     }
@@ -69,8 +72,8 @@ export default class ValidationMiddleware {
     if (!isEmail) errors.push({ field: 'email', message: 'Email is Invalid' });
     if (req.body.password && req.body.password.trim().length < 6) errors.push({ field: 'password', message: 'Password length must be more than six characters' });
     if (errors.length > 0) {
-      return res.status(422).send({
-        message: 'Validation errors',
+      return res.status(validationErrors.status).send({
+        message: validationErrors.message,
         errors,
       });
     }
@@ -103,8 +106,8 @@ export default class ValidationMiddleware {
       });
     }
     if (errors.length > 0) {
-      return res.status(422).send({
-        message: 'Validation errors',
+      return res.status(validationErrors.status).send({
+        message: validationErrors.message,
         errors,
       });
     }
@@ -131,8 +134,8 @@ export default class ValidationMiddleware {
       });
     }
     if (errors.length > 0) {
-      return res.status(422).send({
-        message: 'Validation errors',
+      return res.status(validationErrors.status).send({
+        message: validationErrors.message,
         errors,
       });
     }
@@ -153,8 +156,8 @@ export default class ValidationMiddleware {
     Validator.check(req.body, ['status']);
     const errors = Validator.errors();
     if (errors.length > 0) {
-      return res.status(422).send({
-        message: 'Validation errors',
+      return res.status(validationErrors.status).send({
+        message: validationErrors.message,
         errors,
       });
     }
@@ -175,8 +178,8 @@ export default class ValidationMiddleware {
     Validator.check(req.body, ['presentLocation']);
     const errors = Validator.errors();
     if (errors.length > 0) {
-      return res.status(422).send({
-        message: 'Validation errors',
+      return res.status(validationErrors.status).send({
+        message: validationErrors.message,
         errors,
       });
     }

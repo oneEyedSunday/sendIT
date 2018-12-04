@@ -42,14 +42,8 @@ export default class DBHelper {
 
     try {
       const { rows } = await db.query(text, values);
-      // return res.status(201).send(rows[0]);
-      // console.log(error);
       return rows[0];
     } catch (error) {
-      // return res.status(400).send(error);
-      // console.error(Object.keys(error));
-      // console.error(error);
-      // console.log(error.name);
       throw new Error(error.message);
     }
   }
@@ -78,10 +72,8 @@ export default class DBHelper {
 
     try {
       const { rows } = await db.query(text, values);
-      // return res.status(201).send(rows[0]);
       return rows[0];
     } catch (error) {
-      // return res.status(400).send(error);
       throw new Error(error);
     }
   }
@@ -95,12 +87,9 @@ export default class DBHelper {
   static async findAllInTable(tablename) {
     const findAllQuery = `SELECT * FROM ${tablename}`;
     try {
-      // const { rows, rowCount } = await db.query(findAllQuery);
       const { rows } = await db.query(findAllQuery);
-      // return res.status(200).send({ rows, rowCount });
       return rows;
     } catch (error) {
-      // return res.status(400).send(error);
       throw new Error(error);
     }
   }
@@ -116,15 +105,11 @@ export default class DBHelper {
     const text = `SELECT * FROM ${tablename} WHERE id = $1`;
     try {
       const { rows } = await db.query(text, [id]);
-      // console.log(rows);
       if (!rows[0]) {
-        // return res.status(404).send({'message': 'reflection not found'});
         throw new Error(`${singularTableName(tablename)} not found`);
       }
-      // return res.status(200).send(rows[0]);
       return rows[0];
     } catch (error) {
-      // return res.status(400).send(error)
       throw new Error(error);
     }
   }
@@ -141,15 +126,11 @@ export default class DBHelper {
     const text = `SELECT * FROM ${tablename} WHERE email = $1`;
     try {
       const { rows } = await db.query(text, [email]);
-      // console.log(rows);
       if (!rows[0]) {
-        // return res.status(404).send({'message': 'reflection not found'});
         throw new Error(`${singularTableName(tablename)} not found`);
       }
-      // return res.status(200).send(rows[0]);
       return rows[0];
     } catch (error) {
-      // return res.status(400).send(error)
       throw new Error(error);
     }
   }
@@ -189,7 +170,6 @@ export default class DBHelper {
     try {
       const { rows } = await db.query(findOneQuery, [id]);
       if (!rows[0]) {
-        // return res.status(404).send({'message': 'reflection not found'});
         throw new Error(`${singularTableName(tablename)} not found`);
       }
       const values = [
@@ -197,10 +177,8 @@ export default class DBHelper {
         id || rows[0].id,
       ];
       const response = await db.query(updateOneQuery, values);
-      // return res.status(200).send(response.rows[0]);
       return (response.rows[0]);
     } catch (err) {
-      // return res.status(400).send(err);
       throw new Error(err);
     }
   }
@@ -217,26 +195,11 @@ export default class DBHelper {
     try {
       const { rows } = await db.query(deleteQuery, [tablename, id]);
       if (!rows[0]) {
-        // return res.status(404).send({'message': 'reflection not found'});
         throw new Error(`${singularTableName(tablename)} not found`);
       }
-      // return res.status(204).send({ 'message': 'deleted' });
       return ({ message: 'Delete success' });
     } catch (error) {
-      // return res.status(400).send(error);
       throw new Error(error);
     }
   }
 }
-
-// Users.create({
-//   email: 'test@test.com',
-//   firstname: 'Test',
-//   lastname: 'Admin',
-//   password: 'someHAsh',
-// }).then(result => Users.delete(result.id));
-// Users.findAll('users').then(result => console.log(result));
-// Users.getOne('94a49a7b-705c-470d-9a1a-5312b79c0f74').then(result => console.log(result));
-// Users.update('94a49a7b-705c-470d-9a1a-5312b79c074', { firstname: 'Ranny' })
-// .then(result => console.log(result));
-// console.log(singularTableName('parcels'));

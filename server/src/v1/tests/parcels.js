@@ -8,10 +8,16 @@ import dotenv from 'dotenv';
 import uuid from 'uuid/v4';
 import { bootstrap } from '../../server';
 import statuses from '../helpers/statuses';
+import errorCodesAndMessages from '../helpers/errors';
+
+const {
+  authRequired, accessDenied, resourceNotExists, validationErrors
+} = errorCodesAndMessages;
 
 dotenv.config();
 chai.should();
 chai.use(chaiHttp);
+const { assert } = chai;
 
 process.env.NODE_ENV = 'test';
 const port = 8082;
@@ -32,6 +38,15 @@ export const parcelDeliveryOrderTest = (parcelObj, options = null) => {
   if (!(options && options.excludes && options.excludes.indexOf('presentlocation') > -1)) {
     parcelObj.should.have.property('presentlocation');
   }
+};
+
+const ensureNoDataLeaks = (data) => {
+  const expectedFields = ['auth', 'message'];
+  const receivedFields = Object.keys(data);
+  const everyItemexists = expectedFields.map(i => receivedFields.indexOf(i) > -1);
+  const condition = everyItemexists.reduce((accumulator, item) => item && accumulator, true);
+  assert(receivedFields.length === expectedFields.length, 'Expected length of response mismatch.');
+  assert(condition, 'Expected fields not present');
 };
 
 /**
@@ -95,19 +110,20 @@ export default class ParcelsApiTests {
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
         .get(this.baseURI)
         .then((response) => {
-          response.should.have.status(401);
+          response.should.have.status(authRequired.status);
           response.body.should.be.an('object');
           response.body.should.have.property('auth').eql(false);
-          response.body.should.have.property('message').eql('Authorization token is not provided.');
+          response.body.should.have.property('message').eql(authRequired.message);
+          ensureNoDataLeaks(response.body);
         }));
       it('it should not allow access to a user', () => chai.request(this.server)
         .get(this.baseURI)
         .set('Authorization', mockUser)
         .then((response) => {
-          response.should.have.status(401);
+          response.should.have.status(accessDenied.status);
           response.body.should.be.an('object');
           response.body.should.have.property('error');
-          response.body.should.have.property('error').eql('Not authorized for admin access');
+          response.body.should.have.property('error').eql(accessDenied.message);
         }));
 
       it('it should list all parcel delivery orders', () => chai.request(this.server)
@@ -172,10 +188,11 @@ export default class ParcelsApiTests {
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
         .get(`${this.baseURI}/${parcel.id}`)
         .then((response) => {
-          response.should.have.status(401);
+          response.should.have.status(authRequired.status);
           response.body.should.be.an('object');
           response.body.should.have.property('auth').eql(false);
-          response.body.should.have.property('message').eql('Authorization token is not provided.');
+          response.body.should.have.property('message').eql(authRequired.message);
+          ensureNoDataLeaks(response.body);
         }));
 
       it('it should get a particular parcel delivery order by a given id', () => chai.request(this.server)
@@ -192,9 +209,9 @@ export default class ParcelsApiTests {
         .get(`${this.baseURI}/999999`)
         .set('Authorization', `Bearer ${mockAdminToken}`)
         .then((response) => {
-          response.should.have.status(400);
+          response.should.have.status(resourceNotExists.status);
           response.should.should.be.an('object');
-          response.body.should.have.property('error').eql('error: invalid input syntax for type uuid: "999999"');
+          response.body.should.have.property('error').eql(`Parcel delivery order ${resourceNotExists.message}`);
         }));
     });
   }
@@ -240,10 +257,11 @@ export default class ParcelsApiTests {
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
         .post(this.baseURI)
         .then((response) => {
-          response.should.have.status(401);
+          response.should.have.status(authRequired.status);
           response.body.should.be.an('object');
+          ensureNoDataLeaks(response.body);
           response.body.should.have.property('auth').eql(false);
-          response.body.should.have.property('message').eql('Authorization token is not provided.');
+          response.body.should.have.property('message').eql(authRequired.message);
         }));
 
       it('it should create a parcel delivery order', () => {
@@ -284,10 +302,11 @@ export default class ParcelsApiTests {
           .send(parcelWithInvalidWeight)
           .set('Authorization', `Bearer ${userCreatingParcelToken}`)
           .then((response) => {
-            response.should.have.status(400);
+            response.should.have.status(validationErrors.status);
             response.body.should.be.a('object');
-            response.body.should.have.property('error');
-            response.body.error.should.eql('Weight specified is invalid, cannot bill. ABort parcel order creation');
+            response.body.should.have.property('message');
+            response.body.message.should.eql(validationErrors.message);
+            // check for specific weight errors after youve implemented validation
           });
       });
 
@@ -296,9 +315,9 @@ export default class ParcelsApiTests {
         .send({ pickUpLocation: 'Some Pickup' })
         .set('Authorization', `Bearer ${userCreatingParcelToken}`)
         .then((response) => {
-          response.should.have.status(422);
+          response.should.have.status(validationErrors.status);
           response.body.should.be.a('object');
-          response.body.should.have.property('message').eql('Validation errors');
+          response.body.should.have.property('message').eql(validationErrors.message);
           response.body.should.have.property('errors');
           chai.assert(Array.isArray(response.body.errors), true);
           response.body.errors[0].should.have.property('field').eql('destination');
@@ -310,9 +329,9 @@ export default class ParcelsApiTests {
         .send({ destination: 'SOme Destination' })
         .set('Authorization', `Bearer ${userCreatingParcelToken}`)
         .then((response) => {
-          response.should.have.status(422);
+          response.should.have.status(validationErrors.status);
           response.body.should.be.a('object');
-          response.body.should.have.property('message').eql('Validation errors');
+          response.body.should.have.property('message').eql(validationErrors.message);
           response.body.should.have.property('errors');
           chai.assert(Array.isArray(response.body.errors), true);
           response.body.errors[0].should.have.property('field').eql('pickUpLocation');
@@ -324,9 +343,9 @@ export default class ParcelsApiTests {
         .send({})
         .set('Authorization', `Bearer ${userCreatingParcelToken}`)
         .then((response) => {
-          response.should.have.status(422);
+          response.should.have.status(validationErrors.status);
           response.body.should.be.a('object');
-          response.body.should.have.property('message').eql('Validation errors');
+          response.body.should.have.property('message').eql(validationErrors.message);
           response.body.should.have.property('errors');
           chai.assert(Array.isArray(response.body.errors), true);
           response.body.errors[0].should.have.property('field').eql('destination');
@@ -390,19 +409,20 @@ export default class ParcelsApiTests {
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
         .put(`${this.baseURI}/${parcel.id}/cancel`)
         .then((response) => {
-          response.should.have.status(401);
+          response.should.have.status(authRequired.status);
           response.body.should.be.an('object');
+          ensureNoDataLeaks(response.body);
           response.body.should.have.property('auth').eql(false);
-          response.body.should.have.property('message').eql('Authorization token is not provided.');
+          response.body.should.have.property('message').eql(authRequired.message);
         }));
 
       it('it should not allow you cancel a parcel delivery order you do not own', () => chai.request(this.server)
         .put(`${this.baseURI}/${parcel.id}/cancel`)
         .set('Authorization', `Bearer ${mockAdminToken}`)
         .then((response) => {
-          response.should.have.status(403);
+          response.should.have.status(accessDenied.status);
           response.should.be.a('object');
-          response.body.should.have.property('error').eql('You do not have access to this resource');
+          response.body.should.have.property('error').eql(accessDenied.message);
         }));
 
       it('it should cancel a parcel delivery order', () => chai.request(this.server)
@@ -419,9 +439,9 @@ export default class ParcelsApiTests {
         .put(`${this.baseURI}/999999/cancel`)
         .set('Authorization', `Bearer ${mockAdminToken}`)
         .then((response) => {
-          response.should.have.status(400);
+          response.should.have.status(resourceNotExists.status);
           response.should.should.be.an('object');
-          response.body.should.have.property('error').eql('error: invalid input syntax for type uuid: "999999"');
+          response.body.should.have.property('error').eql(`Parcel delivery order ${resourceNotExists.message}`);
         }));
     });
   }
@@ -478,19 +498,20 @@ export default class ParcelsApiTests {
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
         .put(`${this.baseURI}/id/destination`)
         .then((response) => {
-          response.should.have.status(401);
+          response.should.have.status(authRequired.status);
           response.body.should.be.an('object');
+          ensureNoDataLeaks(response.body);
           response.body.should.have.property('auth').eql(false);
-          response.body.should.have.property('message').eql('Authorization token is not provided.');
+          response.body.should.have.property('message').eql(authRequired.message);
         }));
 
       it('it should not allow you change destination of a parcel delivery order you do not own', () => chai.request(this.server)
         .put(`${this.baseURI}/${parcel.id}/destination`)
         .set('Authorization', `Bearer ${mockAdminToken}`)
         .then((response) => {
-          response.should.have.status(403);
+          response.should.have.status(accessDenied.status);
           response.should.be.a('object');
-          response.body.should.have.property('error').eql('You do not have access to this resource');
+          response.body.should.have.property('error').eql(accessDenied.message);
         }));
 
 
@@ -498,9 +519,9 @@ export default class ParcelsApiTests {
         .put(`${this.baseURI}/${parcel.id}/destination`)
         .set('Authorization', `Bearer ${userCreatingParcelToken}`)
         .then((response) => {
-          response.should.have.status(422);
+          response.should.have.status(validationErrors.status);
           response.body.should.be.a('object');
-          response.body.should.have.property('message').eql('Validation errors');
+          response.body.should.have.property('message').eql(validationErrors.message);
           response.body.should.have.property('errors');
           chai.assert(Array.isArray(response.body.errors), true);
           response.body.errors[0].should.have.property('field').eql('destination');
@@ -575,28 +596,29 @@ export default class ParcelsApiTests {
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
         .put(`${this.baseURI}/${parcel.id}/status`)
         .then((response) => {
-          response.should.have.status(401);
+          response.should.have.status(authRequired.status);
           response.body.should.be.an('object');
+          ensureNoDataLeaks(response.body);
           response.body.should.have.property('auth').eql(false);
-          response.body.should.have.property('message').eql('Authorization token is not provided.');
+          response.body.should.have.property('message').eql(authRequired.message);
         }));
 
       it('it should not allow access to non-admins', () => chai.request(this.server)
         .put(`${this.baseURI}/${parcel.id}/status`)
         .set('Authorization', `Bearer ${userCreatingParcelToken}`)
         .then((response) => {
-          response.should.have.status(401);
+          response.should.have.status(accessDenied.status);
           response.should.be.a('object');
-          response.body.should.have.property('error').eql('Not authorized for admin access');
+          response.body.should.have.property('error').eql(accessDenied.message);
         }));
 
       it('it should not allow you admin to change status without providing new status', () => chai.request(this.server)
         .put(`${this.baseURI}/${parcel.id}/status`)
         .set('Authorization', `Bearer ${mockAdminToken}`)
         .then((response) => {
-          response.should.have.status(422);
+          response.should.have.status(validationErrors.status);
           response.body.should.be.a('object');
-          response.body.should.have.property('message').eql('Validation errors');
+          response.body.should.have.property('message').eql(validationErrors.message);
           response.body.should.have.property('errors');
           chai.assert(Array.isArray(response.body.errors), true);
           response.body.errors[0].should.have.property('field').eql('status');
@@ -670,28 +692,29 @@ export default class ParcelsApiTests {
       it('it should not allow access to this endpoint if no Auth token is provided', () => chai.request(this.server)
         .put(`${this.baseURI}/${parcel.id}/presentLocation`)
         .then((response) => {
-          response.should.have.status(401);
+          response.should.have.status(authRequired.status);
           response.body.should.be.an('object');
+          ensureNoDataLeaks(response.body);
           response.body.should.have.property('auth').eql(false);
-          response.body.should.have.property('message').eql('Authorization token is not provided.');
+          response.body.should.have.property('message').eql(authRequired.message);
         }));
 
       it('it should not allow access to non-admins', () => chai.request(this.server)
         .put(`${this.baseURI}/${parcel.id}/presentLocation`)
         .set('Authorization', `Bearer ${userCreatingParcelToken}`)
         .then((response) => {
-          response.should.have.status(401);
+          response.should.have.status(accessDenied.status);
           response.should.be.a('object');
-          response.body.should.have.property('error').eql('Not authorized for admin access');
+          response.body.should.have.property('error').eql(accessDenied.message);
         }));
 
       it('it should not allow you admin to change status without providing new location', () => chai.request(this.server)
         .put(`${this.baseURI}/${parcel.id}/presentLocation`)
         .set('Authorization', `Bearer ${mockAdminToken}`)
         .then((response) => {
-          response.should.have.status(422);
+          response.should.have.status(validationErrors.status);
           response.body.should.be.a('object');
-          response.body.should.have.property('message').eql('Validation errors');
+          response.body.should.have.property('message').eql(validationErrors.message);
           response.body.should.have.property('errors');
           chai.assert(Array.isArray(response.body.errors), true);
           response.body.errors[0].should.have.property('field').eql('presentLocation');
