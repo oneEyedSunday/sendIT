@@ -97,6 +97,9 @@ export default class Middleware {
       }
       return next();
     } catch (error) {
+      if (error.message && error.message.indexOf('invalid input syntax for type uuid') > -1) {
+        return res.status(resourceNotExists.status).json({ error: `Parcel delivery order ${resourceNotExists.message}` });
+      }
       return res.status(serverError.status).json({ error: serverError.message });
     }
   }
@@ -131,7 +134,7 @@ export default class Middleware {
  */
   static async isOwnerOrAdmin(req, res, next) {
     if (!req.user.admin) {
-      if (req.user.id !== parseInt(req.params.id, 10)) {
+      if (req.user.id !== req.params.id) {
         return res.status(accessDenied.status).json({ error: accessDenied.message });
       }
     }
