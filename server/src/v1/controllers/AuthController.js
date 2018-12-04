@@ -72,7 +72,10 @@ export default class AuthController {
       .then((foundUser) => {
         AuthHelpers.compare(userObject.password, foundUser.password)
           .then((result) => {
-            if (result === false) return res.status(authFailed.status).json({ auth: false, message: authFailed.message });
+            if (result === false) {
+              return res.status(authFailed.status)
+                .json({ auth: false, message: authFailed.message });
+            }
             jwt.sign({
               id: foundUser.id,
               admin: foundUser.admin
@@ -83,6 +86,7 @@ export default class AuthController {
           })
           .catch(() => res.status(serverError.status).json({ error: serverError.message }));
       })
-      .catch(() => res.status(authFailed.status).send({ auth: false, message: authFailed.message }));
+      .catch(() => res.status(authFailed.status)
+        .send({ auth: false, message: authFailed.message }));
   }
 }

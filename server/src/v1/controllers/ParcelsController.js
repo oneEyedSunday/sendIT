@@ -5,15 +5,17 @@ import errors from '../helpers/errors';
 const {
   findAllInTable, findByIdFromTable, updateSingleFieldInTable, createParcel
 } = DbHelpers;
-const { serverError, resourceConflict } = errors;
+const { serverError, resourceConflict, validationErrors } = errors;
 const officeLocation = 'Maryland, Lagos';
 const defaultPrice = 'N500';
+
+const INVALIDWEIGHTERRORMESSAGE = 'Weight specified is invalid, cannot bill.';
 const getPriceFromWeightRange = (weight) => {
   if (weight > -1 && weight < 51) return defaultPrice;
   if (weight > 50 && weight < 101) return 'N1000';
   if (weight > 100 && weight < 201) return 'N3000';
   if (weight > 200) return 'N5000';
-  throw new Error('Weight specified is invalid, cannot bill. ABort parcel order creation');
+  throw new Error(INVALIDWEIGHTERRORMESSAGE);
 };
 
 /**
@@ -111,6 +113,15 @@ export default class ParcelsController {
       }).then(createdParcel => res.json(createdParcel))
         .catch(() => res.status(serverError.status).json({ error: serverError.message }));
     } catch (error) {
+      if (error.message === INVALIDWEIGHTERRORMESSAGE) {
+        return res.status(validationErrors.status).json({
+          message: validationErrors.message,
+          errors: {
+            field: 'weight',
+            message: INVALIDWEIGHTERRORMESSAGE
+          }
+        });
+      }
       return res.status(serverError.status).json({ error: serverError.message });
     }
   }

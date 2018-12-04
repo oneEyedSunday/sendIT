@@ -2,7 +2,7 @@ import DbHelpers from '../models/helpers';
 import errors from '../helpers/errors';
 
 const { findAllInTable, getParcelsByUserId } = DbHelpers;
-const { serverError } = errors;
+const { serverError, resourceNotExists } = errors;
 
 /**
  * Users controller - All functions for the handling user routes
@@ -36,6 +36,9 @@ export default class UsersController {
   static getAUsersParcels(req, res) {
     getParcelsByUserId(req.params.id)
       .then(parcels => res.json(parcels))
-      .catch(() => res.status(serverError.status).json({ error: serverError.message }));
+      .catch((error) => {
+        if (error.message.indexOf('invalid input syntax for type uuid') > -1) return res.status(resourceNotExists.status).json({ error: `User ${resourceNotExists.message}` });
+        return res.status(serverError.status).json({ error: serverError.message });
+      });
   }
 }
