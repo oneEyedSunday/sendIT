@@ -1,9 +1,11 @@
 import statuses from '../helpers/statuses';
 import DbHelpers from '../models/helpers';
+import errors from '../helpers/errors';
 
 const {
   findAllInTable, findByIdFromTable, updateSingleFieldInTable, createParcel
 } = DbHelpers;
+const { serverError, resourceConflict } = errors;
 const officeLocation = 'Maryland, Lagos';
 const defaultPrice = 'N500';
 const getPriceFromWeightRange = (weight) => {
@@ -13,6 +15,7 @@ const getPriceFromWeightRange = (weight) => {
   if (weight > 200) return 'N5000';
   throw new Error('Weight specified is invalid, cannot bill. ABort parcel order creation');
 };
+
 /**
  * Parcels controller - All functions for the handling parcel routes
  * @module controllers/users
@@ -31,7 +34,7 @@ export default class ParcelsController {
   static getAllOrders(req, res) {
     findAllInTable('parcels')
       .then(result => res.json(result))
-      .catch(error => res.status(400).json(error));
+      .catch(() => res.status(serverError.status).json({ error: serverError.message }));
   }
 
   /**
@@ -47,7 +50,7 @@ export default class ParcelsController {
   static getOrder(req, res) {
     findByIdFromTable('parcels', req.params.id)
       .then(result => res.json(result))
-      .catch(err => res.status(400).json(err));
+      .catch(() => res.status(serverError.status).json({ error: serverError.message }));
   }
 
   /**
@@ -62,11 +65,11 @@ export default class ParcelsController {
  */
   static cancelOrder(req, res) {
     if (req.parcel.status === statuses.Cancelled) {
-      return res.status(409).send({ error: 'Parcel Delivery order already cancelled' });
+      return res.status(resourceConflict.status).send({ error: 'Parcel Delivery order already cancelled' });
     }
     updateSingleFieldInTable('parcels', req.params.id, { status: 4 })
       .then(updatedParcel => res.json(updatedParcel))
-      .catch(error => res.status(400).json({ error: error.message }));
+      .catch(() => res.status(serverError.status).json({ error: serverError.message }));
   }
 
   /**
@@ -106,9 +109,9 @@ export default class ParcelsController {
         status: statuses.AwaitingProcessing.code,
         price,
       }).then(createdParcel => res.json(createdParcel))
-        .catch(error => res.status(400).json({ error: error.message }));
+        .catch(() => res.status(serverError.status).json({ error: serverError.message }));
     } catch (error) {
-      return res.status(400).json({ error: error.message });
+      return res.status(serverError.status).json({ error: serverError.message });
     }
   }
 
@@ -124,7 +127,7 @@ export default class ParcelsController {
   static changeOrderDestination(req, res) {
     updateSingleFieldInTable('parcels', req.params.id, { destination: req.body.destination })
       .then(updatedParcel => res.json(updatedParcel))
-      .catch(error => res.status(400).json({ error: error.message }));
+      .catch(() => res.status(serverError.status).json({ error: serverError.message }));
   }
 
   /**
@@ -139,7 +142,7 @@ export default class ParcelsController {
   static updateOrderStatus(req, res) {
     updateSingleFieldInTable('parcels', req.params.id, { status: req.body.status })
       .then(updatedParcel => res.json(updatedParcel))
-      .catch(error => res.status(400).json({ error: error.message }));
+      .catch(() => res.status(serverError.status).json({ error: serverError.message }));
   }
 
   /**
@@ -154,6 +157,6 @@ export default class ParcelsController {
   static updateOrderLocation(req, res) {
     updateSingleFieldInTable('parcels', req.params.id, { presentLocation: req.body.presentLocation })
       .then(updatedParcel => res.json(updatedParcel))
-      .catch(error => res.status(400).json({ error: error.message }));
+      .catch(() => res.status(serverError.status).json({ error: serverError.message }));
   }
 }

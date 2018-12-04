@@ -1,10 +1,13 @@
 import jwt from 'jsonwebtoken';
 import AuthHelpers from '../helpers/auth';
 import DbHelpers from '../models/helpers';
+import errors from '../helpers/errors';
 
 const {
   createUser, findByEmailFromTable
 } = DbHelpers;
+
+const { serverError, authFailed, duplicateEmail } = errors;
 
 /**
  * Auth controller - All functions for the handling authentication routes
@@ -44,10 +47,10 @@ export default class AuthController {
           const token = jwt.sign(uiUser, process.env.secret);
           return res.json({ user: uiUser, token });
         }).catch((error) => {
-          if (error.message.indexOf('duplicate key value violates unique constraint') > -1) return res.status(422).json({ error: 'Email already in use, use another email' });
-          return res.status(400).json({ error: error.message });
+          if (error.message.indexOf('duplicate key value violates unique constraint') > -1) return res.status(duplicateEmail.status).json({ error: duplicateEmail.message });
+          return res.status(serverError.status).json({ error: serverError.message });
         });
-      }).catch(() => res.status(500).json({ error: 'An error occured while processing your request.' }));
+      }).catch(() => res.status(serverError.status).json({ error: serverError.message }));
   }
 
   /**
@@ -69,17 +72,17 @@ export default class AuthController {
       .then((foundUser) => {
         AuthHelpers.compare(userObject.password, foundUser.password)
           .then((result) => {
-            if (result === false) return res.status(401).json({ auth: false, message: 'Invalid Credentials' });
+            if (result === false) return res.status(authFailed.status).json({ auth: false, message: authFailed.message });
             jwt.sign({
               id: foundUser.id,
               admin: foundUser.admin
             }, process.env.secret, (err, token) => {
-              if (err) return res.status(500).json({ error: 'An error occured while processing your request' });
+              if (err) return res.status(serverError.status).json({ error: serverError.message });
               return res.json({ auth: true, token });
             });
           })
-          .catch(() => res.status(500).json({ error: 'An error occured while processing your request' }));
+          .catch(() => res.status(serverError.status).json({ error: serverError.message }));
       })
-      .catch(() => res.status(401).send({ auth: false, message: 'Invalid credentials' }));
+      .catch(() => res.status(authFailed.status).send({ auth: false, message: authFailed.message }));
   }
 }
