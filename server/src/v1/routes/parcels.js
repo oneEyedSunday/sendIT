@@ -8,7 +8,9 @@ import ParcelsController from '../controllers/ParcelsController';
 import Middleware from '../middlewares';
 import ValidationMiddleware from '../middlewares/validation';
 
-const { isAdmin, parcelExists, isOwner, isOwnerOrAdmin } = Middleware;
+const {
+  isAdmin, parcelExists, isOwner, isOwnerOrAdmin
+} = Middleware;
 const {
   getAllOrders, getOrder,
   cancelOrder, changeOrderDestination, updateOrderLocation, updateOrderStatus,
