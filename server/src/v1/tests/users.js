@@ -139,6 +139,7 @@ export default class UsersApiTests {
                   userId: this.userOwningParcel.id,
                   destination: 'Some Place',
                   pickUpLocation: 'Some pickup',
+                  weight: '300kg'
                 })
                 .set('Authorization', this.allowedUserToken)
                 .then((createParcelResponse) => {
