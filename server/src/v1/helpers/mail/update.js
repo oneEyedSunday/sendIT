@@ -32,7 +32,7 @@ const updateUserWithStatus = (configObject) => {
   if (typeof parcel.status === 'string') parcel.status = parseInt(parcel.status, 10);
   const status = getStatus(parcel.status);
   let grammar = existingParcel ? 'updated' : 'created';
-  grammar = cancelled ? grammar === 'cancelled' : grammar;
+  grammar = cancelled ? 'cancelled' : grammar;
   const tellPrice = (grammar === 'created') ? parcel.price : null;
   const chargeText = tellPrice ? `You bill is ${parcel.price} <br>` : '';
   const message = {
@@ -47,10 +47,10 @@ const updateUserWithStatus = (configObject) => {
     ${URL.ui}/parcels/${parcel.id}
     `,
   };
-    // eslint-disable-next-line no-console
-    // console.log(message.html);
-  mailSender(user.email, message, null).then(info => console.log(info))
-    .catch(error => console.error(error));
+  if (process.env.NODE_ENV.toLowerCase() !== 'test' && process.env.sendMails) {
+    mailSender(user.email, message, null).then(info => console.log(info))
+      .catch(error => console.error(error));
+  }
 };
 
 export default updateUserWithStatus;
