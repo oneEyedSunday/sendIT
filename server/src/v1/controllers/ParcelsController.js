@@ -1,6 +1,7 @@
 import statuses from '../helpers/statuses';
 import DbHelpers from '../models/helpers';
 import errors from '../helpers/errors';
+import notifyByMail from '../helpers/mail/update';
 
 const {
   findAllInTable, findByIdFromTable, updateSingleFieldInTable, createParcel
@@ -63,14 +64,21 @@ export default class ParcelsController {
  * @param  {Object} req  Express request object
  * @param  {Object} res  Express response object
  * @returns {object} returns the updated Order
- * @throws {objecr} Throws an object containing the Error
+ * @throws {object} Throws an object containing the Error
  */
   static cancelOrder(req, res) {
-    if (req.parcel.status === statuses.Cancelled) {
+    if (req.parcel.status === statuses.Cancelled.code) {
       return res.status(resourceConflict.status).send({ error: 'Parcel Delivery order already cancelled' });
     }
-    updateSingleFieldInTable('parcels', req.params.id, { status: 4 })
-      .then(updatedParcel => res.json(updatedParcel))
+    updateSingleFieldInTable('parcels', req.params.id, { status: statuses.Cancelled.code })
+      .then((updatedParcel) => {
+        notifyByMail({
+          user: req.user,
+          parcel: updatedParcel,
+          cancelled: true
+        });
+        res.json(updatedParcel);
+      })
       .catch(() => res.status(serverError.status).json({ error: serverError.message }));
   }
 
@@ -110,7 +118,14 @@ export default class ParcelsController {
         weight,
         status: statuses.AwaitingProcessing.code,
         price,
-      }).then(createdParcel => res.json(createdParcel))
+      }).then((createdParcel) => {
+        notifyByMail({
+          user: req.user,
+          parcel: createdParcel,
+          existingParcel: false
+        });
+        return res.json(createdParcel);
+      })
         .catch(() => res.status(serverError.status).json({ error: serverError.message }));
     } catch (error) {
       if (error.message === INVALIDWEIGHTERRORMESSAGE) {
@@ -137,7 +152,13 @@ export default class ParcelsController {
  */
   static changeOrderDestination(req, res) {
     updateSingleFieldInTable('parcels', req.params.id, { destination: req.body.destination })
-      .then(updatedParcel => res.json(updatedParcel))
+      .then((updatedParcel) => {
+        notifyByMail({
+          user: req.user,
+          parcel: updatedParcel,
+        });
+        return res.json(updatedParcel);
+      })
       .catch(() => res.status(serverError.status).json({ error: serverError.message }));
   }
 
@@ -152,7 +173,13 @@ export default class ParcelsController {
  */
   static updateOrderStatus(req, res) {
     updateSingleFieldInTable('parcels', req.params.id, { status: req.body.status })
-      .then(updatedParcel => res.json(updatedParcel))
+      .then((updatedParcel) => {
+        notifyByMail({
+          user: req.user,
+          parcel: updatedParcel
+        });
+        return res.json(updatedParcel);
+      })
       .catch(() => res.status(serverError.status).json({ error: serverError.message }));
   }
 
@@ -167,7 +194,13 @@ export default class ParcelsController {
  */
   static updateOrderLocation(req, res) {
     updateSingleFieldInTable('parcels', req.params.id, { presentLocation: req.body.presentLocation })
-      .then(updatedParcel => res.json(updatedParcel))
+      .then((updatedParcel) => {
+        notifyByMail({
+          user: req.user,
+          parcel: updatedParcel
+        });
+        return res.json(updatedParcel);
+      })
       .catch(() => res.status(serverError.status).json({ error: serverError.message }));
   }
 }

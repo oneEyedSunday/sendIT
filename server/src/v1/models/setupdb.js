@@ -122,26 +122,6 @@ dropAllTables().then((res) => {
 
 // createAllTables();
 
-/*
-dbHelpers.createUser({
-  email: 'test@sendIt.com',
-  firstname: 'Test',
-  lastname: 'Admin',
-  password: 'someHAsh',
-}).then((result) => {
-  dbHelpers.createParcel({
-    userId: result.id,
-    destination: 'Ikorodu',
-    presentLocation: 'Ojota',
-    pickUpLocation: 'Oshodi',
-    price: 'N500',
-    status: 0,
-  })
-    .then(resultTwo => console.log(resultTwo))
-    .catch(error => console.error(error));
-}).catch(err => console.error('ERR', err));
-*/
-
 pool.on('remove', () => {
   console.log('client removed');
   process.exit(0);
