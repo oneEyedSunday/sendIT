@@ -76,7 +76,9 @@ export default class AuthController {
               return res.status(authFailed.status)
                 .json({ auth: false, message: authFailed.message });
             }
-            const { id, admin, firstname, lastname } = foundUser;
+            const {
+              id, admin, firstname, lastname
+            } = foundUser;
             jwt.sign({
               id,
               admin,
